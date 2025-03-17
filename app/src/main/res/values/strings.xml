@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">WorkTimeTrackerManager</string>
+    <string name="title_activity_auth">AuthActivity</string>
+
+    <string name="home">Home</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="leaves">Leaves</string>
+    <string name="attendant">Attendant</string>
+    <string name="profile">Profile</string>
+    <string name="group">Group</string>
+</resources>
