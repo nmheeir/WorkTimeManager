@@ -107,6 +107,10 @@ dependencies {
     //Material Theme
     implementation(libs.material)
 
+    //Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+
+    //Result
+    implementation(libs.kotlin.result)
 }

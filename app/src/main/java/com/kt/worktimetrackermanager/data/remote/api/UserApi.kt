@@ -16,26 +16,31 @@ import retrofit2.http.Query
 
 interface UserApi {
 
+    @POST("Users/profile")
+    suspend fun profile(
+        @Header("Authorization") token: String,
+    ): ApiResponse<DataResponse<User>>
+
     @GET("Users/GetUserByUserName")
     suspend fun getUserByUsername(
-        @Query("userName") userName: String
+        @Query("userName") userName: String,
     ): ApiResponse<DataResponse<User>>
 
     @GET("Users/GetUserById")
     suspend fun getUserById(
-        @Query("id") id: Int
+        @Query("id") id: Int,
     ): ApiResponse<DataResponse<User>>
 
     @POST("Users/addUser")
     suspend fun addUser(
         @Header("Authorization") token: String,
-        @Body user: AddUserRequest
+        @Body user: AddUserRequest,
     ): ApiResponse<DataResponse<Any>>
 
     @PUT("Users/update")
     suspend fun updateUser(
         @Header("Authorization") token: String,
-        @Body user: UpdateUserRequest
+        @Body user: UpdateUserRequest,
     ): ApiResponse<DataResponse<Any>>
 
     @GET("Users/GetUsersInCompany")
@@ -47,7 +52,7 @@ interface UserApi {
         @Query("role") role: Int? = null,
         @Query("employeeType") employeeType: Int? = null,
         @Query("active") active: Boolean = true,
-        @Query("teamId") teamId: Int? = null
+        @Query("teamId") teamId: Int? = null,
     ): ApiResponse<PagedDataResponse<List<User>>>
 
     @GET("Users/GetUsersInCompany")
@@ -59,7 +64,7 @@ interface UserApi {
         @Query("role") role: Int? = null,
         @Query("employeeType") employeeType: Int? = null,
         @Query("active") active: Boolean = true,
-        @Query("teamId") teamId: Int? = null
+        @Query("teamId") teamId: Int? = null,
     ): ApiResponse<PagedDataResponse<List<User>>>
 
     @GET("Users/GetUsersStatistic")

@@ -9,6 +9,7 @@ import com.kt.worktimetrackermanager.data.remote.dto.response.UsersStatistic
 import com.skydoves.sandwich.ApiResponse
 
 interface IUserRepo {
+
     suspend fun getUserByUsername(
         username: String
     ): ApiResponse<DataResponse<User>>

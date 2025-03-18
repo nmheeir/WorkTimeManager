@@ -44,6 +44,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kt.worktimetrackermanager.core.presentation.NavigationBarHeight
+import com.kt.worktimetrackermanager.core.presentation.ui.AppTheme
+import com.kt.worktimetrackermanager.core.presentation.utils.AppThemeKey
+import com.kt.worktimetrackermanager.core.presentation.utils.rememberEnumPreference
 import com.kt.worktimetrackermanager.presentation.navigations.Screens
 import com.kt.worktimetrackermanager.presentation.navigations.navigationBuilder
 import com.kt.worktimetrackermanager.presentation.ui.theme.WorkTimeTrackerManagerTheme
@@ -68,7 +71,11 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            WorkTimeTrackerManagerTheme {
+            val appTheme by rememberEnumPreference(AppThemeKey, AppTheme.DEFAULT)
+
+            WorkTimeTrackerManagerTheme(
+                appTheme = appTheme
+            ) {
                 val navController = rememberNavController()
                 val backStackEntry by navController.currentBackStackEntryAsState()
 

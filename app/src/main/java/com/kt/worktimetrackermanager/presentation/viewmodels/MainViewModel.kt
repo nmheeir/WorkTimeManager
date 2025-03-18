@@ -10,6 +10,7 @@ import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.core.presentation.utils.set
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
+import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
 import com.kt.worktimetrackermanager.presentation.navigations.Screens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val userUseCase: UserUseCase
 ) : ViewModel() {
 
     val showSplash = mutableStateOf(false)
@@ -41,13 +43,15 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             val token = context.dataStore[TokenKey]
 
-            if (!token.isNullOrEmpty()) {
-                startDestination.value = "home"
+            if (token.isNullOrEmpty()) {
+                return@launch
             }
+
+            startDestination.value = "home"
+            user.value = userUseCase.
 
             Timber.d(startDestination.value)
             Timber.d(token)
-
             return@launch
         }
     }
