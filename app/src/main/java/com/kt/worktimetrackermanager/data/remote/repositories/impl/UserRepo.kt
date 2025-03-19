@@ -11,8 +11,12 @@ import com.kt.worktimetrackermanager.data.remote.repositories.IUserRepo
 import com.skydoves.sandwich.ApiResponse
 
 class UserRepo(
-    private val userApi: UserApi
+    private val userApi: UserApi,
 ) : IUserRepo {
+    override suspend fun profile(token: String): ApiResponse<DataResponse<User>> {
+        return userApi.profile("Bearer $token")
+    }
+
     override suspend fun getUserByUsername(username: String): ApiResponse<DataResponse<User>> {
         return userApi.getUserByUsername(username)
     }
@@ -23,7 +27,7 @@ class UserRepo(
 
     override suspend fun addUser(
         token: String,
-        user: AddUserRequest
+        user: AddUserRequest,
     ): ApiResponse<DataResponse<Any>> {
         return userApi.addUser("Bearer $token", user)
     }
@@ -31,7 +35,7 @@ class UserRepo(
 
     override suspend fun updateUser(
         token: String,
-        user: UpdateUserRequest
+        user: UpdateUserRequest,
     ): ApiResponse<DataResponse<Any>> {
         return userApi.updateUser("Bearer $token", user)
     }
@@ -44,7 +48,7 @@ class UserRepo(
         role: Int?,
         employeeType: Int?,
         active: Boolean,
-        teamId: Int?
+        teamId: Int?,
     ): ApiResponse<PagedDataResponse<List<User>>> {
         return userApi.getUsersInTeam(
             token = token,
@@ -65,7 +69,7 @@ class UserRepo(
         role: Int?,
         employeeType: Int?,
         active: Boolean,
-        teamId: Int?
+        teamId: Int?,
     ): ApiResponse<PagedDataResponse<List<User>>> {
         return userApi.getUsers(
             "Bearer $token",

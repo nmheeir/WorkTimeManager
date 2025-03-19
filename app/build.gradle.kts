@@ -113,4 +113,7 @@ dependencies {
 
     //Result
     implementation(libs.kotlin.result)
+
+    //Kotlin Collection Immutable
+    implementation(libs.kotlinx.collections.immutable)
 }
