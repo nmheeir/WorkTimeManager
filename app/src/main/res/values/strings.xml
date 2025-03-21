@@ -19,6 +19,11 @@
     <string name="msg_no_task_desc">It looks like you don’t have any tasks assigned to you right now. Don’t worry, this space will be updated as new tasks become available.</string>
 
     <!--Label-->
+    <string name="label_full_attendance">Full attendance</string>
+    <string name="label_partial_attendance">Partial attendance</string>>
+    <string name="label_absence_attendance">Absence attendance</string>
 
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

@@ -3,12 +3,15 @@ package com.kt.worktimetrackermanager.di
 import com.kt.worktimetrackermanager.data.remote.RemoteDataSource
 import com.kt.worktimetrackermanager.data.remote.api.AuthApi
 import com.kt.worktimetrackermanager.data.remote.api.SummaryApi
+import com.kt.worktimetrackermanager.data.remote.api.TeamApi
 import com.kt.worktimetrackermanager.data.remote.api.UserApi
 import com.kt.worktimetrackermanager.data.remote.repositories.IAuthRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.ISummaryRepo
+import com.kt.worktimetrackermanager.data.remote.repositories.ITeamRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.IUserRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.impl.AuthRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.impl.SummaryRepo
+import com.kt.worktimetrackermanager.data.remote.repositories.impl.TeamRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.impl.UserRepo
 import dagger.Module
 import dagger.Provides
@@ -54,5 +57,17 @@ class AppModule {
     @Singleton
     fun provideSummaryRepo(summaryApi: SummaryApi): ISummaryRepo {
         return SummaryRepo(summaryApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTeamApi(remoteDataSource: RemoteDataSource): TeamApi {
+        return remoteDataSource.buildApi(TeamApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTeamRepo(teamApi: TeamApi): ITeamRepo {
+        return TeamRepo(teamApi)
     }
 }

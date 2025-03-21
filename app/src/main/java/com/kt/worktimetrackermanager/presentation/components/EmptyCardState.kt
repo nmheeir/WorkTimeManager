@@ -22,11 +22,13 @@ fun EmptyCardState(
     @StringRes message: Int,
     @StringRes desc: Int,
     @DrawableRes icon: Int,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
 ) {
     Surface(
         shape = MaterialTheme.shapes.small,
-        onClick = onClick,
+        onClick = {
+            onClick?.invoke()
+        },
         modifier = modifier
             .fillMaxWidth()
     ) {
@@ -42,18 +44,5 @@ fun EmptyCardState(
                 iconRes = icon,
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun Test() {
-    WorkTimeTrackerManagerTheme {
-        EmptyCardState(
-            message = R.string.home,
-            desc = R.string.app_name,
-            icon = R.drawable.img_task,
-            onClick = {}
-        )
     }
 }

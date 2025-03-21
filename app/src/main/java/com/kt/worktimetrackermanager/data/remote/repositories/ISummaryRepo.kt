@@ -6,6 +6,7 @@ import com.kt.worktimetrackermanager.data.remote.dto.response.TeamStatistic
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.data.remote.dto.response.WorkHours
 import com.skydoves.sandwich.ApiResponse
+import java.time.LocalDateTime
 
 interface ISummaryRepo {
     suspend fun getTeamAttendanceRecord(
@@ -16,8 +17,8 @@ interface ISummaryRepo {
     ): ApiResponse<DataResponse<AttendanceRecord>>
 
     suspend fun getCompanyAttendanceRecord(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         token: String
     ): ApiResponse<DataResponse<AttendanceRecord>>
 

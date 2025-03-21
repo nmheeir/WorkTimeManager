@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
+import com.kt.worktimetrackermanager.core.presentation.clickable
 import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.presentation.activities.LocalMainViewModel
 import com.kt.worktimetrackermanager.presentation.components.EmptyCardState
@@ -114,6 +115,13 @@ private fun HomeTopBar(
 ) {
     val mainViewModel = LocalMainViewModel.current
     val user by mainViewModel.user.collectAsStateWithLifecycle()
+    Text(
+        text = "Profile",
+        modifier = Modifier
+            .clickable {
+                navController.navigate("profile")
+            }
+    )
     user?.let {
         Row(
             verticalAlignment = Alignment.CenterVertically,

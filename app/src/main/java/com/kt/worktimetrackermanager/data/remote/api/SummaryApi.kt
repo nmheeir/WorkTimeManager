@@ -9,6 +9,7 @@ import com.skydoves.sandwich.ApiResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
+import java.time.LocalDateTime
 
 interface SummaryApi {
 
@@ -23,8 +24,8 @@ interface SummaryApi {
 
     @GET("Summary/GetCompanyAttendanceRecord")
     suspend fun getCompanyAttendanceRecord(
-        @Query("start") start: Long,
-        @Query("end") end: Long,
+        @Query("start") start: LocalDateTime,
+        @Query("end") end: LocalDateTime,
         @Header("Authorization") token: String
     ): ApiResponse<DataResponse<AttendanceRecord>>
 

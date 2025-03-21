@@ -8,6 +8,7 @@ import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.data.remote.dto.response.WorkHours
 import com.kt.worktimetrackermanager.data.remote.repositories.ISummaryRepo
 import com.skydoves.sandwich.ApiResponse
+import java.time.LocalDateTime
 
 class SummaryRepo(
     private val summaryApi: SummaryApi
@@ -30,8 +31,8 @@ class SummaryRepo(
     }
 
     override suspend fun getCompanyAttendanceRecord(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         token: String
     ): ApiResponse<DataResponse<AttendanceRecord>> {
         return summaryApi.getCompanyAttendanceRecord(start, end, token)

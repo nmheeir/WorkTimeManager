@@ -116,4 +116,10 @@ dependencies {
 
     //Kotlin Collection Immutable
     implementation(libs.kotlinx.collections.immutable)
+
+    //Compose chart
+    implementation ("io.github.ehsannarmani:compose-charts:0.1.2")
+
+    //Calendar
+    implementation("com.kizitonwose.calendar:compose:2.6.2")
 }

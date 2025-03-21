@@ -49,7 +49,6 @@ fun LoginScreen(
                 }
             }
         }
-
     }
 
     CompositionLocalProvider(
