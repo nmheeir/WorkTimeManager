@@ -1,10 +1,21 @@
 package com.kt.worktimetrackermanager.di
 
 import com.kt.worktimetrackermanager.data.remote.repositories.IAuthRepo
+import com.kt.worktimetrackermanager.data.remote.repositories.ISummaryRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.ITeamRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.IUserRepo
 import com.kt.worktimetrackermanager.domain.use_case.AuthUseCase
 import com.kt.worktimetrackermanager.domain.use_case.Login
+import com.kt.worktimetrackermanager.domain.use_case.summary.GetCompanyAttendanceRecord
+import com.kt.worktimetrackermanager.domain.use_case.summary.GetCompanyAttendanceRecordEachTime
+import com.kt.worktimetrackermanager.domain.use_case.summary.GetEmployeeAttendanceRecord
+import com.kt.worktimetrackermanager.domain.use_case.summary.GetEmployeeAttendanceRecordEachTime
+import com.kt.worktimetrackermanager.domain.use_case.summary.GetNewHireEmployee
+import com.kt.worktimetrackermanager.domain.use_case.summary.GetTeamAttendanceRecord
+import com.kt.worktimetrackermanager.domain.use_case.summary.GetTeamAttendanceRecordEachTime
+import com.kt.worktimetrackermanager.domain.use_case.summary.GetTeamEmployeeWorkHours
+import com.kt.worktimetrackermanager.domain.use_case.summary.GetTeamStatistic
+import com.kt.worktimetrackermanager.domain.use_case.summary.SummaryUseCase
 import com.kt.worktimetrackermanager.domain.use_case.team.CreateTeam
 import com.kt.worktimetrackermanager.domain.use_case.team.GetCompanyTeam
 import com.kt.worktimetrackermanager.domain.use_case.team.GetCompanyTeamById
@@ -13,6 +24,7 @@ import com.kt.worktimetrackermanager.domain.use_case.user.AddUser
 import com.kt.worktimetrackermanager.domain.use_case.user.GetUserById
 import com.kt.worktimetrackermanager.domain.use_case.user.GetUserByUsername
 import com.kt.worktimetrackermanager.domain.use_case.user.GetUserInTeam
+import com.kt.worktimetrackermanager.domain.use_case.user.GetUserProfile
 import com.kt.worktimetrackermanager.domain.use_case.user.GetUsers
 import com.kt.worktimetrackermanager.domain.use_case.user.GetUsersStatistic
 import com.kt.worktimetrackermanager.domain.use_case.user.UpdateUser
@@ -45,7 +57,8 @@ class UseCaseModule {
             getUserById = GetUserById(iUserRepo),
             updateUser = UpdateUser(iUserRepo),
             getUsers = GetUsers(iUserRepo),
-            getUsersStatistic = GetUsersStatistic(iUserRepo)
+            getUsersStatistic = GetUsersStatistic(iUserRepo),
+            getUserProfile = GetUserProfile(iUserRepo)
         )
     }
 
@@ -56,6 +69,22 @@ class UseCaseModule {
             getCompanyTeams = GetCompanyTeam(iTeamRepo),
             createTeam = CreateTeam(iTeamRepo),
             getCompanyTeamById = GetCompanyTeamById(iTeamRepo)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideSummaryUseCase(iSummaryRepo: ISummaryRepo): SummaryUseCase {
+        return SummaryUseCase(
+            getEmployeeAttendanceRecord = GetEmployeeAttendanceRecord(iSummaryRepo),
+            getTeamAttendanceRecord = GetTeamAttendanceRecord(iSummaryRepo),
+            getCompanyAttendanceRecord = GetCompanyAttendanceRecord(iSummaryRepo),
+            getTeamEmployeeWorkHours = GetTeamEmployeeWorkHours(iSummaryRepo),
+            getTeamStatistic = GetTeamStatistic(iSummaryRepo),
+            getNewHireEmployee = GetNewHireEmployee(iSummaryRepo),
+            getCompanyAttendanceRecordEachTime = GetCompanyAttendanceRecordEachTime(iSummaryRepo),
+            getTeamAttendanceRecordEachTime = GetTeamAttendanceRecordEachTime(iSummaryRepo),
+            getEmployeeAttendanceRecordEachTime = GetEmployeeAttendanceRecordEachTime(iSummaryRepo)
         )
     }
 }

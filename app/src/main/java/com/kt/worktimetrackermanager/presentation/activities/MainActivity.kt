@@ -25,6 +25,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
@@ -66,18 +67,18 @@ class MainActivity : ComponentActivity() {
 
         installSplashScreen().apply {
             setKeepOnScreenCondition {
-                viewModel.showSplash.value
+                viewModel.startDestination.value == null
             }
         }
 
         setContent {
             val appTheme by rememberEnumPreference(AppThemeKey, AppTheme.DEFAULT)
+            val navController = rememberNavController()
+            val backStackEntry by navController.currentBackStackEntryAsState()
 
             WorkTimeTrackerManagerTheme(
                 appTheme = appTheme
             ) {
-                val navController = rememberNavController()
-                val backStackEntry by navController.currentBackStackEntryAsState()
 
                 Box {
                     val navigationItems = remember { Screens.MainScreens }
@@ -89,8 +90,7 @@ class MainActivity : ComponentActivity() {
                     )
 
                     val shouldShowNavigationBar = remember(backStackEntry) {
-                        backStackEntry?.destination?.route == null
-                                || navigationItems.fastAny { it.route == backStackEntry?.destination?.route }
+                        navigationItems.fastAny { it.route == backStackEntry?.destination?.route }
                     }
 
                     val windowInsets = WindowInsets.systemBars
@@ -103,7 +103,9 @@ class MainActivity : ComponentActivity() {
                         animationSpec = spring(stiffness = Spring.StiffnessMedium)
                     )
 
-                    CompositionLocalProvider() {
+                    CompositionLocalProvider(
+                        LocalMainViewModel provides viewModel
+                    ) {
                         Scaffold(
                             bottomBar = {
                                 NavigationBar(
@@ -164,7 +166,7 @@ class MainActivity : ComponentActivity() {
                         ) { paddingValues ->
                             NavHost(
                                 navController = navController,
-                                startDestination = viewModel.startDestination.value,
+                                startDestination = viewModel.startDestination.value!!,
                                 enterTransition = {
                                     if (initialState.destination.route in topLevelScreens
                                         && targetState.destination.route in topLevelScreens
@@ -213,3 +215,5 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+val LocalMainViewModel = compositionLocalOf<MainViewModel> { error("No MainViewModel provided") }

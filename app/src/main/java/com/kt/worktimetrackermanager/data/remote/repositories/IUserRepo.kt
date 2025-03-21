@@ -10,6 +10,10 @@ import com.skydoves.sandwich.ApiResponse
 
 interface IUserRepo {
 
+    suspend fun profile(
+        token : String
+    ): ApiResponse<DataResponse<User>>
+
     suspend fun getUserByUsername(
         username: String
     ): ApiResponse<DataResponse<User>>

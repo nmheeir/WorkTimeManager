@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -14,6 +15,8 @@ class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
+
+    val user = MutableStateFlow("")
 
     fun onAction(action: HomeUiAction) {
         when (action) {
