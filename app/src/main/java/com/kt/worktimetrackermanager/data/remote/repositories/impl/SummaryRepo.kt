@@ -60,8 +60,8 @@ class SummaryRepo(
     }
 
     override suspend fun getCompanyAttendanceRecordEachTime(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         period: Long,
         token: String
     ): ApiResponse<DataResponse<List<AttendanceRecord>>> {

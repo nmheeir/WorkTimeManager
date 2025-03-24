@@ -46,8 +46,8 @@ interface ISummaryRepo {
     ): ApiResponse<DataResponse<List<User>>>
 
     suspend fun getCompanyAttendanceRecordEachTime(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         period: Long,
         token: String
     ): ApiResponse<DataResponse<List<AttendanceRecord>>>

@@ -19,21 +19,21 @@ interface SummaryApi {
         @Query("start") start: Long,
         @Query("end") end: Long,
         @Query("teamId") teamId: Int,
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>>
 
     @GET("Summary/GetCompanyAttendanceRecord")
     suspend fun getCompanyAttendanceRecord(
         @Query("start") start: LocalDateTime,
         @Query("end") end: LocalDateTime,
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>>
 
     @GET("Summary/GetEmployeeAttendanceRecord")
     suspend fun getEmployeeAttendanceRecord(
         @Query("start") start: Long,
         @Query("end") end: Long,
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>>
 
 
@@ -42,29 +42,29 @@ interface SummaryApi {
         @Query("start") start: Long,
         @Query("end") end: Long,
         @Query("teamId") teamId: Int,
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<List<WorkHours>>>
 
     @GET("Summary/GetTeamStatistic")
     suspend fun getTeamStatistic(
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<TeamStatistic>>
 
     @GET("Summary/GetNewHireEmployee")
     suspend fun getNewHireEmployee(
         @Query("start") start: Long,
         @Query("end") end: Long,
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<List<User>>>
 
     // ================================
     //Get Attendance Each Time
     @GET("Summary/GetCompanyAttendanceRecordEachTime")
     suspend fun getCompanyAttendanceRecordEachTime(
-        @Query("start") start: Long,
-        @Query("end") end: Long,
+        @Query("start") start: LocalDateTime,
+        @Query("end") end: LocalDateTime,
         @Query("period") period: Long,
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>>
 
     @GET("Summary/GetTeamAttendanceRecordEachTime")
@@ -72,7 +72,7 @@ interface SummaryApi {
         @Query("start") start: Long,
         @Query("end") end: Long,
         @Query("period") period: Long,
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>>
 
     @GET("Summary/GetTeamAttendanceRecordEachTime")
@@ -80,7 +80,7 @@ interface SummaryApi {
         @Query("start") start: Long,
         @Query("end") end: Long,
         @Query("period") period: Long,
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>>
     //End Get Attendance Each Time
     //======================

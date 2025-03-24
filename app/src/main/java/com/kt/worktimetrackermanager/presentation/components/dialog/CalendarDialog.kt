@@ -64,7 +64,7 @@ fun CalendarDisplay(
     val endMonth = remember { currentMonth.plusMonths(100) }
     val daysOfWeek = remember { daysOfWeek() }
     var selection by remember {
-        mutableStateOf<LocalDate>(LocalDate.now())
+        mutableStateOf<LocalDate>(date)
     }
 
     val state = rememberCalendarState(

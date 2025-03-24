@@ -118,8 +118,12 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
 
     //Compose chart
-    implementation ("io.github.ehsannarmani:compose-charts:0.1.2")
+    implementation("io.github.ehsannarmani:compose-charts:0.1.2")
 
     //Calendar
-    implementation("com.kizitonwose.calendar:compose:2.6.2")
+    implementation(libs.kizitonwose.calendar)
+
+    //Vico Chart
+    implementation(libs.vico.compose)
+    implementation(libs.vico.compose.m3)
 }
