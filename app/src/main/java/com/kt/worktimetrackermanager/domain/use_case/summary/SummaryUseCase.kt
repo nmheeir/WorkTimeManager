@@ -28,9 +28,10 @@ class GetEmployeeAttendanceRecord(
     suspend operator fun invoke(
         start: LocalDateTime,
         end: LocalDateTime,
+        userId: Int? = null,
         token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>> {
-        return summaryRepository.getEmployeeAttendanceRecord(start, end, token)
+        return summaryRepository.getEmployeeAttendanceRecord(start, end, userId, "Bearer $token")
     }
 }
 
@@ -132,8 +133,11 @@ class GetEmployeeAttendanceRecordEachTime(
         start: LocalDateTime,
         end: LocalDateTime,
         period: Long,
+        userId: Int? = null,
         token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>> {
-        return summaryRepository.getEmployeeAttendanceRecordEachTime(start, end, period, token)
+        return summaryRepository.getEmployeeAttendanceRecordEachTime(
+            start, end, period, userId, "Bearer $token"
+        )
     }
 }

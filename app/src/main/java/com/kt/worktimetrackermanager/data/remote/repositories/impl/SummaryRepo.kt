@@ -25,9 +25,10 @@ class SummaryRepo(
     override suspend fun getEmployeeAttendanceRecord(
         start: LocalDateTime,
         end: LocalDateTime,
+        userId: Int?,
         token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>> {
-        return summaryApi.getEmployeeAttendanceRecord(start, end, token)
+        return summaryApi.getEmployeeAttendanceRecord(start, end, userId, token)
     }
 
     override suspend fun getCompanyAttendanceRecord(
@@ -82,8 +83,9 @@ class SummaryRepo(
         start: LocalDateTime,
         end: LocalDateTime,
         period: Long,
+        userId: Int?,
         token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>> {
-        return summaryApi.getEmployeeAttendanceRecordEachTime(start, end, period, token)
+        return summaryApi.getEmployeeAttendanceRecordEachTime(start, end, period, userId, token)
     }
 }

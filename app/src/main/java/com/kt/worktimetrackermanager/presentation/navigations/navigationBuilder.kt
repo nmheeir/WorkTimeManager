@@ -13,6 +13,7 @@ import com.kt.worktimetrackermanager.presentation.screens.HomeScreen
 import com.kt.worktimetrackermanager.presentation.screens.ProfileScreen
 import com.kt.worktimetrackermanager.presentation.screens.auth.LoginScreen
 import com.kt.worktimetrackermanager.presentation.screens.auth.RegisterScreen
+import com.kt.worktimetrackermanager.presentation.screens.dashboard.StaffDashboardScreen
 import com.kt.worktimetrackermanager.presentation.screens.dashboard.TeamDashboardScreen
 import com.kt.worktimetrackermanager.presentation.viewmodels.TeamDashboardViewModel
 
@@ -57,6 +58,17 @@ fun NavGraphBuilder.navigationBuilder(
         )
     ) {
         TeamDashboardScreen(navController)
+    }
+
+    composable(
+        route = "dashboard/staff?id={id}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) {
+        StaffDashboardScreen(navController)
     }
 
     composable(

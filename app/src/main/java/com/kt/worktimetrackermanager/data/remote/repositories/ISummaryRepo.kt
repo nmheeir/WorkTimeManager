@@ -25,6 +25,7 @@ interface ISummaryRepo {
     suspend fun getEmployeeAttendanceRecord(
         start: LocalDateTime,
         end: LocalDateTime,
+        userId: Int? = null,
         token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>>
 
@@ -64,6 +65,7 @@ interface ISummaryRepo {
         start: LocalDateTime,
         end: LocalDateTime,
         period: Long,
+        userId: Int? = null,
         token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>>
 }

@@ -130,7 +130,7 @@ class TeamDashboardViewModel @Inject constructor(
             userUseCase.getUsers(
                 token = token,
                 teamId = teamId,
-                role = Role.UNAUTHORIZED.ordinal
+//                role = Role.UNAUTHORIZED.ordinal
             )
                 .suspendOnSuccess {
                     uiState.update {

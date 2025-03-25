@@ -33,6 +33,7 @@ interface SummaryApi {
     suspend fun getEmployeeAttendanceRecord(
         @Query("start") start: LocalDateTime,
         @Query("end") end: LocalDateTime,
+        @Query("userId") userId: Int? = null,
         @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>>
 
@@ -76,11 +77,12 @@ interface SummaryApi {
         @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>>
 
-    @GET("Summary/GetTeamAttendanceRecordEachTime")
+    @GET("Summary/GetEmployeeAttendanceRecordEachTime")
     suspend fun getEmployeeAttendanceRecordEachTime(
         @Query("start") start: LocalDateTime,
         @Query("end") end: LocalDateTime,
         @Query("period") period: Long,
+        @Query("userId") userId: Int? = null,
         @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>>
     //End Get Attendance Each Time
