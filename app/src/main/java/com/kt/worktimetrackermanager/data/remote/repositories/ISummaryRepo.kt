@@ -10,59 +10,60 @@ import java.time.LocalDateTime
 
 interface ISummaryRepo {
     suspend fun getTeamAttendanceRecord(
-        start: Long,
-        end: Long,
-        teamId: Int,
-        token: String
+        start: LocalDateTime,
+        end: LocalDateTime,
+        teamId: Int? = null,
+        token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>>
 
     suspend fun getCompanyAttendanceRecord(
         start: LocalDateTime,
         end: LocalDateTime,
-        token: String
+        token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>>
 
     suspend fun getEmployeeAttendanceRecord(
-        start: Long,
-        end: Long,
-        token: String
+        start: LocalDateTime,
+        end: LocalDateTime,
+        token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>>
 
     suspend fun getTeamEmployeeWorkHours(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         teamId: Int,
-        token: String
+        token: String,
     ): ApiResponse<DataResponse<List<WorkHours>>>
 
     suspend fun getTeamStatistic(
-        token: String
+        token: String,
     ): ApiResponse<DataResponse<TeamStatistic>>
 
     suspend fun getNewHireEmployee(
-        start: Long,
-        end: Long,
-        token: String
+        start: LocalDateTime,
+        end: LocalDateTime,
+        token: String,
     ): ApiResponse<DataResponse<List<User>>>
 
     suspend fun getCompanyAttendanceRecordEachTime(
         start: LocalDateTime,
         end: LocalDateTime,
         period: Long,
-        token: String
+        token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>>
 
     suspend fun getTeamAttendanceRecordEachTime(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         period: Long,
-        token: String
+        teamId: Int? = null,
+        token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>>
 
     suspend fun getEmployeeAttendanceRecordEachTime(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         period: Long,
-        token: String
+        token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>>
 }

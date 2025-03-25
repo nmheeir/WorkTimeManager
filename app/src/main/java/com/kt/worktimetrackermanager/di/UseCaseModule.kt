@@ -23,7 +23,6 @@ import com.kt.worktimetrackermanager.domain.use_case.team.TeamUseCase
 import com.kt.worktimetrackermanager.domain.use_case.user.AddUser
 import com.kt.worktimetrackermanager.domain.use_case.user.GetUserById
 import com.kt.worktimetrackermanager.domain.use_case.user.GetUserByUsername
-import com.kt.worktimetrackermanager.domain.use_case.user.GetUserInTeam
 import com.kt.worktimetrackermanager.domain.use_case.user.GetUserProfile
 import com.kt.worktimetrackermanager.domain.use_case.user.GetUsers
 import com.kt.worktimetrackermanager.domain.use_case.user.GetUsersStatistic
@@ -53,7 +52,6 @@ class UseCaseModule {
         return UserUseCase(
             getUserByUsername = GetUserByUsername(iUserRepo),
             addUser = AddUser(iUserRepo),
-            getUserInTeam = GetUserInTeam(iUserRepo),
             getUserById = GetUserById(iUserRepo),
             updateUser = UpdateUser(iUserRepo),
             getUsers = GetUsers(iUserRepo),

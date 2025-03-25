@@ -1,5 +1,6 @@
 package com.kt.worktimetrackermanager.presentation.components.chart
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,8 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
+import com.kt.worktimetrackermanager.R
+import com.kt.worktimetrackermanager.core.ext.parse
+import com.kt.worktimetrackermanager.core.ext.parseDate
 import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Period
 import com.kt.worktimetrackermanager.data.remote.dto.response.AttendanceRecord
@@ -95,6 +100,7 @@ fun AttendanceEachTime(
 
         val modelProducer = remember { CartesianChartModelProducer() }
         LaunchedEffect(data) {
+            Timber.d(data.toString())
             if (data.isNotEmpty()) {
                 modelProducer.runTransaction {
                     columnSeries {
@@ -114,7 +120,9 @@ fun AttendanceEachTime(
                             }
                         )
                     }
-                    extras { it[LegendLabelKey] = y.keys }
+                    extras {
+                        it[LegendLabelKey] = y.toSet()
+                    }
                 }
             }
         }
@@ -123,18 +131,18 @@ fun AttendanceEachTime(
             bottomValueFormatter = when (period) {
                 Period.DAILY -> {
                     CartesianValueFormatter { _, x, _ ->
-                        data[x.toInt() % data.size].end.dayOfMonth.toString()
+                        data[x.toInt() % data.size].end.toLocalDate().parse()
                     }
                 }
 
                 Period.WEEKLY -> {
                     CartesianValueFormatter { _, x, _ ->
-                        data[x.toInt() % data.size].end.dayOfMonth.toString()
+                        data[x.toInt() % data.size].end.toLocalDate().parse()
                     }
                 }
 
                 Period.MONTHLY -> CartesianValueFormatter { _, x, _ ->
-                    data[x.toInt() % data.size].end.monthValue.toString()
+                    data[x.toInt() % data.size].end.toLocalDate().parse()
                 }
             }
         )
@@ -146,7 +154,6 @@ private fun AttendanceEachTimeChart(
     modelProducer: CartesianChartModelProducer,
     bottomValueFormatter: CartesianValueFormatter,
 ) {
-    Timber.d(bottomValueFormatter.toString())
     val chartColors = listOf<Color>(
         MaterialTheme.colorScheme.primary,
         MaterialTheme.colorScheme.secondaryContainer,
@@ -212,19 +219,17 @@ private fun AttendanceEachTimeChart(
     )
 }
 
-private val x = (2008..2018).toList()
-
 private val y =
-    mapOf(
-        "Laptop/desktop" to listOf<Number>(2.2, 2.3, 2.4, 2.6, 2.5, 2.3, 2.2, 2.2, 2.2, 2.1, 2),
-        "Mobile" to listOf(0.3, 0.3, 0.4, 0.8, 1.6, 2.3, 2.6, 2.8, 3.1, 3.3, 3.6),
-        "Other" to listOf(0.2, 0.3, 0.4, 0.3, 0.3, 0.3, 0.3, 0.4, 0.4, 0.6, 0.7),
+    listOf(
+        "Full",
+        "Partial",
+        "Absence",
     )
 
 private val LegendLabelKey = ExtraStore.Key<Set<String>>()
-private val YDecimalFormat = DecimalFormat("#.## h")
+private val YDecimalFormat = DecimalFormat("#")
 private val StartAxisValueFormatter = CartesianValueFormatter.decimal(YDecimalFormat)
-private val StartAxisItemPlacer = VerticalAxis.ItemPlacer.step({ 0.5 })
+private val StartAxisItemPlacer = VerticalAxis.ItemPlacer.step({ 1.0 })
 private val MarkerValueFormatter = DefaultCartesianMarker.ValueFormatter.default(YDecimalFormat)
 
 //Fake Data

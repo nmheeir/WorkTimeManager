@@ -26,8 +26,8 @@ class GetEmployeeAttendanceRecord(
     private val summaryRepository: ISummaryRepo,
 ) {
     suspend operator fun invoke(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>> {
         return summaryRepository.getEmployeeAttendanceRecord(start, end, token)
@@ -38,12 +38,12 @@ class GetTeamAttendanceRecord(
     private val summaryRepository: ISummaryRepo,
 ) {
     suspend operator fun invoke(
-        start: Long,
-        end: Long,
-        teamId: Int,
+        start: LocalDateTime,
+        end: LocalDateTime,
+        teamId: Int? = null,
         token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>> {
-        return summaryRepository.getTeamAttendanceRecord(start, end, teamId, token)
+        return summaryRepository.getTeamAttendanceRecord(start, end, teamId, "Bearer $token")
     }
 }
 
@@ -63,8 +63,8 @@ class GetTeamEmployeeWorkHours(
     private val summaryRepository: ISummaryRepo,
 ) {
     suspend operator fun invoke(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         teamId: Int,
         token: String,
     ): ApiResponse<DataResponse<List<WorkHours>>> {
@@ -86,8 +86,8 @@ class GetNewHireEmployee(
     private val summaryRepository: ISummaryRepo,
 ) {
     suspend operator fun invoke(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         token: String,
     ): ApiResponse<DataResponse<List<User>>> {
         return summaryRepository.getNewHireEmployee(start, end, token)
@@ -113,12 +113,15 @@ class GetTeamAttendanceRecordEachTime(
     private val summaryRepository: ISummaryRepo,
 ) {
     suspend operator fun invoke(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         period: Long,
+        teamId: Int? = null,
         token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>> {
-        return summaryRepository.getTeamAttendanceRecordEachTime(start, end, period, token)
+        return summaryRepository.getTeamAttendanceRecordEachTime(
+            start, end, period, teamId, "Bearer $token"
+        )
     }
 }
 
@@ -126,8 +129,8 @@ class GetEmployeeAttendanceRecordEachTime(
     private val summaryRepository: ISummaryRepo,
 ) {
     suspend operator fun invoke(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         period: Long,
         token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>> {

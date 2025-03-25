@@ -32,17 +32,6 @@ interface IUserRepo {
         user: UpdateUserRequest
     ): ApiResponse<DataResponse<Any>>
 
-    suspend fun getUsersInTeam(
-        token: String,
-        pageNumber: Int = 1,
-        pageSize: Int = 20,
-        username: String = "",
-        role: Int? = null,
-        employeeType: Int? = null,
-        active: Boolean = true,
-        teamId: Int? = null
-    ): ApiResponse<PagedDataResponse<List<User>>>
-
     suspend fun getUsers(
         token: String,
         pageNumber: Int = 1,

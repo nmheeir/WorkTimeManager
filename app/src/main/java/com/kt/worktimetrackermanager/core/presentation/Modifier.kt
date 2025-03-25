@@ -30,4 +30,4 @@ fun Modifier.clickable(
     )
 }
 
-fun Modifier.standardPadding(): Modifier = this.padding(horizontal = MaterialTheme.padding.mediumSmall)
+fun Modifier.hozPadding(): Modifier = this.padding(horizontal = MaterialTheme.padding.mediumSmall)

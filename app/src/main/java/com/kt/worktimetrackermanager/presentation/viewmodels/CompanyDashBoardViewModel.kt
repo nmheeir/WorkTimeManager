@@ -38,7 +38,7 @@ class CompanyDashBoardViewModel @Inject constructor(
     private val teamUseCase: TeamUseCase,
 ) : ViewModel() {
 
-    val uiState = MutableStateFlow<OverviewDashboardUiState>(OverviewDashboardUiState())
+    val uiState = MutableStateFlow<CompanyDashboardUiState>(CompanyDashboardUiState())
 
     private val _channel = Channel<CompanyDashboardUiEvent>()
     val channel = _channel.receiveAsFlow()
@@ -160,8 +160,6 @@ class CompanyDashBoardViewModel @Inject constructor(
                 }
         }
     }
-
-
 }
 
 sealed interface CompanyDashboardUiEvent {
@@ -177,7 +175,7 @@ sealed interface CompanyDashboardUiAction {
     data class OnPeriodChange(val period: Period) : CompanyDashboardUiAction
 }
 
-data class OverviewDashboardUiState(
+data class CompanyDashboardUiState(
     val start: LocalDate = LocalDate.now().withDayOfMonth(1),
     val end: LocalDate = YearMonth.now().atEndOfMonth(),
 
