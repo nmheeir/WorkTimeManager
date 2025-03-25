@@ -47,26 +47,21 @@ class MiddlewareRoleViewModel @Inject constructor(
 
     private fun checkRole() {
         if (token == null) {
-            role.value = Role.UNAUTHORIZED
+            role.value = Role.STAFF
             return
         }
         viewModelScope.launch {
             userUseCase.getUserProfile(token)
                 .suspendOnSuccess {
-                    val roleIndex = this.data.data!!.role
-                    when (roleIndex) {
-                        0 -> role.value = Role.MASTER
-                        1 -> role.value = Role.MANAGER
-                        else -> role.value = Role.UNAUTHORIZED
-                    }
+                    role.value = this.data.data!!.role
                 }
                 .suspendOnFailure {
                     Timber.d("Failure: %s", this.message())
-                    role.value = Role.UNAUTHORIZED
+                    role.value = Role.STAFF
                 }
                 .suspendOnException {
                     Timber.d("Exception: %s", this.message())
-                    role.value = Role.UNAUTHORIZED
+                    role.value = Role.STAFF
                 }
         }
     }
