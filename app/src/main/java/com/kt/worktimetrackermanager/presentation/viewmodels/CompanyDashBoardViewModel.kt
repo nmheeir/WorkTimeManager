@@ -13,9 +13,11 @@ import com.kt.worktimetrackermanager.data.remote.dto.response.TeamStatistic
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.domain.use_case.summary.SummaryUseCase
 import com.kt.worktimetrackermanager.domain.use_case.team.TeamUseCase
+import com.skydoves.sandwich.message
 import com.skydoves.sandwich.retrofit.statusCode
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
+import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -36,36 +38,45 @@ class CompanyDashBoardViewModel @Inject constructor(
     private val teamUseCase: TeamUseCase,
 ) : ViewModel() {
 
-    val uiState = MutableStateFlow<OverviewDashboardUiState>(OverviewDashboardUiState())
+    val uiState = MutableStateFlow<CompanyDashboardUiState>(CompanyDashboardUiState())
 
     private val _channel = Channel<CompanyDashboardUiEvent>()
     val channel = _channel.receiveAsFlow()
 
+    private val token = context.dataStore[TokenKey]!!
 
     init {
+        Timber.d("init view model")
         fetchTeamInCompany()
-        viewModelScope.launch {
-//            delay(2000)
-
-            uiState.update {
-                it.copy(
-                    attendanceRecord = AttendanceRecord(
-                        1, 123, 456, 789,
-                        LocalDate.now().atStartOfDay(),
-                        LocalDate.now().atTime(23,59, 59)
-                    )
-                )
-            }
-        }
+        fetchCompanyAttendanceRecord()
+        fetchCompanyAttendanceRecordEachTime()
     }
 
     fun onAction(action: CompanyDashboardUiAction) {
         when (action) {
             CompanyDashboardUiAction.FetchTeamStatistic -> TODO()
-            is CompanyDashboardUiAction.OnEndDateChange -> updateEndDate(action.date)
-            is CompanyDashboardUiAction.OnPeriodChange -> TODO()
-            is CompanyDashboardUiAction.OnStartDateChange -> updateStartDate(action.date)
+            is CompanyDashboardUiAction.OnEndDateChange -> {
+                updateEndDate(action.date)
+            }
+
+            is CompanyDashboardUiAction.OnPeriodChange -> {
+                periodChange(action.period)
+            }
+
+            is CompanyDashboardUiAction.OnStartDateChange -> {
+                updateStartDate(action.date)
+            }
         }
+    }
+
+    private fun periodChange(period: Period) {
+        Timber.d(period.name)
+        uiState.update {
+            it.copy(
+                period = period
+            )
+        }
+        fetchCompanyAttendanceRecordEachTime()
     }
 
     private fun updateStartDate(date: LocalDate) {
@@ -80,8 +91,53 @@ class CompanyDashBoardViewModel @Inject constructor(
         }
     }
 
-    private fun fetchTeamStatistics() {
+    private fun fetchCompanyAttendanceRecord() {
+        viewModelScope.launch {
+            summaryUseCase.getCompanyAttendanceRecord(
+                token = token,
+                start = uiState.value.start.atStartOfDay(),
+                end = uiState.value.end.atTime(23, 59, 59)
+            ).suspendOnSuccess {
+                uiState.update {
+                    it.copy(
+                        attendanceRecord = this.data.data!!
+                    )
+                }
+                Timber.d("Success: %s", this.data.data!!)
+            }
+                .suspendOnFailure {
+                    Timber.d("Failure: %s", this.message())
+                }
+                .suspendOnError {
+                    Timber.d("Error: %s", this.message())
+                }
+        }
+    }
 
+    private fun fetchCompanyAttendanceRecordEachTime() {
+        viewModelScope.launch {
+            summaryUseCase.getCompanyAttendanceRecordEachTime(
+                token = token,
+                start = uiState.value.start.atStartOfDay(),
+                end = uiState.value.end.atTime(23, 59, 59),
+                period = uiState.value.period.time
+            )
+                .suspendOnSuccess {
+                    uiState.update {
+                        it.copy(
+                            companyAttendanceRecord = this.data.data!!
+                        )
+                    }
+                    Timber.d(uiState.value.toString())
+                    Timber.d("Success: %s", this.data.data!!)
+                }
+                .suspendOnFailure {
+                    Timber.d("Failure: %s", this.message())
+                }
+                .suspendOnError {
+                    Timber.d("Error: %s", this.message())
+                }
+        }
     }
 
     private fun fetchTeamInCompany() {
@@ -94,6 +150,7 @@ class CompanyDashBoardViewModel @Inject constructor(
                             teams = this.data.data!!
                         )
                     }
+                    Timber.d("Success: %s", this.data.data!!)
                 }
                 .suspendOnError {
                     Timber.d("error: ${this.statusCode}")
@@ -103,8 +160,6 @@ class CompanyDashBoardViewModel @Inject constructor(
                 }
         }
     }
-
-
 }
 
 sealed interface CompanyDashboardUiEvent {
@@ -120,9 +175,11 @@ sealed interface CompanyDashboardUiAction {
     data class OnPeriodChange(val period: Period) : CompanyDashboardUiAction
 }
 
-data class OverviewDashboardUiState(
+data class CompanyDashboardUiState(
     val start: LocalDate = LocalDate.now().withDayOfMonth(1),
     val end: LocalDate = YearMonth.now().atEndOfMonth(),
+
+    val period: Period = Period.DAILY,
 
     val attendanceRecord: AttendanceRecord? = null,
 

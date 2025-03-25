@@ -3,6 +3,8 @@ package com.kt.worktimetrackermanager.core.presentation
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -27,3 +29,5 @@ fun Modifier.clickable(
         onClick = onClick,
     )
 }
+
+fun Modifier.hozPadding(): Modifier = this.padding(horizontal = MaterialTheme.padding.mediumSmall)

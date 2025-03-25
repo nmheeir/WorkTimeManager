@@ -73,14 +73,15 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val appTheme by rememberEnumPreference(AppThemeKey, AppTheme.DEFAULT)
-            val navController = rememberNavController()
-            val backStackEntry by navController.currentBackStackEntryAsState()
 
             WorkTimeTrackerManagerTheme(
                 appTheme = appTheme
             ) {
 
                 Box {
+                    val navController = rememberNavController()
+                    val backStackEntry by navController.currentBackStackEntryAsState()
+
                     val navigationItems = remember { Screens.MainScreens }
                     val topLevelScreens = listOf(
                         Screens.Home.route,

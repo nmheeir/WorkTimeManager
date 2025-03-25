@@ -40,27 +40,6 @@ class UserRepo(
         return userApi.updateUser("Bearer $token", user)
     }
 
-    override suspend fun getUsersInTeam(
-        token: String,
-        pageNumber: Int,
-        pageSize: Int,
-        username: String,
-        role: Int?,
-        employeeType: Int?,
-        active: Boolean,
-        teamId: Int?,
-    ): ApiResponse<PagedDataResponse<List<User>>> {
-        return userApi.getUsersInTeam(
-            token = token,
-            pageNumber = pageNumber,
-            pageSize = pageSize,
-            username = username,
-            role = role,
-            active = active,
-            teamId = teamId
-        )
-    }
-
     override suspend fun getUsers(
         token: String,
         pageNumber: Int,

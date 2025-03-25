@@ -9,4 +9,10 @@ data class AttendanceRecord(
     val absenceAttendance: Int,
     val start: LocalDateTime,
     val end: LocalDateTime,
-)
+) {
+    companion object {
+        fun AttendanceRecord.isNoneData(): Boolean {
+            return this.fullAttendance == 0 && this.partialAttendance == 0 && this.absenceAttendance == 0
+        }
+    }
+}

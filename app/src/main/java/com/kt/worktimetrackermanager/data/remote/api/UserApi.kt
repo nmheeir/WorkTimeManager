@@ -44,18 +44,6 @@ interface UserApi {
     ): ApiResponse<DataResponse<Any>>
 
     @GET("Users/GetUsersInCompany")
-    suspend fun getUsersInTeam(
-        @Header("Authorization") token: String,
-        @Query("pageNumber") pageNumber: Int = 1,
-        @Query("pageSize") pageSize: Int = 20,
-        @Query("username") username: String = "",
-        @Query("role") role: Int? = null,
-        @Query("employeeType") employeeType: Int? = null,
-        @Query("active") active: Boolean = true,
-        @Query("teamId") teamId: Int? = null,
-    ): ApiResponse<PagedDataResponse<List<User>>>
-
-    @GET("Users/GetUsersInCompany")
     suspend fun getUsers(
         @Header("Authorization") token: String,
         @Query("pageNumber") pageNumber: Int = 1,

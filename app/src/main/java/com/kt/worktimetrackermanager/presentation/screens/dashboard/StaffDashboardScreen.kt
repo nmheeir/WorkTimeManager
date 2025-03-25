@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -19,34 +17,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.util.fastForEach
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.ext.parse
 import com.kt.worktimetrackermanager.core.presentation.padding
-import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.presentation.components.EmptyCardState
 import com.kt.worktimetrackermanager.presentation.components.chart.AttendanceEachTime
 import com.kt.worktimetrackermanager.presentation.components.chart.AttendanceRateChart
 import com.kt.worktimetrackermanager.presentation.components.dialog.CalendarDialog
-import com.kt.worktimetrackermanager.presentation.viewmodels.CompanyDashBoardViewModel
-import com.kt.worktimetrackermanager.presentation.viewmodels.CompanyDashboardUiAction
-import timber.log.Timber
+import com.kt.worktimetrackermanager.presentation.viewmodels.StaffDashboardUiAction
+import com.kt.worktimetrackermanager.presentation.viewmodels.StaffDashboardViewModel
 
 @Composable
-fun CompanyDashBoardScreen(
+fun StaffDashboardScreen(
     navController: NavHostController,
-    viewModel: CompanyDashBoardViewModel = hiltViewModel(),
+    viewModel: StaffDashboardViewModel = hiltViewModel(),
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showStartDateDialog by remember { mutableStateOf(false) }
     var showEndDateDialog by remember { mutableStateOf(false) }
-
-
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
@@ -54,6 +47,13 @@ fun CompanyDashBoardScreen(
         modifier = Modifier
             .fillMaxWidth()
     ) {
+
+        item(
+            key = "detail"
+        ) {
+
+        }
+
         item(
             key = "time_query"
         ) {
@@ -77,7 +77,7 @@ fun CompanyDashBoardScreen(
                         CalendarDialog(
                             date = startDate,
                             onDateChange = {
-                                viewModel.onAction(CompanyDashboardUiAction.OnStartDateChange(it))
+                                viewModel.onAction(StaffDashboardUiAction.OnStartDateChange(it))
                                 showStartDateDialog = false
                             },
                             onDismiss = { showStartDateDialog = false }
@@ -102,7 +102,7 @@ fun CompanyDashBoardScreen(
                         CalendarDialog(
                             date = endDate,
                             onDateChange = {
-                                viewModel.onAction(CompanyDashboardUiAction.OnEndDateChange(it))
+                                viewModel.onAction(StaffDashboardUiAction.OnEndDateChange(it))
                                 showEndDateDialog = false
                             },
                             onDismiss = { showEndDateDialog = false }
@@ -138,7 +138,7 @@ fun CompanyDashBoardScreen(
             key = "attendance_each_time"
         ) {
             val recordEachTime by remember {
-                derivedStateOf { uiState.companyAttendanceRecord }
+                derivedStateOf { uiState.staffAttendanceRecordEachTime }
             }
             val period by remember {
                 derivedStateOf { uiState.period }
@@ -146,41 +146,11 @@ fun CompanyDashBoardScreen(
             AttendanceEachTime(
                 data = recordEachTime,
                 action = {
-                    viewModel.onAction(CompanyDashboardUiAction.OnPeriodChange(it))
+                    viewModel.onAction(StaffDashboardUiAction.OnPeriodChange(it))
                 },
                 period = period,
                 modifier = Modifier.padding(horizontal = MaterialTheme.padding.mediumSmall)
             )
-        }
-
-        item(
-            key = "teams_in_company"
-        ) {
-            val teams by remember {
-                derivedStateOf { uiState.teams }
-            }
-
-            teams.fastForEach { team ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .hozPadding(),
-                    onClick = {
-                        navController.navigate("dashboard/team?id=${team.id}") {
-                            launchSingleTop = true
-                        }
-                    }
-                ) {
-                    Text(
-                        text = team.name
-                    )
-                    Text(
-                        text = team.description
-                    )
-                }
-            }
-
-            Timber.d(teams.toString())
         }
     }
 }

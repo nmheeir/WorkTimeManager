@@ -11,38 +11,39 @@ import com.skydoves.sandwich.ApiResponse
 import java.time.LocalDateTime
 
 class SummaryRepo(
-    private val summaryApi: SummaryApi
+    private val summaryApi: SummaryApi,
 ) : ISummaryRepo {
     override suspend fun getTeamAttendanceRecord(
-        start: Long,
-        end: Long,
-        teamId: Int,
-        token: String
+        start: LocalDateTime,
+        end: LocalDateTime,
+        teamId: Int?,
+        token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>> {
         return summaryApi.getTeamAttendanceRecord(start, end, teamId, token)
     }
 
     override suspend fun getEmployeeAttendanceRecord(
-        start: Long,
-        end: Long,
-        token: String
+        start: LocalDateTime,
+        end: LocalDateTime,
+        userId: Int?,
+        token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>> {
-        return summaryApi.getEmployeeAttendanceRecord(start, end, token)
+        return summaryApi.getEmployeeAttendanceRecord(start, end, userId, token)
     }
 
     override suspend fun getCompanyAttendanceRecord(
         start: LocalDateTime,
         end: LocalDateTime,
-        token: String
+        token: String,
     ): ApiResponse<DataResponse<AttendanceRecord>> {
         return summaryApi.getCompanyAttendanceRecord(start, end, token)
     }
 
     override suspend fun getTeamEmployeeWorkHours(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         teamId: Int,
-        token: String
+        token: String,
     ): ApiResponse<DataResponse<List<WorkHours>>> {
         return summaryApi.getTeamEmployeeWorkHours(start, end, teamId, token)
     }
@@ -52,37 +53,39 @@ class SummaryRepo(
     }
 
     override suspend fun getNewHireEmployee(
-        start: Long,
-        end: Long,
-        token: String
+        start: LocalDateTime,
+        end: LocalDateTime,
+        token: String,
     ): ApiResponse<DataResponse<List<User>>> {
         return summaryApi.getNewHireEmployee(start, end, token)
     }
 
     override suspend fun getCompanyAttendanceRecordEachTime(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         period: Long,
-        token: String
+        token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>> {
         return summaryApi.getCompanyAttendanceRecordEachTime(start, end, period, token)
     }
 
     override suspend fun getTeamAttendanceRecordEachTime(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         period: Long,
-        token: String
+        teamId: Int?,
+        token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>> {
-        return summaryApi.getTeamAttendanceRecordEachTime(start, end, period, token)
+        return summaryApi.getTeamAttendanceRecordEachTime(start, end, period, teamId, token)
     }
 
     override suspend fun getEmployeeAttendanceRecordEachTime(
-        start: Long,
-        end: Long,
+        start: LocalDateTime,
+        end: LocalDateTime,
         period: Long,
-        token: String
+        userId: Int?,
+        token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>> {
-        return summaryApi.getEmployeeAttendanceRecordEachTime(start, end, period, token)
+        return summaryApi.getEmployeeAttendanceRecordEachTime(start, end, period, userId, token)
     }
 }
