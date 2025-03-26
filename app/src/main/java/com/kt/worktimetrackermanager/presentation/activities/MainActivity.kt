@@ -14,6 +14,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -72,12 +73,11 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val appTheme by rememberEnumPreference(AppThemeKey, AppTheme.DEFAULT)
+            val appTheme by rememberEnumPreference(AppThemeKey, AppTheme.MONET)
 
             WorkTimeTrackerManagerTheme(
                 appTheme = appTheme
             ) {
-
                 Box {
                     val navController = rememberNavController()
                     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -205,7 +205,10 @@ class MainActivity : ComponentActivity() {
                                     }
                                 },
                                 modifier = Modifier
-                                    .padding(paddingValues)
+                                    .padding(
+                                        if (shouldShowNavigationBar) paddingValues
+                                        else PaddingValues(0.dp)
+                                    )
                             ) {
                                 navigationBuilder(navController)
                             }

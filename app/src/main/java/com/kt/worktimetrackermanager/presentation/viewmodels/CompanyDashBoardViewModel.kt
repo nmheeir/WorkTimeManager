@@ -13,6 +13,7 @@ import com.kt.worktimetrackermanager.data.remote.dto.response.TeamStatistic
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.domain.use_case.summary.SummaryUseCase
 import com.kt.worktimetrackermanager.domain.use_case.team.TeamUseCase
+import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.retrofit.statusCode
 import com.skydoves.sandwich.suspendOnError
@@ -36,6 +37,7 @@ class CompanyDashBoardViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val summaryUseCase: SummaryUseCase,
     private val teamUseCase: TeamUseCase,
+    private val userUseCase: UserUseCase,
 ) : ViewModel() {
 
     val uiState = MutableStateFlow<CompanyDashboardUiState>(CompanyDashboardUiState())
@@ -47,6 +49,10 @@ class CompanyDashBoardViewModel @Inject constructor(
 
     init {
         Timber.d("init view model")
+        fetchData()
+    }
+
+    private fun fetchData() {
         fetchTeamInCompany()
         fetchCompanyAttendanceRecord()
         fetchCompanyAttendanceRecordEachTime()
@@ -54,7 +60,14 @@ class CompanyDashBoardViewModel @Inject constructor(
 
     fun onAction(action: CompanyDashboardUiAction) {
         when (action) {
-            CompanyDashboardUiAction.FetchTeamStatistic -> TODO()
+            CompanyDashboardUiAction.FetchTeamStatistic -> {
+
+            }
+
+            CompanyDashboardUiAction.FetchData -> {
+                fetchData()
+            }
+
             is CompanyDashboardUiAction.OnEndDateChange -> {
                 updateEndDate(action.date)
             }
@@ -65,6 +78,10 @@ class CompanyDashBoardViewModel @Inject constructor(
 
             is CompanyDashboardUiAction.OnStartDateChange -> {
                 updateStartDate(action.date)
+            }
+
+            is CompanyDashboardUiAction.FetchUserInTeam -> {
+                fetchUserInTeam(action.teamId)
             }
         }
     }
@@ -125,11 +142,11 @@ class CompanyDashBoardViewModel @Inject constructor(
                 .suspendOnSuccess {
                     uiState.update {
                         it.copy(
-                            companyAttendanceRecord = this.data.data!!
+                            companyAttendanceRecord = this.data.data ?: emptyList()
                         )
                     }
                     Timber.d(uiState.value.toString())
-                    Timber.d("Success: %s", this.data.data!!)
+                    Timber.d("Success: %s", this.data.data)
                 }
                 .suspendOnFailure {
                     Timber.d("Failure: %s", this.message())
@@ -160,6 +177,29 @@ class CompanyDashBoardViewModel @Inject constructor(
                 }
         }
     }
+
+    private fun fetchUserInTeam(teamId: Int) {
+        viewModelScope.launch {
+            userUseCase.getUsers(
+                token = token,
+                teamId = teamId,
+            )
+                .suspendOnSuccess {
+                    uiState.update {
+                        it.copy(
+                            usersInCompany = teamId to this.data.data!!
+                        )
+                    }
+                    Timber.d("Success: %s", this.data.data!!)
+                }
+                .suspendOnError {
+                    Timber.d("error: ${this.statusCode}")
+                }
+                .suspendOnException {
+                    Timber.d("exception: %s", this.throwable.toString())
+                }
+        }
+    }
 }
 
 sealed interface CompanyDashboardUiEvent {
@@ -168,11 +208,13 @@ sealed interface CompanyDashboardUiEvent {
 
 sealed interface CompanyDashboardUiAction {
     data object FetchTeamStatistic : CompanyDashboardUiAction
+    data object FetchData : CompanyDashboardUiAction
 
     data class OnStartDateChange(val date: LocalDate) : CompanyDashboardUiAction
     data class OnEndDateChange(val date: LocalDate) : CompanyDashboardUiAction
 
     data class OnPeriodChange(val period: Period) : CompanyDashboardUiAction
+    data class FetchUserInTeam(val teamId: Int) : CompanyDashboardUiAction
 }
 
 data class CompanyDashboardUiState(
@@ -188,4 +230,5 @@ data class CompanyDashboardUiState(
     val newHireEmployee: List<User> = emptyList(),
     val teams: List<Team> = emptyList(),
     val companyAttendanceRecord: List<AttendanceRecord> = emptyList(),
+    val usersInCompany: Pair<Int, List<User>> = Pair(0, emptyList()),
 )

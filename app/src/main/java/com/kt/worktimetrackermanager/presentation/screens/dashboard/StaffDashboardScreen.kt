@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -30,6 +32,7 @@ import com.kt.worktimetrackermanager.presentation.components.dialog.CalendarDial
 import com.kt.worktimetrackermanager.presentation.viewmodels.StaffDashboardUiAction
 import com.kt.worktimetrackermanager.presentation.viewmodels.StaffDashboardViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StaffDashboardScreen(
     navController: NavHostController,
@@ -47,67 +50,88 @@ fun StaffDashboardScreen(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-
         item(
-            key = "detail"
+            key = "top_bar"
         ) {
+            val staffDetail by remember {
+                derivedStateOf { uiState.staffDetail }
+            }
 
+            TopAppBar(
+                title = {
+                    Text(
+                        text = staffDetail?.userName ?: "Unknown user"
+                    )
+                }
+            )
         }
 
         item(
             key = "time_query"
         ) {
             Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                TextButton(
-                    onClick = {
-                        showStartDateDialog = true
-                    }
-                ) {
-                    val startDate by remember {
-                        derivedStateOf { uiState.start }
-                    }
-                    Text(
-                        text = startDate.parse(),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    if (showStartDateDialog) {
-                        CalendarDialog(
-                            date = startDate,
-                            onDateChange = {
-                                viewModel.onAction(StaffDashboardUiAction.OnStartDateChange(it))
-                                showStartDateDialog = false
-                            },
-                            onDismiss = { showStartDateDialog = false }
+                Row {
+                    TextButton(
+                        onClick = {
+                            showStartDateDialog = true
+                        }
+                    ) {
+                        val startDate by remember {
+                            derivedStateOf { uiState.start }
+                        }
+                        Text(
+                            text = startDate.parse(),
+                            style = MaterialTheme.typography.bodySmall
                         )
+                        if (showStartDateDialog) {
+                            CalendarDialog(
+                                date = startDate,
+                                onDateChange = {
+                                    viewModel.onAction(StaffDashboardUiAction.OnStartDateChange(it))
+                                    showStartDateDialog = false
+                                },
+                                onDismiss = { showStartDateDialog = false }
+                            )
+                        }
+
                     }
 
+                    TextButton(
+                        onClick = {
+                            showEndDateDialog = true
+                        }
+                    ) {
+                        val endDate by remember {
+                            derivedStateOf { uiState.end }
+                        }
+                        Text(
+                            text = endDate.parse(),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        if (showEndDateDialog) {
+                            CalendarDialog(
+                                date = endDate,
+                                onDateChange = {
+                                    viewModel.onAction(StaffDashboardUiAction.OnEndDateChange(it))
+                                    showEndDateDialog = false
+                                },
+                                onDismiss = { showEndDateDialog = false }
+                            )
+                        }
+                    }
                 }
 
                 TextButton(
                     onClick = {
-                        showEndDateDialog = true
+                        viewModel.onAction(StaffDashboardUiAction.FetchData)
                     }
                 ) {
-                    val endDate by remember {
-                        derivedStateOf { uiState.end }
-                    }
-                    Text(
-                        text = endDate.parse(),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    if (showEndDateDialog) {
-                        CalendarDialog(
-                            date = endDate,
-                            onDateChange = {
-                                viewModel.onAction(StaffDashboardUiAction.OnEndDateChange(it))
-                                showEndDateDialog = false
-                            },
-                            onDismiss = { showEndDateDialog = false }
-                        )
-                    }
+                    Text(text = "Query")
                 }
             }
         }

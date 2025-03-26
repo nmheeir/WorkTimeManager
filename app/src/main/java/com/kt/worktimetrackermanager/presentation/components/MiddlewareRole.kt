@@ -39,17 +39,16 @@ fun MiddlewareRole(
         when (role) {
             Role.MASTER -> masterContent()
             Role.MANAGER -> managerContent()
-            Role.UNAUTHORIZED -> {
-                Text(
-                    text = "Unauthorized"
-                )
-            }
 
             null -> {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .align(Alignment.Center)
                 )
+            }
+
+            else -> {
+                Text(text = "UNAUTHORIZED")
             }
         }
     }

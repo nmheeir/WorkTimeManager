@@ -24,7 +24,7 @@ interface TeamApi {
     @GET("CompanyTeam/getCompanyTeamById")
     suspend fun getCompanyTeamById(
         @Header("Authorization") token: String,
-        @Query("id") id: Int
+        @Query("teamId") id: Int? = null
     ): ApiResponse<DataResponse<Team>>
 
     @POST("CompanyTeam/create")

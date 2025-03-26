@@ -3,6 +3,7 @@ package com.kt.worktimetrackermanager.presentation.components.chart
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import com.kt.worktimetrackermanager.R
@@ -76,12 +78,14 @@ fun AttendanceRateChart(
         modifier = modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.small)
-            .border(1.dp, MaterialTheme.colorScheme.onSurface,MaterialTheme.shapes.small)
+            .border(1.dp, MaterialTheme.colorScheme.onSurface, MaterialTheme.shapes.small)
+            .padding(MaterialTheme.padding.small)
     ) {
         when {
             attendanceRecord.isNoneData() -> {
-                Text(
-                    text = "Do not have any data"
+                Image(
+                    painter = painterResource(R.drawable.img_nodata),
+                    contentDescription = null
                 )
             }
 
@@ -107,7 +111,8 @@ fun AttendanceRateChart(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = MaterialTheme.padding.mediumSmall)
             ) {
                 Box(

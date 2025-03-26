@@ -3,6 +3,8 @@ package com.kt.worktimetrackermanager.data.remote
 import com.google.gson.GsonBuilder
 import com.kt.worktimetrackermanager.BuildConfig
 import com.kt.worktimetrackermanager.data.remote.adapters.LocalDateTimeAdapter
+import com.kt.worktimetrackermanager.data.remote.adapters.RoleAdapter
+import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -23,6 +25,7 @@ class RemoteDataSource @Inject constructor() {
 
         val gson = GsonBuilder()
             .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
+            .registerTypeAdapter(Role::class.java, RoleAdapter())
             .create()
 
         return Retrofit.Builder()

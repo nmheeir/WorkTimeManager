@@ -22,6 +22,8 @@
     <string name="label_full_attendance">Full attendance</string>
     <string name="label_partial_attendance">Partial attendance</string>>
     <string name="label_absence_attendance">Absence attendance</string>
+    <string name="label_teams">Teams</string>
+    <string name="label_users">Users</string>
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>

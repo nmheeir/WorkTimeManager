@@ -2,13 +2,14 @@ package com.kt.worktimetrackermanager.presentation.screens.dashboard
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Card
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -19,18 +20,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.util.fastForEach
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.ext.parse
-import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.core.presentation.hozPadding
+import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.presentation.components.EmptyCardState
 import com.kt.worktimetrackermanager.presentation.components.chart.AttendanceEachTime
 import com.kt.worktimetrackermanager.presentation.components.chart.AttendanceRateChart
 import com.kt.worktimetrackermanager.presentation.components.dialog.CalendarDialog
+import com.kt.worktimetrackermanager.presentation.components.items.TeamCardItem
+import com.kt.worktimetrackermanager.presentation.components.widget.PreferenceGroupHeader
 import com.kt.worktimetrackermanager.presentation.viewmodels.CompanyDashBoardViewModel
 import com.kt.worktimetrackermanager.presentation.viewmodels.CompanyDashboardUiAction
 import timber.log.Timber
@@ -58,56 +62,70 @@ fun CompanyDashBoardScreen(
             key = "time_query"
         ) {
             Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
+
             ) {
-                TextButton(
-                    onClick = {
-                        showStartDateDialog = true
-                    }
-                ) {
-                    val startDate by remember {
-                        derivedStateOf { uiState.start }
-                    }
-                    Text(
-                        text = startDate.parse(),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    if (showStartDateDialog) {
-                        CalendarDialog(
-                            date = startDate,
-                            onDateChange = {
-                                viewModel.onAction(CompanyDashboardUiAction.OnStartDateChange(it))
-                                showStartDateDialog = false
-                            },
-                            onDismiss = { showStartDateDialog = false }
+                Row {
+                    TextButton(
+                        onClick = {
+                            showStartDateDialog = true
+                        }
+                    ) {
+                        val startDate by remember {
+                            derivedStateOf { uiState.start }
+                        }
+                        Text(
+                            text = startDate.parse(),
+                            style = MaterialTheme.typography.bodySmall
                         )
+                        if (showStartDateDialog) {
+                            CalendarDialog(
+                                date = startDate,
+                                onDateChange = {
+                                    viewModel.onAction(CompanyDashboardUiAction.OnStartDateChange(it))
+                                    showStartDateDialog = false
+                                },
+                                onDismiss = { showStartDateDialog = false }
+                            )
+                        }
                     }
 
+                    TextButton(
+                        onClick = {
+                            showEndDateDialog = true
+                        }
+                    ) {
+                        val endDate by remember {
+                            derivedStateOf { uiState.end }
+                        }
+                        Text(
+                            text = endDate.parse(),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        if (showEndDateDialog) {
+                            CalendarDialog(
+                                date = endDate,
+                                onDateChange = {
+                                    viewModel.onAction(CompanyDashboardUiAction.OnEndDateChange(it))
+                                    showEndDateDialog = false
+                                },
+                                onDismiss = { showEndDateDialog = false }
+                            )
+                        }
+                    }
                 }
 
                 TextButton(
                     onClick = {
-                        showEndDateDialog = true
+                        viewModel.onAction(CompanyDashboardUiAction.FetchData)
                     }
                 ) {
-                    val endDate by remember {
-                        derivedStateOf { uiState.end }
-                    }
                     Text(
-                        text = endDate.parse(),
-                        style = MaterialTheme.typography.bodySmall
+                        text = "Query"
                     )
-                    if (showEndDateDialog) {
-                        CalendarDialog(
-                            date = endDate,
-                            onDateChange = {
-                                viewModel.onAction(CompanyDashboardUiAction.OnEndDateChange(it))
-                                showEndDateDialog = false
-                            },
-                            onDismiss = { showEndDateDialog = false }
-                        )
-                    }
                 }
             }
         }
@@ -153,33 +171,43 @@ fun CompanyDashBoardScreen(
             )
         }
 
+        item {
+            HorizontalDivider()
+            PreferenceGroupHeader(stringResource(R.string.label_teams))
+        }
+
         item(
             key = "teams_in_company"
         ) {
             val teams by remember {
                 derivedStateOf { uiState.teams }
             }
+            val usersInCompany by remember {
+                derivedStateOf { uiState.usersInCompany }
+            }
 
             teams.fastForEach { team ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .hozPadding(),
+                TeamCardItem(
+                    team = team,
+                    users = usersInCompany.second.filter { it.teamId == team.id },
                     onClick = {
                         navController.navigate("dashboard/team?id=${team.id}") {
                             launchSingleTop = true
                         }
-                    }
-                ) {
-                    Text(
-                        text = team.name
-                    )
-                    Text(
-                        text = team.description
-                    )
-                }
+                    },
+                    showUsersInTeam = {
+                        viewModel.onAction(CompanyDashboardUiAction.FetchUserInTeam(it))
+                    },
+                    navigateToUserDashboard = {
+                        navController.navigate("dashboard/staff?id=$it") {
+                            launchSingleTop = true
+                        }
+                    },
+                    modifier = Modifier
+                        .hozPadding()
+                )
+                Spacer(Modifier.height(MaterialTheme.padding.mediumSmall))
             }
-
             Timber.d(teams.toString())
         }
     }
