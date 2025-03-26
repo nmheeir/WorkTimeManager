@@ -124,27 +124,50 @@ fun AttendanceEachTime(
                         it[LegendLabelKey] = y.toSet()
                     }
                 }
+            } else {
+                modelProducer.runTransaction {
+                    columnSeries {
+                        series(
+                            List(1) { 0 }
+                        )
+//                        series(
+//                            List(1) { 0 }
+//                        )
+//                        series(
+//                            List(1) { 0 }
+//                        )
+                    }
+                    extras {
+                        it[LegendLabelKey] = y.toSet()
+                    }
+                }
             }
         }
+        val bottomValueFormatter =
+            if (data.isNotEmpty()) {
+                when (period) {
+                    Period.DAILY -> {
+                        CartesianValueFormatter { _, x, _ ->
+                            data[x.toInt() % data.size].end.toLocalDate().parse()
+                        }
+                    }
+
+                    Period.WEEKLY -> {
+                        CartesianValueFormatter { _, x, _ ->
+                            data[x.toInt() % data.size].end.toLocalDate().parse()
+                        }
+                    }
+
+                    Period.MONTHLY -> CartesianValueFormatter { _, x, _ ->
+                        data[x.toInt() % data.size].end.toLocalDate().parse()
+                    }
+                }
+            } else {
+                CartesianValueFormatter.Default
+            }
         AttendanceEachTimeChart(
             modelProducer = modelProducer,
-            bottomValueFormatter = when (period) {
-                Period.DAILY -> {
-                    CartesianValueFormatter { _, x, _ ->
-                        data[x.toInt() % data.size].end.toLocalDate().parse()
-                    }
-                }
-
-                Period.WEEKLY -> {
-                    CartesianValueFormatter { _, x, _ ->
-                        data[x.toInt() % data.size].end.toLocalDate().parse()
-                    }
-                }
-
-                Period.MONTHLY -> CartesianValueFormatter { _, x, _ ->
-                    data[x.toInt() % data.size].end.toLocalDate().parse()
-                }
-            }
+            bottomValueFormatter = bottomValueFormatter
         )
     }
 }

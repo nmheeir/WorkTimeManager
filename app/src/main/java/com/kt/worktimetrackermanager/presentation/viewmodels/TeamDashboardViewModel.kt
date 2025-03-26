@@ -8,7 +8,6 @@ import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Period
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.kt.worktimetrackermanager.data.remote.dto.response.AttendanceRecord
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
 import com.kt.worktimetrackermanager.data.remote.dto.response.TeamStatistic
@@ -17,9 +16,7 @@ import com.kt.worktimetrackermanager.domain.use_case.summary.SummaryUseCase
 import com.kt.worktimetrackermanager.domain.use_case.team.TeamUseCase
 import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
 import com.skydoves.sandwich.message
-import com.skydoves.sandwich.retrofit.statusCode
 import com.skydoves.sandwich.suspendOnError
-import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,15 +45,18 @@ class TeamDashboardViewModel @Inject constructor(
 
 
     init {
-        fetchStaffInTeam()
-        fetchTeamAttendanceRecord()
-        fetchTeamAttendanceRecordEachTime()
+        fetchTeamDetail()
+        fetchData()
     }
 
     fun onAction(action: TeamDashboardUiAction) {
         when (action) {
             TeamDashboardUiAction.FetchTeamStatistic -> {
                 fetchTeamStatistic()
+            }
+
+            TeamDashboardUiAction.FetchData -> {
+                fetchData()
             }
 
             is TeamDashboardUiAction.OnEndDateChange -> {
@@ -71,6 +71,12 @@ class TeamDashboardViewModel @Inject constructor(
                 updateStartDate(action.date)
             }
         }
+    }
+
+    private fun fetchData() {
+        fetchStaffInTeam()
+        fetchTeamAttendanceRecord()
+        fetchTeamAttendanceRecordEachTime()
     }
 
     private fun fetchTeamStatistic() {
@@ -99,6 +105,30 @@ class TeamDashboardViewModel @Inject constructor(
             )
         }
         fetchTeamAttendanceRecordEachTime()
+    }
+
+
+    private fun fetchTeamDetail() {
+        viewModelScope.launch {
+            teamUseCase.getCompanyTeamById(
+                token = token,
+                id = teamId
+            )
+                .suspendOnSuccess {
+                    uiState.update {
+                        it.copy(
+                            teamDetail = this.data.data!!
+                        )
+                    }
+                    Timber.d("Success: %s", this.data.data!!)
+                }
+                .suspendOnFailure {
+                    Timber.d("Failure: %s", this.message())
+                }
+                .suspendOnError {
+                    Timber.d("Error: %s", this.message())
+                }
+        }
     }
 
     private fun fetchTeamAttendanceRecord() {
@@ -180,6 +210,7 @@ class TeamDashboardViewModel @Inject constructor(
 
 sealed interface TeamDashboardUiAction {
     data object FetchTeamStatistic : TeamDashboardUiAction
+    data object FetchData : TeamDashboardUiAction
 
     data class OnStartDateChange(val date: LocalDate) : TeamDashboardUiAction
     data class OnEndDateChange(val date: LocalDate) : TeamDashboardUiAction
@@ -201,4 +232,6 @@ data class TeamDashboardUiState(
     val staffs: List<User> = emptyList(),
 
     val teamAttendanceRecordEachTime: List<AttendanceRecord> = emptyList(),
+
+    val teamDetail: Team? = null,
 )

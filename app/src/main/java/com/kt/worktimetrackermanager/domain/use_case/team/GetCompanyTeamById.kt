@@ -10,8 +10,8 @@ class GetCompanyTeamById(
 ) {
     suspend operator fun invoke (
         token: String,
-        id: Int
+        id: Int? = null
     ) : ApiResponse<DataResponse<Team>> {
-        return iTeamRepo.getCompanyTeamById(token, id)
+        return iTeamRepo.getCompanyTeamById("Bearer $token", id)
     }
 }

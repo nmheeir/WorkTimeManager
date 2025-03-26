@@ -49,6 +49,10 @@ class CompanyDashBoardViewModel @Inject constructor(
 
     init {
         Timber.d("init view model")
+        fetchData()
+    }
+
+    private fun fetchData() {
         fetchTeamInCompany()
         fetchCompanyAttendanceRecord()
         fetchCompanyAttendanceRecordEachTime()
@@ -56,7 +60,14 @@ class CompanyDashBoardViewModel @Inject constructor(
 
     fun onAction(action: CompanyDashboardUiAction) {
         when (action) {
-            CompanyDashboardUiAction.FetchTeamStatistic -> TODO()
+            CompanyDashboardUiAction.FetchTeamStatistic -> {
+
+            }
+
+            CompanyDashboardUiAction.FetchData -> {
+                fetchData()
+            }
+
             is CompanyDashboardUiAction.OnEndDateChange -> {
                 updateEndDate(action.date)
             }
@@ -131,11 +142,11 @@ class CompanyDashBoardViewModel @Inject constructor(
                 .suspendOnSuccess {
                     uiState.update {
                         it.copy(
-                            companyAttendanceRecord = this.data.data!!
+                            companyAttendanceRecord = this.data.data ?: emptyList()
                         )
                     }
                     Timber.d(uiState.value.toString())
-                    Timber.d("Success: %s", this.data.data!!)
+                    Timber.d("Success: %s", this.data.data)
                 }
                 .suspendOnFailure {
                     Timber.d("Failure: %s", this.message())
@@ -197,6 +208,7 @@ sealed interface CompanyDashboardUiEvent {
 
 sealed interface CompanyDashboardUiAction {
     data object FetchTeamStatistic : CompanyDashboardUiAction
+    data object FetchData : CompanyDashboardUiAction
 
     data class OnStartDateChange(val date: LocalDate) : CompanyDashboardUiAction
     data class OnEndDateChange(val date: LocalDate) : CompanyDashboardUiAction

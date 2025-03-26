@@ -22,7 +22,7 @@ class TeamRepo(
 
     override suspend fun getCompanyTeamById(
         token: String,
-        id: Int
+        id: Int?
     ): ApiResponse<DataResponse<Team>> {
         return teamApi.getCompanyTeamById(token, id)
     }

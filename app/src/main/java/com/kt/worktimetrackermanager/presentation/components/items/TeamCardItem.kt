@@ -25,6 +25,7 @@ import androidx.compose.ui.util.fastForEach
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.core.presentation.padding
+import com.kt.worktimetrackermanager.core.presentation.utils.Gap
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.presentation.components.dialog.ListDialog
@@ -43,7 +44,6 @@ fun TeamCardItem(
         var showUser by rememberSaveable { mutableStateOf(false) }
         Card(
             modifier = modifier
-                .fillMaxSize()
                 .fillMaxWidth(),
             onClick = onClick
         ) {
@@ -52,6 +52,7 @@ fun TeamCardItem(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .hozPadding()
             ) {
                 Text(
                     text = team.name,
@@ -105,6 +106,7 @@ private fun UsersInTeamDialog(
                 modifier = Modifier
                     .hozPadding()
             )
+            Gap(MaterialTheme.padding.small)
         }
     }
 }

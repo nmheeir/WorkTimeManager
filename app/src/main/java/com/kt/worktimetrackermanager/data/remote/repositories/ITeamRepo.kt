@@ -16,7 +16,7 @@ interface ITeamRepo {
 
     suspend fun getCompanyTeamById(
         token: String,
-        id: Int
+        id: Int? = null
     ): ApiResponse<DataResponse<Team>>
 
     suspend fun createTeam(

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.util.fastForEach
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -30,6 +32,8 @@ import com.kt.worktimetrackermanager.presentation.components.EmptyCardState
 import com.kt.worktimetrackermanager.presentation.components.chart.AttendanceEachTime
 import com.kt.worktimetrackermanager.presentation.components.chart.AttendanceRateChart
 import com.kt.worktimetrackermanager.presentation.components.dialog.CalendarDialog
+import com.kt.worktimetrackermanager.presentation.components.items.UserCardItem
+import com.kt.worktimetrackermanager.presentation.components.widget.PreferenceGroupHeader
 import com.kt.worktimetrackermanager.presentation.viewmodels.CompanyDashboardUiAction
 import com.kt.worktimetrackermanager.presentation.viewmodels.TeamDashboardUiAction
 import com.kt.worktimetrackermanager.presentation.viewmodels.TeamDashboardViewModel
@@ -55,10 +59,13 @@ fun TeamDashboardScreen(
         item(
             key = "top_bar"
         ) {
+            val teamDetail by remember {
+                derivedStateOf { uiState.teamDetail }
+            }
             TopAppBar(
                 title = {
                     Text(
-                        text = "team id" + viewModel.teamId.toString()
+                        text = teamDetail?.name ?: "No Name"
                     )
                 }
             )
@@ -68,56 +75,69 @@ fun TeamDashboardScreen(
             key = "time_query"
         ) {
             Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
+
             ) {
-                TextButton(
-                    onClick = {
-                        showStartDateDialog = true
-                    }
-                ) {
-                    val startDate by remember {
-                        derivedStateOf { uiState.start }
-                    }
-                    Text(
-                        text = startDate.parse(),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    if (showStartDateDialog) {
-                        CalendarDialog(
-                            date = startDate,
-                            onDateChange = {
-                                viewModel.onAction(TeamDashboardUiAction.OnStartDateChange(it))
-                                showStartDateDialog = false
-                            },
-                            onDismiss = { showStartDateDialog = false }
+                Row {
+                    TextButton(
+                        onClick = {
+                            showStartDateDialog = true
+                        }
+                    ) {
+                        val startDate by remember {
+                            derivedStateOf { uiState.start }
+                        }
+                        Text(
+                            text = startDate.parse(),
+                            style = MaterialTheme.typography.bodySmall
                         )
+                        if (showStartDateDialog) {
+                            CalendarDialog(
+                                date = startDate,
+                                onDateChange = {
+                                    viewModel.onAction(TeamDashboardUiAction.OnStartDateChange(it))
+                                    showStartDateDialog = false
+                                },
+                                onDismiss = { showStartDateDialog = false }
+                            )
+                        }
+
                     }
 
+                    TextButton(
+                        onClick = {
+                            showEndDateDialog = true
+                        }
+                    ) {
+                        val endDate by remember {
+                            derivedStateOf { uiState.end }
+                        }
+                        Text(
+                            text = endDate.parse(),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        if (showEndDateDialog) {
+                            CalendarDialog(
+                                date = endDate,
+                                onDateChange = {
+                                    viewModel.onAction(TeamDashboardUiAction.OnEndDateChange(it))
+                                    showEndDateDialog = false
+                                },
+                                onDismiss = { showEndDateDialog = false }
+                            )
+                        }
+                    }
                 }
 
                 TextButton(
                     onClick = {
-                        showEndDateDialog = true
+                        viewModel.onAction(TeamDashboardUiAction.FetchData)
                     }
                 ) {
-                    val endDate by remember {
-                        derivedStateOf { uiState.end }
-                    }
-                    Text(
-                        text = endDate.parse(),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    if (showEndDateDialog) {
-                        CalendarDialog(
-                            date = endDate,
-                            onDateChange = {
-                                viewModel.onAction(TeamDashboardUiAction.OnEndDateChange(it))
-                                showEndDateDialog = false
-                            },
-                            onDismiss = { showEndDateDialog = false }
-                        )
-                    }
+                    Text(text = "Query")
                 }
             }
         }
@@ -163,20 +183,27 @@ fun TeamDashboardScreen(
             )
         }
 
+        item {
+            PreferenceGroupHeader(stringResource(R.string.label_users))
+        }
+
         item(
-            key = "user_in_team"
+            key = "users_in_team"
         ) {
             val staffs by remember {
                 derivedStateOf { uiState.staffs }
             }
             staffs.fastForEach { staff ->
-                TextButton(
-                    onClick = { navController.navigate("dashboard/staff?id=${staff.id}") }
-                ) {
-                    Text(
-                        text = staff.userName
+                UserCardItem(
+                    user = staff,
+                    onClick = {
+                        navController.navigate("dashboard/staff?id=${staff.id}")
+                    },
+                    modifier = Modifier.padding(
+                        horizontal = MaterialTheme.padding.mediumSmall,
+                        vertical = MaterialTheme.padding.small
                     )
-                }
+                )
             }
         }
     }

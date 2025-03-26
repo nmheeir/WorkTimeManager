@@ -9,8 +9,10 @@ import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Period
 import com.kt.worktimetrackermanager.data.remote.dto.response.AttendanceRecord
+import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.domain.use_case.summary.GetTeamAttendanceRecordEachTime
 import com.kt.worktimetrackermanager.domain.use_case.summary.SummaryUseCase
+import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnFailure
@@ -31,6 +33,7 @@ class StaffDashboardViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val savedStateHandle: SavedStateHandle,
     private val summaryUseCase: SummaryUseCase,
+    private val userUseCase: UserUseCase,
 ) : ViewModel() {
 
     private val token = context.dataStore[TokenKey]!!
@@ -39,14 +42,21 @@ class StaffDashboardViewModel @Inject constructor(
     val uiState = MutableStateFlow(StaffDashboardUiState())
 
     init {
-        fetchStaffAttendanceRecordEachTime()
-        fetchStaffAttendanceRecord()
+        fetchStaffDetail()
+        fetchData()
     }
-
 
     fun onAction(action: StaffDashboardUiAction) {
         when (action) {
-            StaffDashboardUiAction.FetchStaffStatistic -> TODO()
+            StaffDashboardUiAction.FetchStaffStatistic -> {
+
+            }
+
+            StaffDashboardUiAction.FetchData -> {
+                fetchData()
+            }
+
+
             is StaffDashboardUiAction.OnEndDateChange -> {
                 updateEndDate(action.date)
             }
@@ -58,7 +68,13 @@ class StaffDashboardViewModel @Inject constructor(
             is StaffDashboardUiAction.OnPeriodChange -> {
                 periodChange(action.period)
             }
+
         }
+    }
+
+    private fun fetchData() {
+        fetchStaffAttendanceRecord()
+        fetchStaffAttendanceRecordEachTime()
     }
 
     private fun updateStartDate(date: LocalDate) {
@@ -81,6 +97,26 @@ class StaffDashboardViewModel @Inject constructor(
             )
         }
         fetchStaffAttendanceRecordEachTime()
+    }
+
+    private fun fetchStaffDetail() {
+        viewModelScope.launch {
+            userUseCase.getUserById(staffId)
+                .suspendOnSuccess {
+                    uiState.update {
+                        it.copy(
+                            staffDetail = this.data.data
+                        )
+                    }
+                    Timber.d("Success: %s", this.data.data.toString())
+                }
+                .suspendOnFailure {
+                    Timber.d("Failure: %s", this.message())
+                }
+                .suspendOnError {
+                    Timber.d("Error: %s", this.message())
+                }
+        }
     }
 
     private fun fetchStaffAttendanceRecord() {
@@ -137,6 +173,7 @@ class StaffDashboardViewModel @Inject constructor(
 
 sealed interface StaffDashboardUiAction {
     data object FetchStaffStatistic : StaffDashboardUiAction
+    data object FetchData : StaffDashboardUiAction
 
     data class OnStartDateChange(val date: LocalDate) : StaffDashboardUiAction
     data class OnEndDateChange(val date: LocalDate) : StaffDashboardUiAction
@@ -151,6 +188,7 @@ data class StaffDashboardUiState(
     val period: Period = Period.DAILY,
 
     val attendanceRecord: AttendanceRecord? = null,
+    val staffDetail: User? = null,
 
     val staffAttendanceRecordEachTime: List<AttendanceRecord> = emptyList(),
 )

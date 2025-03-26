@@ -9,20 +9,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.presentation.components.image.CoilImage
-import com.kt.worktimetrackermanager.presentation.ui.theme.WorkTimeTrackerManagerTheme
 
 @Composable
 fun UserCardItem(
@@ -30,21 +29,22 @@ fun UserCardItem(
     user: User,
     onClick: () -> Unit,
 ) {
-    Surface(
+    Card(
         modifier = modifier
             .fillMaxWidth(),
         onClick = onClick
     ) {
         Column(
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(MaterialTheme.padding.mediumSmall)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(MaterialTheme.padding.small)
             ) {
                 CoilImage(
                     imageUrl = user.avatarUrl!!,
@@ -53,7 +53,9 @@ fun UserCardItem(
                         .size(36.dp)
                 )
                 Text(
-                    text = user.userName
+                    text = user.userName,
+                    modifier = Modifier
+                        .weight(1f)
                 )
                 RoleBadge(role = user.role)
             }
