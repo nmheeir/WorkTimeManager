@@ -7,13 +7,16 @@ import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.response.Project
 import com.kt.worktimetrackermanager.domain.use_case.project.ProjectUseCase
+import com.kt.worktimetrackermanager.presentation.fakeProjects
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -26,13 +29,15 @@ class ProjectViewModel @Inject constructor(
 
     val token = context.dataStore[TokenKey]!!
 
+    val projects = MutableStateFlow<List<Project>>(emptyList())
+
     init {
         getProjects()
     }
 
     private fun getProjects() {
         viewModelScope.launch {
-            projectUseCase.getProjects(token)
+            /*projectUseCase.getProjects(token)
                 .suspendOnSuccess {
                     Timber.d(this.data.data?.toString())
                 }
@@ -41,7 +46,9 @@ class ProjectViewModel @Inject constructor(
                 }
                 .suspendOnException {
                     Timber.d("Exception: %s", this.message())
-                }
+                }*/
+
+            projects.value = fakeProjects
         }
     }
 }

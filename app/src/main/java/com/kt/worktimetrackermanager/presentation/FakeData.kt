@@ -1,9 +1,14 @@
 package com.kt.worktimetrackermanager.presentation
 
 import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.response.Project
+import com.kt.worktimetrackermanager.data.remote.dto.response.Task
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
+import java.time.LocalDateTime
+import kotlin.random.Random
 
 val fakeUser = User(
     address = "123 Đường Nguyễn Huệ, Quận 1, TP.HCM",
@@ -58,5 +63,37 @@ val fakeTeams = List(10) { index ->
         latitude = 10.76 + (index * 0.01),
         longitude = 106.67 + (index * 0.01),
         createdAt = "2024-03-${(index % 28) + 1}"
+    )
+}
+
+val fakeTasks = List(10) { index ->
+    Task(
+        id = index + 1,
+        name = "Task ${index + 1}",
+        description = "Description for Task ${index + 1}",
+        assigneeId = Random.nextInt(1, 100), // Giả sử có 100 user
+        projectId = Random.nextInt(1, 10), // Giả sử có 10 dự án
+        createdAt = LocalDateTime.now().minusDays(Random.nextLong(1, 30)),
+        dueDate = LocalDateTime.now().plusDays(Random.nextLong(1, 30)),
+        status = ProjectStatus.entries.random()
+    )
+}
+
+val fakeProjects = List(10) { index ->
+    val startDate = LocalDateTime.now().minusDays(Random.nextLong(10, 100))
+    val endDate = startDate.plusDays(Random.nextLong(30, 200))
+    val updatedAt = startDate.plusDays(Random.nextLong(1, 50))
+
+    Project(
+        id = index + 1,
+        name = "Project ${index + 1}",
+        description = "Description for Project ${index + 1}",
+        managerId = Random.nextInt(1, 10),
+        createdAt = startDate,
+        startDate = startDate,
+        endDate = endDate,
+        updatedAt = updatedAt,
+        status = ProjectStatus.entries.random(),
+        tasks = fakeTasks.filter { it.projectId == index + 1 }
     )
 }

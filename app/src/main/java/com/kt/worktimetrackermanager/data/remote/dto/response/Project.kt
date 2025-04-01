@@ -4,7 +4,7 @@ import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import java.time.LocalDateTime
 
 data class Project(
-    val createdAt: String,
+    val createdAt: LocalDateTime,
     val description: String,
     val endDate: LocalDateTime,
     val id: Int,
@@ -13,5 +13,5 @@ data class Project(
     val startDate: LocalDateTime,
     val status: ProjectStatus,
     val tasks: List<Task>,
-    val updatedAt: LocalDateTime
+    val updatedAt: LocalDateTime,
 )
