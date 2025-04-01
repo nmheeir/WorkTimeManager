@@ -1,5 +1,6 @@
 package com.kt.worktimetrackermanager.presentation
 
+import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
@@ -15,10 +16,10 @@ val fakeUser = User(
     department = "Phòng Kỹ thuật",
     designation = "Kỹ sư phần mềm",
     email = "nguyenvana@example.com",
-    employeeType = 1,
+    employeeType = EmployeeType.Pernament,
     id = 1001,
     phoneNumber = "0987654321",
-    role = Role.MASTER,
+    role = Role.Master,
     teamId = 5,
     userFullName = "Nguyễn Văn A",
     userName = "nguyenvana"
@@ -36,7 +37,7 @@ val fakeUsers = List(10) { index ->
         department = "Phòng ban ${index % 5}",
         designation = "Nhân viên cấp ${index % 3}",
         email = "user${index + 1}@example.com",
-        employeeType = (index % 3) + 1,
+        employeeType = EmployeeType.entries.random(),
         id = index + 1,
         phoneNumber = "09876543${(index % 10)}",
         role = Role.fromInt(index % 3),

@@ -7,60 +7,40 @@ import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
-import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
+import com.kt.worktimetrackermanager.domain.use_case.project.ProjectUseCase
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class MiddlewareRoleViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val userUseCase: UserUseCase,
+class ProjectViewModel @Inject constructor(
+    @ApplicationContext context: Context,
+    private val projectUseCase: ProjectUseCase,
 ) : ViewModel() {
 
-    private val token = context.dataStore[TokenKey]
-
-    val role = MutableStateFlow<Role?>(null)
-    val isRefresh = MutableStateFlow(false)
+    val token = context.dataStore[TokenKey]!!
 
     init {
-        viewModelScope.launch {
-            checkRole()
-        }
+        getProjects()
     }
 
-    fun reload() {
-        isRefresh.value = true
+    private fun getProjects() {
         viewModelScope.launch {
-            checkRole()
-            isRefresh.value = false
-        }
-    }
-
-    private fun checkRole() {
-        if (token == null) {
-            role.value = Role.Staff
-            return
-        }
-        viewModelScope.launch {
-            userUseCase.getUserProfile(token)
+            projectUseCase.getProjects(token)
                 .suspendOnSuccess {
-                    role.value = this.data.data!!.role
+                    Timber.d(this.data.data?.toString())
                 }
                 .suspendOnFailure {
                     Timber.d("Failure: %s", this.message())
-                    role.value = Role.Staff
                 }
                 .suspendOnException {
                     Timber.d("Exception: %s", this.message())
-                    role.value = Role.Staff
                 }
         }
     }

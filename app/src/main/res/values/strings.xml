@@ -10,6 +10,7 @@
     <string name="group">Group</string>
     <string name="label_default">Default</string>
     <string name="theme_monet">Dynamic</string>
+    <string name="project">Project</string>
 
     <!--    Message-->
     <string name="msg_no_meeting">No Meeting Available</string>

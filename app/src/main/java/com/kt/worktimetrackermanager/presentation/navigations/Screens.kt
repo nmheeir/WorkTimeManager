@@ -9,15 +9,16 @@ import com.kt.worktimetrackermanager.R
 sealed class Screens(
     @StringRes val titleId: Int,
     @DrawableRes val iconId: Int,
-    val route: String
+    val route: String,
 ) {
 
     data object Home : Screens(R.string.home, R.drawable.ic_home, "home")
     data object Dashboard : Screens(R.string.dashboard, R.drawable.ic_analytics, "dashboard")
     data object Attendant : Screens(R.string.attendant, R.drawable.ic_date_range, "attendant")
     data object Group : Screens(R.string.group, R.drawable.ic_groups, "group")
+    data object Project : Screens(R.string.project, R.drawable.ic_date_range, "project")
 
     companion object {
-        val MainScreens = listOf<Screens>(Home, Dashboard, Attendant, Group)
+        val MainScreens = listOf<Screens>(Home, Dashboard, Attendant, Group, Project)
     }
 }

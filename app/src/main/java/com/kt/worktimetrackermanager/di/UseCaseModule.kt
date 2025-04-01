@@ -1,11 +1,16 @@
 package com.kt.worktimetrackermanager.di
 
 import com.kt.worktimetrackermanager.data.remote.repositories.IAuthRepo
+import com.kt.worktimetrackermanager.data.remote.repositories.IProjectRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.ISummaryRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.ITeamRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.IUserRepo
 import com.kt.worktimetrackermanager.domain.use_case.AuthUseCase
 import com.kt.worktimetrackermanager.domain.use_case.Login
+import com.kt.worktimetrackermanager.domain.use_case.project.CreateProject
+import com.kt.worktimetrackermanager.domain.use_case.project.GetProjects
+import com.kt.worktimetrackermanager.domain.use_case.project.GetTasksFromProject
+import com.kt.worktimetrackermanager.domain.use_case.project.ProjectUseCase
 import com.kt.worktimetrackermanager.domain.use_case.summary.GetCompanyAttendanceRecord
 import com.kt.worktimetrackermanager.domain.use_case.summary.GetCompanyAttendanceRecordEachTime
 import com.kt.worktimetrackermanager.domain.use_case.summary.GetEmployeeAttendanceRecord
@@ -83,6 +88,16 @@ class UseCaseModule {
             getCompanyAttendanceRecordEachTime = GetCompanyAttendanceRecordEachTime(iSummaryRepo),
             getTeamAttendanceRecordEachTime = GetTeamAttendanceRecordEachTime(iSummaryRepo),
             getEmployeeAttendanceRecordEachTime = GetEmployeeAttendanceRecordEachTime(iSummaryRepo)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideProjectUseCase(iProjectRepo: IProjectRepo): ProjectUseCase {
+        return ProjectUseCase(
+            getProjects = GetProjects(iProjectRepo),
+            getTasksFromProject = GetTasksFromProject(iProjectRepo),
+            createProject = CreateProject(iProjectRepo)
         )
     }
 }

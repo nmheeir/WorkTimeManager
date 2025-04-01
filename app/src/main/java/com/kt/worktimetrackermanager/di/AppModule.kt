@@ -2,14 +2,17 @@ package com.kt.worktimetrackermanager.di
 
 import com.kt.worktimetrackermanager.data.remote.RemoteDataSource
 import com.kt.worktimetrackermanager.data.remote.api.AuthApi
+import com.kt.worktimetrackermanager.data.remote.api.ProjectApi
 import com.kt.worktimetrackermanager.data.remote.api.SummaryApi
 import com.kt.worktimetrackermanager.data.remote.api.TeamApi
 import com.kt.worktimetrackermanager.data.remote.api.UserApi
 import com.kt.worktimetrackermanager.data.remote.repositories.IAuthRepo
+import com.kt.worktimetrackermanager.data.remote.repositories.IProjectRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.ISummaryRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.ITeamRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.IUserRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.impl.AuthRepo
+import com.kt.worktimetrackermanager.data.remote.repositories.impl.ProjectRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.impl.SummaryRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.impl.TeamRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.impl.UserRepo
@@ -69,5 +72,17 @@ class AppModule {
     @Singleton
     fun provideTeamRepo(teamApi: TeamApi): ITeamRepo {
         return TeamRepo(teamApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProjectApi(remoteDataSource: RemoteDataSource): ProjectApi {
+        return remoteDataSource.buildApi(ProjectApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProjectRepo(projectApi: ProjectApi): IProjectRepo {
+        return ProjectRepo(projectApi)
     }
 }

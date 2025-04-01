@@ -6,22 +6,22 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import java.lang.reflect.Type
 
-class RoleAdapter : JsonDeserializer<Role>, JsonSerializer<Role> {
+class ProjectStatusAdapter : JsonDeserializer<ProjectStatus>, JsonSerializer<ProjectStatus> {
     override fun deserialize(
         json: JsonElement,
         typeOfT: Type,
-        context: JsonDeserializationContext,
-    ): Role {
-        return Role.valueOf(json.asString)
+        context: JsonDeserializationContext?,
+    ): ProjectStatus {
+        return ProjectStatus.valueOf(json.asString)
     }
 
     override fun serialize(
-        src: Role,
+        src: ProjectStatus,
         typeOfSrc: Type,
-        context: JsonSerializationContext,
+        context: JsonSerializationContext?,
     ): JsonElement {
         return JsonPrimitive(src.name)
     }

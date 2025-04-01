@@ -15,6 +15,7 @@ import com.kt.worktimetrackermanager.presentation.screens.auth.LoginScreen
 import com.kt.worktimetrackermanager.presentation.screens.auth.RegisterScreen
 import com.kt.worktimetrackermanager.presentation.screens.dashboard.StaffDashboardScreen
 import com.kt.worktimetrackermanager.presentation.screens.dashboard.TeamDashboardScreen
+import com.kt.worktimetrackermanager.presentation.screens.project.ProjectScreen
 import com.kt.worktimetrackermanager.presentation.viewmodels.TeamDashboardViewModel
 
 fun NavGraphBuilder.navigationBuilder(
@@ -91,5 +92,11 @@ fun NavGraphBuilder.navigationBuilder(
         route = "profile"
     ) {
         ProfileScreen(navController)
+    }
+
+    composable(
+        route = "project"
+    ) {
+        ProjectScreen(navController)
     }
 }
