@@ -6,6 +6,8 @@ import com.kt.worktimetrackermanager.data.remote.repositories.ITeamRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.IUserRepo
 import com.kt.worktimetrackermanager.domain.use_case.AuthUseCase
 import com.kt.worktimetrackermanager.domain.use_case.Login
+import com.kt.worktimetrackermanager.domain.use_case.RequestPasswordReset
+import com.kt.worktimetrackermanager.domain.use_case.ResetPassword
 import com.kt.worktimetrackermanager.domain.use_case.summary.GetCompanyAttendanceRecord
 import com.kt.worktimetrackermanager.domain.use_case.summary.GetCompanyAttendanceRecordEachTime
 import com.kt.worktimetrackermanager.domain.use_case.summary.GetEmployeeAttendanceRecord
@@ -43,6 +45,8 @@ class UseCaseModule {
     fun provideAuthUseCase(iAuthRepo: IAuthRepo): AuthUseCase {
         return AuthUseCase(
             login = Login(iAuthRepo),
+            resetPassword = ResetPassword(iAuthRepo),
+            requestPasswordReset = RequestPasswordReset(iAuthRepo)
         )
     }
 

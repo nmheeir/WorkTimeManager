@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val appTheme by rememberEnumPreference(AppThemeKey, AppTheme.MONET)
+            val appTheme by rememberEnumPreference(AppThemeKey, AppTheme.DEFAULT)
 
             WorkTimeTrackerManagerTheme(
                 appTheme = appTheme

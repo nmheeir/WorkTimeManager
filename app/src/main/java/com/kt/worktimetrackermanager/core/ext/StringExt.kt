@@ -7,3 +7,8 @@ inline fun <reified T : Enum<T>> String?.toEnum(defaultValue: T): T =
     } catch (e: IllegalArgumentException) {
         defaultValue
     }
+
+fun String.isValidEmail(): Boolean {
+    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$".toRegex()
+    return emailRegex.matches(this)
+}
