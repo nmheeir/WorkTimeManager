@@ -6,11 +6,13 @@ import com.kt.worktimetrackermanager.data.remote.repositories.IAuthRepo
 import com.skydoves.sandwich.ApiResponse
 
 class AuthUseCase(
-    val login: Login
+    val login: Login,
+    val resetPassword: ResetPassword,
+    val requestPasswordReset: RequestPasswordReset,
 )
 
 class Login(
-    private val iAuthRepo: IAuthRepo
+    private val iAuthRepo: IAuthRepo,
 ) {
     suspend operator fun invoke(
         username: String,
@@ -18,5 +20,26 @@ class Login(
         deviceToken: String
     ): ApiResponse<DataResponse<Token>> {
         return iAuthRepo.login(username, password, deviceToken)
+    }
+}
+
+class ResetPassword(
+    private val iAuthRepo: IAuthRepo
+) {
+    suspend operator fun invoke(
+        token: String,
+        newPassword: String
+    ): ApiResponse<DataResponse<Unit>> {
+        return iAuthRepo.resetPassword(token, newPassword)
+    }
+}
+
+class RequestPasswordReset(
+    private val iAuthRepo: IAuthRepo
+) {
+    suspend operator fun invoke(
+        email: String
+    ): ApiResponse<DataResponse<Unit>> {
+        return iAuthRepo.requestPasswordReset(email)
     }
 }
