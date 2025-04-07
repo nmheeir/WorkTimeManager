@@ -25,17 +25,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.clickable
 import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.presentation.activities.LocalMainViewModel
 import com.kt.worktimetrackermanager.presentation.components.EmptyCardState
 import com.kt.worktimetrackermanager.presentation.components.image.CoilImage
+import com.kt.worktimetrackermanager.presentation.navigations.Screens
+import com.kt.worktimetrackermanager.presentation.ui.theme.WorkTimeTrackerManagerTheme
 import com.kt.worktimetrackermanager.presentation.viewmodels.HomeViewModel
 
 @Composable
@@ -44,11 +48,21 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
 //    Timber.d(mainViewModel.startDestination.value)
+    HomeLayout(
+        onNavigate = {
+            screens -> navController.navigate(screens.route)
+        }
+    )
+}
+@Composable
+fun HomeLayout(
+    onNavigate : (Screens) -> Unit
+) {
     Scaffold(
         topBar = {
             HomeTopBar(
                 modifier = Modifier,
-                navController = navController
+                onNavigate = onNavigate
             )
         },
         modifier = Modifier
@@ -111,7 +125,7 @@ fun HomeScreen(
 @Composable
 private fun HomeTopBar(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
+    onNavigate: (Screens) -> Unit,
 ) {
     val mainViewModel = LocalMainViewModel.current
     val user by mainViewModel.user.collectAsStateWithLifecycle()
@@ -119,7 +133,7 @@ private fun HomeTopBar(
         text = "Profile",
         modifier = Modifier
             .clickable {
-                navController.navigate("profile")
+                onNavigate(Screens.Profile)
             }
     )
     user?.let {
@@ -152,7 +166,7 @@ private fun HomeTopBar(
             ) {
                 IconButton(
                     onClick = {
-                        navController.navigate("chat")
+                        onNavigate(Screens.Chat)
                     }
                 ) {
                     Icon(
@@ -162,7 +176,7 @@ private fun HomeTopBar(
                 }
                 IconButton(
                     onClick = {
-                        navController.navigate("notification")
+                        onNavigate(Screens.Notification)
                     }
                 ) {
                     Icon(
@@ -174,3 +188,14 @@ private fun HomeTopBar(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun HomeLayoutPreview() {
+    WorkTimeTrackerManagerTheme {
+        HomeLayout (
+            onNavigate = {}
+        )
+    }
+}
+

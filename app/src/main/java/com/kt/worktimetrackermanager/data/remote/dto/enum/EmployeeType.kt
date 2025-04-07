@@ -1,15 +1,16 @@
 package com.kt.worktimetrackermanager.data.remote.dto.enum
 
-enum class Role {
-    MASTER, MANAGER, STAFF;
+enum class EmployeeType(val value: Int) {
+    PERNAMENT(0),
+    FULL_TIME(1),
+    PART_TIME(2);
 
     companion object {
-        fun fromInt(value: Int): Role {
-            return entries.find { it.ordinal == value }
-                ?: STAFF
+        fun fromInt(value: Int): EmployeeType? {
+            return entries.find { it.value == value }
         }
         fun fromIntToName(value: Int): String? {
-            return Role.entries.find { it.ordinal == value }?.name
+            return entries.find { it.value == value }?.name
                 ?.replace("_", " ")
                 ?.split(" ")
                 ?.joinToString(" ") { it.lowercase().replaceFirstChar { char -> char.uppercase() } }

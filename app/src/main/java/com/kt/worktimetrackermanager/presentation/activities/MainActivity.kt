@@ -82,12 +82,12 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val backStackEntry by navController.currentBackStackEntryAsState()
 
-                    val navigationItems = remember { Screens.MainScreens }
+                    val navigationItems = remember { Screens.NavigationBarScreens.MainScreens }
                     val topLevelScreens = listOf(
-                        Screens.Home.route,
-                        Screens.Dashboard.route,
-                        Screens.Attendant.route,
-                        Screens.Group.route
+                        Screens.NavigationBarScreens.Home.route,
+                        Screens.NavigationBarScreens.Dashboard.route,
+                        Screens.NavigationBarScreens.Attendant.route,
+                        Screens.NavigationBarScreens.Group.route
                     )
 
                     val shouldShowNavigationBar = remember(backStackEntry) {
