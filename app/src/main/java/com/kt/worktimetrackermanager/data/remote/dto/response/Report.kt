@@ -7,7 +7,7 @@ data class Report(
     val title: String,
     val description: String,
     val taskId: Int,
-    val authorId: Int,
-    val reportUrl: String? = null,
-    val createdAt: LocalDateTime
+    val author: UserProfileDto,
+    val reportUrl: String,
+    val createdAt: LocalDateTime,
 )

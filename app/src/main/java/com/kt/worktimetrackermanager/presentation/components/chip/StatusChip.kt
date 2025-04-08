@@ -3,6 +3,7 @@ package com.kt.worktimetrackermanager.presentation.components.chip
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,8 +30,9 @@ fun StatusChip(
         ProjectStatus.Cancelled -> MaterialTheme.colorScheme.onError
     }
 
-    AssistChip(
+    SuggestionChip(
         onClick = onClick,
+        shape = MaterialTheme.shapes.extraLarge,
         label = {
             Text(
                 text = status.title,

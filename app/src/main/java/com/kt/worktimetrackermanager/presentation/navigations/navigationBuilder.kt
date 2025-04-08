@@ -18,6 +18,7 @@ import com.kt.worktimetrackermanager.presentation.screens.dashboard.TeamDashboar
 import com.kt.worktimetrackermanager.presentation.screens.project.CreateProjectScreen
 import com.kt.worktimetrackermanager.presentation.screens.project.ProjectDetailScreen
 import com.kt.worktimetrackermanager.presentation.screens.project.ProjectScreen
+import com.kt.worktimetrackermanager.presentation.screens.task.TaskDetailScreen
 import com.kt.worktimetrackermanager.presentation.viewmodels.TeamDashboardViewModel
 
 fun NavGraphBuilder.navigationBuilder(
@@ -117,5 +118,16 @@ fun NavGraphBuilder.navigationBuilder(
         route = "project/create"
     ) {
         CreateProjectScreen(navController)
+    }
+
+    composable(
+        route = "task_detail/{id}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) {
+        TaskDetailScreen(navController)
     }
 }

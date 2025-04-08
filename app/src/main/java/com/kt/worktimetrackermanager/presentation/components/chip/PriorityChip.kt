@@ -39,6 +39,7 @@ fun PriorityChip(
             containerColor = bgColor,
             labelColor = labelColor
         ),
+        shape = MaterialTheme.shapes.extraLarge,
         modifier = modifier
     )
 }

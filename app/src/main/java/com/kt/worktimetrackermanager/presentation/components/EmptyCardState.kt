@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.kt.worktimetrackermanager.R
+import com.kt.worktimetrackermanager.core.presentation.clickable
 import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.core.presentation.ui.EmptyBox
 import com.kt.worktimetrackermanager.presentation.ui.theme.WorkTimeTrackerManagerTheme
@@ -26,11 +27,13 @@ fun EmptyCardState(
 ) {
     Surface(
         shape = MaterialTheme.shapes.small,
-        onClick = {
-            onClick?.invoke()
-        },
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = if (onClick != null) {
+            modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+        } else {
+            modifier.fillMaxWidth()
+        }
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),

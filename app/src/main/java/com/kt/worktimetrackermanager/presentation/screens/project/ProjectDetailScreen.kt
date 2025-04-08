@@ -238,7 +238,9 @@ fun ProjectDetailScreen(
                 ) { task ->
                     TaskCardItem(
                         task = task,
-                        onClick = {}
+                        onClick = {
+                            navController.navigate("task_detail/${task.id}")
+                        }
                     )
                     Gap(MaterialTheme.padding.small)
                 }
@@ -256,7 +258,9 @@ fun ProjectDetailScreen(
                 ) { task ->
                     TaskCardItem(
                         task = task,
-                        onClick = {}
+                        onClick = {
+                            navController.navigate("task_detail/${task.id}")
+                        }
                     )
                     Gap(MaterialTheme.padding.small)
                 }

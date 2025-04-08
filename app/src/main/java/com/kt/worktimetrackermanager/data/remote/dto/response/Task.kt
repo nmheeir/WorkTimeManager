@@ -5,7 +5,6 @@ import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import java.time.LocalDateTime
 
 data class Task(
-    val assigneeId: Int,
     val createdAt: LocalDateTime,
     val description: String,
     val dueDate: LocalDateTime,
