@@ -8,6 +8,7 @@ import com.kt.worktimetrackermanager.data.remote.repositories.IUserRepo
 import com.kt.worktimetrackermanager.domain.use_case.AuthUseCase
 import com.kt.worktimetrackermanager.domain.use_case.Login
 import com.kt.worktimetrackermanager.domain.use_case.project.CreateProject
+import com.kt.worktimetrackermanager.domain.use_case.project.GetProject
 import com.kt.worktimetrackermanager.domain.use_case.project.GetProjects
 import com.kt.worktimetrackermanager.domain.use_case.project.GetTasksFromProject
 import com.kt.worktimetrackermanager.domain.use_case.project.ProjectUseCase
@@ -96,6 +97,7 @@ class UseCaseModule {
     fun provideProjectUseCase(iProjectRepo: IProjectRepo): ProjectUseCase {
         return ProjectUseCase(
             getProjects = GetProjects(iProjectRepo),
+            getProject = GetProject(iProjectRepo),
             getTasksFromProject = GetTasksFromProject(iProjectRepo),
             createProject = CreateProject(iProjectRepo)
         )

@@ -1,5 +1,6 @@
 package com.kt.worktimetrackermanager.data.remote.api
 
+import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.request.CreateProjectRequest
 import com.kt.worktimetrackermanager.data.remote.dto.response.DataResponse
 import com.kt.worktimetrackermanager.data.remote.dto.response.Project
@@ -10,6 +11,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ProjectApi {
     @GET("Project/projects")
@@ -17,10 +19,19 @@ interface ProjectApi {
         @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<List<Project>>>
 
-    @GET("Project/projects/{id}/task")
+    @GET("Project/{id}")
+    suspend fun getProject(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+    ): ApiResponse<DataResponse<Project>>
+
+    @GET("Project/projects/{id}/tasks")
     suspend fun getTasksFromProject(
         @Header("Authorization") token: String,
         @Path("id") id: Int,
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int,
+        @Query("filter") filter: ProjectStatus?,
     ): ApiResponse<DataResponse<List<Task>>>
 
     @POST("Project/create")

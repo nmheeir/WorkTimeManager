@@ -31,14 +31,18 @@ class ProjectViewModel @Inject constructor(
 
     val projects = MutableStateFlow<List<Project>>(emptyList())
 
+    val isLoading = MutableStateFlow(false)
+
     init {
         getProjects()
     }
 
     private fun getProjects() {
+        isLoading.value = true
         viewModelScope.launch {
-            /*projectUseCase.getProjects(token)
+            projectUseCase.getProjects(token)
                 .suspendOnSuccess {
+                    projects.value = this.data.data ?: emptyList()
                     Timber.d(this.data.data?.toString())
                 }
                 .suspendOnFailure {
@@ -46,9 +50,10 @@ class ProjectViewModel @Inject constructor(
                 }
                 .suspendOnException {
                     Timber.d("Exception: %s", this.message())
-                }*/
-
-            projects.value = fakeProjects
+                }
+//
+//            projects.value = fakeProjects
+//            isLoading.value = false
         }
     }
 }

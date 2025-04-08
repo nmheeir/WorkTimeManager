@@ -16,8 +16,10 @@
     <string name="msg_no_meeting">No Meeting Available</string>
     <string name="msg_no_task">No Task Available</string>
     <string name="msg_no_leave">No Leave Assigned</string>
+    <string name="msg_no_project">No Project</string>
     <string name="msg_no_meeting_desc">It looks like you don’t have any meetings scheduled at the moment. This space will be updated as new meetings are added!</string>
     <string name="msg_no_task_desc">It looks like you don’t have any tasks assigned to you right now. Don’t worry, this space will be updated as new tasks become available.</string>
+    <string name="msg_no_project_desc">It\'s looks like you don\'t have any project</string>
 
     <!--Label-->
     <string name="label_full_attendance">Full attendance</string>
@@ -29,4 +31,11 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
+    <!--    Filter-->
+    <string name="filter_all">All</string>
+    <string name="filter_status_not_started">Not Started</string>
+    <string name="filter_status_complete">Complete</string>
+    <string name="filter_status_on_hold">On Hold</string>
+    <string name="filter_status_cancelled">Cancelled</string>
+    <string name="filter_status_in_progress">In Progress</string>
 </resources>

@@ -1,12 +1,14 @@
 package com.kt.worktimetrackermanager.presentation
 
 import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enum.Priority
 import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.kt.worktimetrackermanager.data.remote.dto.response.Project
 import com.kt.worktimetrackermanager.data.remote.dto.response.Task
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
+import com.kt.worktimetrackermanager.data.remote.dto.response.UserProfileDto
 import java.time.LocalDateTime
 import kotlin.random.Random
 
@@ -75,7 +77,8 @@ val fakeTasks = List(10) { index ->
         projectId = Random.nextInt(1, 10), // Giả sử có 10 dự án
         createdAt = LocalDateTime.now().minusDays(Random.nextLong(1, 30)),
         dueDate = LocalDateTime.now().plusDays(Random.nextLong(1, 30)),
-        status = ProjectStatus.entries.random()
+        status = ProjectStatus.entries.random(),
+        priority = Priority.entries.random()
     )
 }
 
@@ -95,5 +98,14 @@ val fakeProjects = List(10) { index ->
         updatedAt = updatedAt,
         status = ProjectStatus.entries.random(),
         tasks = fakeTasks.filter { it.projectId == index + 1 }
+    )
+}
+
+val fakeUserProfiles = List(10) {
+    UserProfileDto(
+        id = it,
+        username = "User $it",
+        userFullName = "UserFullName $it",
+        avatarUrl = "https://randomuser.me/api/portraits/men/$it.jpg"
     )
 }

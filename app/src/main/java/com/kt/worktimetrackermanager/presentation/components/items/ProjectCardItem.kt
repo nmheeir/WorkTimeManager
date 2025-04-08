@@ -130,7 +130,9 @@ fun ProjectCardItem(
                     contentDescription = null
                 )
                 Text(
-                    text = "Due: ${project.endDate.parseDate()}",
+                    text = if (project.endDate == null) {
+                        "No end date"
+                    } else project.endDate.parseDate(),
                     style = MaterialTheme.typography.bodySmall
                 )
             }

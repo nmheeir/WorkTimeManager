@@ -4,9 +4,11 @@ import com.google.gson.GsonBuilder
 import com.kt.worktimetrackermanager.BuildConfig
 import com.kt.worktimetrackermanager.data.remote.adapters.EmployeeTypeAdapter
 import com.kt.worktimetrackermanager.data.remote.adapters.LocalDateTimeAdapter
+import com.kt.worktimetrackermanager.data.remote.adapters.PriorityAdapter
 import com.kt.worktimetrackermanager.data.remote.adapters.ProjectStatusAdapter
 import com.kt.worktimetrackermanager.data.remote.adapters.RoleAdapter
 import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enum.Priority
 import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
@@ -32,6 +34,7 @@ class RemoteDataSource @Inject constructor() {
             .registerTypeAdapter(Role::class.java, RoleAdapter())
             .registerTypeAdapter(ProjectStatus::class.java, ProjectStatusAdapter())
             .registerTypeAdapter(EmployeeType::class.java, EmployeeTypeAdapter())
+            .registerTypeAdapter(Priority::class.java, PriorityAdapter())
             .create()
 
         return Retrofit.Builder()

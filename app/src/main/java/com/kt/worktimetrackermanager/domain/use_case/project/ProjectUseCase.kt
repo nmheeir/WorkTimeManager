@@ -1,10 +1,12 @@
 package com.kt.worktimetrackermanager.domain.use_case.project
 
+import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.request.CreateProjectRequest
 import com.kt.worktimetrackermanager.data.remote.repositories.IProjectRepo
 
 data class ProjectUseCase(
     val getProjects: GetProjects,
+    val getProject: GetProject,
     val getTasksFromProject: GetTasksFromProject,
     val createProject: CreateProject,
 )
@@ -15,11 +17,23 @@ class GetProjects(
     suspend operator fun invoke(token: String) = iProjectRepo.getProjects(token)
 }
 
+class GetProject(
+    private val iProjectRepo: IProjectRepo,
+) {
+    suspend operator fun invoke(token: String, id: Int) = iProjectRepo.getProject(token, id)
+}
+
 class GetTasksFromProject(
     private val iProjectRepo: IProjectRepo,
 ) {
-    suspend operator fun invoke(token: String, id: Int) =
-        iProjectRepo.getTasksFromProject(token, id)
+    suspend operator fun invoke(
+        token: String,
+        id: Int,
+        pageNumber: Int,
+        pageSize: Int,
+        filter: ProjectStatus? = null,
+    ) =
+        iProjectRepo.getTasksFromProject(token, id, pageNumber, pageSize, filter)
 }
 
 class CreateProject(

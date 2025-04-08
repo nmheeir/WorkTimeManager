@@ -1,6 +1,7 @@
 package com.kt.worktimetrackermanager.data.remote.repositories.impl
 
 import com.kt.worktimetrackermanager.data.remote.api.ProjectApi
+import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.request.CreateProjectRequest
 import com.kt.worktimetrackermanager.data.remote.dto.response.DataResponse
 import com.kt.worktimetrackermanager.data.remote.dto.response.Project
@@ -15,11 +16,21 @@ class ProjectRepo(
         return projectApi.getProjects("Bearer $token")
     }
 
+    override suspend fun getProject(
+        token: String,
+        id: Int,
+    ): ApiResponse<DataResponse<Project>> {
+        return projectApi.getProject("Bearer $token", id)
+    }
+
     override suspend fun getTasksFromProject(
         token: String,
         id: Int,
+        pageNumber: Int,
+        pageSize: Int,
+        filter: ProjectStatus?,
     ): ApiResponse<DataResponse<List<Task>>> {
-        return projectApi.getTasksFromProject("Bearer $token", id)
+        return projectApi.getTasksFromProject("Bearer $token", id, pageNumber, pageSize, filter)
     }
 
     override suspend fun createProject(
