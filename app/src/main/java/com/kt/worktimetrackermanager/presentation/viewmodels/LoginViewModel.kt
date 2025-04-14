@@ -1,13 +1,19 @@
 package com.kt.worktimetrackermanager.presentation.viewmodels
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.set
 import com.kt.worktimetrackermanager.domain.use_case.AuthUseCase
+import com.kt.worktimetrackermanager.domain.use_case.Login
+import com.skydoves.sandwich.StatusCode
 import com.skydoves.sandwich.message
+import com.skydoves.sandwich.retrofit.errorBody
+import com.skydoves.sandwich.retrofit.statusCode
+import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
@@ -27,24 +33,47 @@ class LoginViewModel @Inject constructor(
     private val authUseCase: AuthUseCase
 ) : ViewModel() {
 
-    val username = MutableStateFlow("")
-    val password = MutableStateFlow("")
+    val uiState = MutableStateFlow(LoginUiState())
 
     private val _channel = Channel<LoginUiEvent>()
     val channel = _channel.receiveAsFlow()
 
     fun onAction(action: LoginUiAction) {
         when (action) {
-            is LoginUiAction.Login -> login(action.username, action.password)
+            LoginUiAction.Login -> {
+                login()
+            }
+
             is LoginUiAction.OnPasswordChange -> {
-                username.update {
-                    action.newPassword
+                uiState.update {
+                    it.copy(
+                        password = action.password
+                    )
                 }
             }
 
             is LoginUiAction.OnUsernameChange -> {
-                password.update {
-                    action.newUsername
+                uiState.update {
+                    it.copy(
+                        username = action.username
+                    )
+                }
+            }
+
+            is LoginUiAction.UpdateError -> {
+                uiState.update {
+                    it.copy(
+                        error = action.error,
+                        isError = true
+                    )
+                }
+            }
+
+            is LoginUiAction.OnRememberLogin -> {
+                uiState.update {
+                    it.copy(
+                        rememberLogin = action.isRemember
+                    )
                 }
             }
         }
@@ -54,18 +83,36 @@ class LoginViewModel @Inject constructor(
         Timber.d("LoginViewModel initialized")
     }
 
-    private fun login(username: String, password: String) {
+    private fun login() {
         viewModelScope.launch {
-            authUseCase.login(username, password, "test")
+            authUseCase.login(uiState.value.username, uiState.value.password, "test")
                 .suspendOnSuccess {
                     Timber.d("Success: ${this.data}")
                     context.dataStore.set(TokenKey, this.data.data!!.token)
-                    _channel.send(LoginUiEvent.LoginSuccess)
+                    _channel.send(LoginUiEvent.Success)
                 }
-                .suspendOnFailure {
+                .suspendOnError {
+                    when (this.statusCode) {
+                        StatusCode.BadRequest -> {
+                            val error = this.errorBody?.string()
+                            error.let {
+                                Timber.d("LoginScreen BadRequest: $it")
+                            }
+                            _channel.send(LoginUiEvent.WrongPassword("Wrong password"))
+                        }
+
+                        StatusCode.NotFound -> {
+                            _channel.send(LoginUiEvent.UserNotFound("User not found"))
+                        }
+
+                        else -> {
+                            Timber.d("Login error else: " + this.statusCode + this.message())
+                        }
+                    }
                     Timber.d("Failure: ${this.message()}")
                 }
                 .suspendOnException {
+                    _channel.send(LoginUiEvent.Failure(this.message ?: ""))
                     Timber.d("Exception: ${this.message}")
                 }
         }
@@ -74,14 +121,36 @@ class LoginViewModel @Inject constructor(
 
 }
 
+data class LoginUiState(
+    val isLoading: Boolean = false,
+
+    val username: String = "",
+    val isUsernameEmpty: Boolean = false,
+
+    val password: String = "",
+    val isPasswordEmpty: Boolean = false,
+
+    val error: String = "",
+    val isError: Boolean = false,
+
+    val rememberLogin: Boolean = false
+)
+
+
 sealed interface LoginUiEvent {
-    data object LoginSuccess : LoginUiEvent
-    data class LoginFailure(val msg: String) : LoginUiEvent
+    data class UserNotFound(val msg: String) : LoginUiEvent
+    data class WrongPassword(val msg: String) : LoginUiEvent
+
+    data object Success : LoginUiEvent
+    data class Failure(val msg: String) : LoginUiEvent
 }
 
-sealed interface LoginUiAction {
-    data class Login(val username: String, val password: String) : LoginUiAction
 
-    data class OnUsernameChange(val newUsername: String) : LoginUiAction
-    data class OnPasswordChange(val newPassword: String) : LoginUiAction
+sealed interface LoginUiAction {
+    data class OnUsernameChange(val username: String) : LoginUiAction
+    data class OnPasswordChange(val password: String) : LoginUiAction
+    data object Login : LoginUiAction
+    data class OnRememberLogin(val isRemember: Boolean) : LoginUiAction
+
+    data class UpdateError(val error: String) : LoginUiAction
 }

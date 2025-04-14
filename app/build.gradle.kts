@@ -126,4 +126,7 @@ dependencies {
     //Vico Chart
     implementation(libs.vico.compose)
     implementation(libs.vico.compose.m3)
+
+    //Jwt
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
 }

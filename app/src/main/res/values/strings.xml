@@ -23,6 +23,10 @@
     <string name="msg_no_assignees">No Assignees</string>
     <string name="msg_no_assignees_desc">It looks like you don\'t have any assignees for this task</string>
 
+    <!--  Error  -->
+    <string name="error_user_not_found">User not found</string>
+    <string name="error_wrong_password">Wrong password, try again</string>
+    <string name="error_unknown"> Unknown Error</string>
     <!--Label-->
     <string name="label_full_attendance">Full attendance</string>
     <string name="label_partial_attendance">Partial attendance</string>>
@@ -31,6 +35,10 @@
     <string name="label_users">Users</string>
     <string name="label_priority">Priority</string>
     <string name="label_add_assignee">Add Assignees</string>
+    <string name="label_username">Username</string>
+    <string name="label_password">Password</string>
+    <string name="label_email_address">Email Address</string>
+    <string name="label_back">Back</string>
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
@@ -42,4 +50,31 @@
     <string name="filter_status_on_hold">On Hold</string>
     <string name="filter_status_cancelled">Cancelled</string>
     <string name="filter_status_in_progress">In Progress</string>
+
+    <!-- Auth   -->
+    <string name="auth_new_pw">New Password</string>
+    <string name="auth_confirm_pw">Confirm Password</string>
+    <!--    Forgot password-->
+    <string name="forgot_pw">Forgot Password</string>
+    <string name="forgot_pw_instruction">Enter the email address associated with your account and we will send you a link to reset your password.</string>
+    <string name="send_request">Send Request</string>
+    <string name="create_new_pw">Create new password</string>
+    <string name="new_pw_instruction">Your new password must contain 6 characters or more.</string>
+
+    <!--  Reset password  -->
+    <string name="reset_pw">Reset Password</string>
+    <string name="reset_pw_success">Reset password success. Now you can login with your new password.</string>
+    <string name="reset_pw_back_to_login">Go to Login screen</string>
+    <!--  Login  -->
+    <string name="login">Login</string>
+    <string name="login_welcome">WELCOME</string>
+    <string name="login_welcome_jp">どういたしまして</string>
+    <string name="login_remember_login">Remember login</string>
+    <string name="login_forgot_pw">Forgot password?</string>
+    <string name="login_singup_instruction">You don't have an account?</string>
+
+    <!--  Sign up  -->
+    <string name="sign_up">Sign up</string>
+
+
 </resources>
