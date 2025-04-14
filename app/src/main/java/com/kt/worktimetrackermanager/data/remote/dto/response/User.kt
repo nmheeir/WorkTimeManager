@@ -1,5 +1,6 @@
 package com.kt.worktimetrackermanager.data.remote.dto.response
 
+import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 
 data class User(
@@ -13,7 +14,7 @@ data class User(
     val department: String,
     val designation: String,
     val email: String,
-    val employeeType: Int,
+    val employeeType: EmployeeType,
     val id: Int,
     val phoneNumber: String,
     val role: Role,

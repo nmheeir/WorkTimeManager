@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
@@ -76,14 +75,14 @@ private fun RoleBadge(
     role: Role,
 ) {
     val textColor = when (role) {
-        Role.MASTER -> MaterialTheme.colorScheme.onErrorContainer
-        Role.MANAGER -> MaterialTheme.colorScheme.onPrimaryContainer
-        Role.STAFF -> MaterialTheme.colorScheme.onTertiaryContainer
+        Role.Master -> MaterialTheme.colorScheme.onErrorContainer
+        Role.Manager -> MaterialTheme.colorScheme.onPrimaryContainer
+        Role.Staff -> MaterialTheme.colorScheme.onTertiaryContainer
     }
     val bgColor = when (role) {
-        Role.MASTER -> MaterialTheme.colorScheme.errorContainer
-        Role.MANAGER -> MaterialTheme.colorScheme.primaryContainer
-        Role.STAFF -> MaterialTheme.colorScheme.tertiaryContainer
+        Role.Master -> MaterialTheme.colorScheme.errorContainer
+        Role.Manager -> MaterialTheme.colorScheme.primaryContainer
+        Role.Staff -> MaterialTheme.colorScheme.tertiaryContainer
     }
 
     Box(

@@ -1,8 +1,18 @@
 package com.kt.worktimetrackermanager.presentation
 
+import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enum.Priority
+import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.response.Project
+import com.kt.worktimetrackermanager.data.remote.dto.response.Report
+import com.kt.worktimetrackermanager.data.remote.dto.response.Task
+import com.kt.worktimetrackermanager.data.remote.dto.response.TaskStatistics
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
+import com.kt.worktimetrackermanager.data.remote.dto.response.UserProfileDto
+import java.time.LocalDateTime
+import kotlin.random.Random
 
 val fakeUser = User(
     address = "123 Đường Nguyễn Huệ, Quận 1, TP.HCM",
@@ -15,10 +25,10 @@ val fakeUser = User(
     department = "Phòng Kỹ thuật",
     designation = "Kỹ sư phần mềm",
     email = "nguyenvana@example.com",
-    employeeType = 1,
+    employeeType = EmployeeType.Pernament,
     id = 1001,
     phoneNumber = "0987654321",
-    role = Role.MASTER,
+    role = Role.Master,
     teamId = 5,
     userFullName = "Nguyễn Văn A",
     userName = "nguyenvana"
@@ -36,7 +46,7 @@ val fakeUsers = List(10) { index ->
         department = "Phòng ban ${index % 5}",
         designation = "Nhân viên cấp ${index % 3}",
         email = "user${index + 1}@example.com",
-        employeeType = (index % 3) + 1,
+        employeeType = EmployeeType.entries.random(),
         id = index + 1,
         phoneNumber = "09876543${(index % 10)}",
         role = Role.fromInt(index % 3),
@@ -57,5 +67,69 @@ val fakeTeams = List(10) { index ->
         latitude = 10.76 + (index * 0.01),
         longitude = 106.67 + (index * 0.01),
         createdAt = "2024-03-${(index % 28) + 1}"
+    )
+}
+
+
+val fakeUserProfiles = List(10) {
+    UserProfileDto(
+        id = it,
+        userName = "User $it",
+        userFullName = "UserFullName $it",
+        avatarUrl = "https://randomuser.me/api/portraits/men/$it.jpg"
+    )
+}
+
+val fakeReport = List(5) {
+    Report(
+        id = it,
+        title = "Report $it",
+        description = "Description for Report $it",
+        createdAt = LocalDateTime.now().minusDays(Random.nextLong(1, 30)),
+        taskId = 1,
+        author = fakeUserProfiles[0],
+        reportUrl = "https://mkranrxtwhxvvafxwomq.supabase.co/storage/v1/object/public/reports/1/1/20250404134956_1.pdf"
+    )
+}
+
+val fakeTasks = List(10) { index ->
+    Task(
+        id = index + 1,
+        name = "Task ${index + 1}",
+        description = "Description for Task ${index + 1}",
+        projectId = Random.nextInt(1, 10), // Giả sử có 10 dự án
+        createdAt = LocalDateTime.now().minusDays(Random.nextLong(1, 30)),
+        dueDate = LocalDateTime.now().plusDays(Random.nextLong(1, 30)),
+        status = ProjectStatus.entries.random(),
+        priority = Priority.entries.random(),
+        reports = fakeReport
+    )
+}
+
+val fakeTaskStatistic = TaskStatistics(
+    totalTask = 20,
+    completedTask = 5,
+    onHoldTask = 2,
+    cancelledTask = 1,
+    inProgressTask = 3,
+    notStartedTask = 1
+)
+
+val fakeProjects = List(10) { index ->
+    val startDate = LocalDateTime.now().minusDays(Random.nextLong(10, 100))
+    val endDate = startDate.plusDays(Random.nextLong(30, 200))
+    val updatedAt = startDate.plusDays(Random.nextLong(1, 50))
+
+    Project(
+        id = index + 1,
+        name = "Project ${index + 1}",
+        description = "Description for Project ${index + 1}",
+        managerId = Random.nextInt(1, 10),
+        createdAt = startDate,
+        startDate = startDate,
+        endDate = endDate,
+        updatedAt = updatedAt,
+        status = ProjectStatus.entries.random(),
+        statistics = fakeTaskStatistic
     )
 }

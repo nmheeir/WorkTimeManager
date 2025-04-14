@@ -9,7 +9,6 @@ import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
 import com.skydoves.sandwich.message
-import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
@@ -47,7 +46,7 @@ class MiddlewareRoleViewModel @Inject constructor(
 
     private fun checkRole() {
         if (token == null) {
-            role.value = Role.STAFF
+            role.value = Role.Staff
             return
         }
         viewModelScope.launch {
@@ -57,11 +56,11 @@ class MiddlewareRoleViewModel @Inject constructor(
                 }
                 .suspendOnFailure {
                     Timber.d("Failure: %s", this.message())
-                    role.value = Role.STAFF
+                    role.value = Role.Staff
                 }
                 .suspendOnException {
                     Timber.d("Exception: %s", this.message())
-                    role.value = Role.STAFF
+                    role.value = Role.Staff
                 }
         }
     }

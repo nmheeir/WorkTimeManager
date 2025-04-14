@@ -38,7 +38,7 @@ data class EmptyBoxAction(
 fun EmptyBox(
     @StringRes stringRes: Int,
     @StringRes descRes: Int,
-    @DrawableRes iconRes: Int,
+    @DrawableRes iconRes: Int? = null,
     modifier: Modifier = Modifier,
     actions: ImmutableList<EmptyBoxAction>? = null,
 ) {
@@ -55,7 +55,7 @@ fun EmptyBox(
 private fun EmptyBox(
     message: String,
     desc: String,
-    @DrawableRes iconRes: Int,
+    @DrawableRes iconRes: Int? = null,
     modifier: Modifier = Modifier,
     actions: ImmutableList<EmptyBoxAction>? = null,
 ) {
@@ -66,12 +66,14 @@ private fun EmptyBox(
             .fillMaxWidth()
             .padding(MaterialTheme.padding.large)
     ) {
-        Image(
-            painter = painterResource(iconRes),
-            contentDescription = "Empty Box Icon",
-            modifier = Modifier
-                .size(172.dp)
-        )
+        if (iconRes != null) {
+            Image(
+                painter = painterResource(iconRes),
+                contentDescription = "Empty Box Icon",
+                modifier = Modifier
+                    .size(172.dp)
+            )
+        }
 
         Text(
             text = message,
