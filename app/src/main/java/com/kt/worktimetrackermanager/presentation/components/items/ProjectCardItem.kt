@@ -98,16 +98,14 @@ fun ProjectCardItem(
             }
 
 
-            if (project.tasks.isNotEmpty()) {
+            if (project.statistics.totalTask != 0) {
                 Text(
-                    text = "Completed: ${project.tasks.filter { it.status == ProjectStatus.Completed }.size} / ${project.tasks.size}",
+                    text = "Completed: ${project.statistics.completedTask.toFloat() / project.statistics.totalTask * 100}%",
                     style = MaterialTheme.typography.bodyMedium
                 )
                 LinearProgressIndicator(
                     progress = {
-                        project.tasks.filter {
-                            it.status == ProjectStatus.Completed
-                        }.size.toFloat() / project.tasks.size.toFloat()
+                        project.statistics.completedTask.toFloat() / project.statistics.totalTask
                     },
                     color = ProgressIndicatorDefaults.linearColor,
                     modifier = Modifier.fillMaxWidth()

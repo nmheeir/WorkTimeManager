@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -69,251 +70,260 @@ fun TaskDetailScreen(
     val lazyListState = rememberLazyListState()
     val context = LocalContext.current
 
-    if (isLoading) {
-        // TODO: Shimmer
-        CircularProgressIndicator()
-    } else {
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
-            state = lazyListState,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            if (task == null) {
-                item {
-                    Text(
-                        text = "No task"
-                    )
-                }
-            }
-            task.takeIf { it != null }?.let { task ->
-                item(
-                    key = "top_bar"
-                ) {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = task.name
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(
-                                onClick = navController::navigateUp
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_keyboard_arrow_left),
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        actions = {
-                            IconButton(
-                                enabled = task.reports.isEmpty(),
-                                onClick = {
-
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_edit),
-                                    contentDescription = null
-                                )
-                            }
-                        }
-                    )
-                }
-
-                item(
-                    key = "header"
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.Top,
-                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
-                        modifier = Modifier.hozPadding()
-                    ) {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
-                            horizontalAlignment = Alignment.Start,
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text(
-                                text = task.name,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Text(
-                                text = "Created " + task.createdAt.parseDate(),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                        StatusChip(status = task.status) { }
-                    }
-                }
-
-                item(
-                    key = "description"
-                ) {
-                    Card(
-                        shape = MaterialTheme.shapes.small,
-                        border = BorderStroke(
-                            1.dp,
-                            MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-                        ),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.background
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .hozPadding()
-                    ) {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
-                            horizontalAlignment = Alignment.Start,
-                            modifier = Modifier.padding(MaterialTheme.padding.small)
-                        ) {
-                            Text(
-                                text = "Description",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            HorizontalDivider(modifier = Modifier.fillMaxWidth())
-                            Text(
-                                text = task.description,
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                    }
-                }
-
-                item(
-                    key = "priority"
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .hozPadding()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.label_priority),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        PriorityChip(priority = task.priority) { }
-                    }
-                }
-
-                item {
-                    Text(
-                        text = "Assignees",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.hozPadding()
-                    )
-                }
-
-                if (task.assignees.isEmpty()) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        if (isLoading) {
+            // TODO: Shimmer
+            CircularProgressIndicator(Modifier.align(Alignment.Center))
+        } else {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
+                state = lazyListState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+            ) {
+                if (task == null) {
                     item {
-                        EmptyBox(
-                            stringRes = R.string.msg_no_assignees,
-                            descRes = R.string.msg_no_assignees_desc,
-                            modifier = Modifier
-                                .hozPadding()
-                                .border(
-                                    1.dp,
-                                    MaterialTheme.colorScheme.outline,
-                                    MaterialTheme.shapes.small
-                                ),
-                            actions = persistentListOf(
-                                EmptyBoxAction(
-                                    stringRes = R.string.label_add_assignee,
-                                    icon = R.drawable.ic_edit,
+                        Text(
+                            text = "No task"
+                        )
+                    }
+                }
+                task.takeIf { it != null }?.let { task ->
+                    item(
+                        key = "top_bar"
+                    ) {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    text = task.name
+                                )
+                            },
+                            navigationIcon = {
+                                IconButton(
+                                    onClick = navController::navigateUp
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_keyboard_arrow_left),
+                                        contentDescription = null
+                                    )
+                                }
+                            },
+                            actions = {
+                                IconButton(
+                                    enabled = task.reports.isEmpty(),
                                     onClick = {
 
                                     }
-                                )
-                            )
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_edit),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
                         )
                     }
-                } else {
-                    items(
-                        items = task.assignees,
-                        key = {
-                            it.userName
+
+                    item(
+                        key = "header"
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.Top,
+                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
+                            modifier = Modifier.hozPadding()
+                        ) {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
+                                horizontalAlignment = Alignment.Start,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(
+                                    text = task.name,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Text(
+                                    text = "Created " + task.createdAt.parseDate(),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                            StatusChip(status = task.status) { }
                         }
-                    ) { profile ->
+                    }
+
+                    item(
+                        key = "description"
+                    ) {
                         Card(
+                            shape = MaterialTheme.shapes.small,
+                            border = BorderStroke(
+                                1.dp,
+                                MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                            ),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.background
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .hozPadding()
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
+                                horizontalAlignment = Alignment.Start,
                                 modifier = Modifier.padding(MaterialTheme.padding.small)
                             ) {
-                                CoilImage(
-                                    imageUrl = profile.avatarUrl,
-                                    modifier = Modifier
-                                        .clip(CircleShape)
-                                        .size(32.dp)
+                                Text(
+                                    text = "Description",
+                                    style = MaterialTheme.typography.titleMedium
                                 )
-                                Column(
-                                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
-                                    horizontalAlignment = Alignment.Start,
-                                    modifier = Modifier.weight(1f)
+                                HorizontalDivider(modifier = Modifier.fillMaxWidth())
+                                Text(
+                                    text = task.description,
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                        }
+                    }
+
+                    item(
+                        key = "priority"
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .hozPadding()
+                        ) {
+                            Text(
+                                text = stringResource(R.string.label_priority),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            PriorityChip(priority = task.priority) { }
+                        }
+                    }
+
+                    item {
+                        Text(
+                            text = "Assignees",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.hozPadding()
+                        )
+                    }
+
+                    if (task.assignees.isEmpty()) {
+                        item {
+                            EmptyBox(
+                                stringRes = R.string.msg_no_assignees,
+                                descRes = R.string.msg_no_assignees_desc,
+                                modifier = Modifier
+                                    .hozPadding()
+                                    .border(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.outline,
+                                        MaterialTheme.shapes.small
+                                    ),
+                                actions = persistentListOf(
+                                    EmptyBoxAction(
+                                        stringRes = R.string.label_add_assignee,
+                                        icon = R.drawable.ic_edit,
+                                        onClick = {
+
+                                        }
+                                    )
+                                )
+                            )
+                        }
+                    } else {
+                        items(
+                            items = task.assignees,
+                            key = {
+                                it.userName
+                            }
+                        ) { profile ->
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .hozPadding()
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
+                                    modifier = Modifier.padding(MaterialTheme.padding.small)
                                 ) {
-                                    Text(
-                                        text = profile.userName
+                                    CoilImage(
+                                        imageUrl = profile.avatarUrl,
+                                        modifier = Modifier
+                                            .clip(CircleShape)
+                                            .size(32.dp)
                                     )
-                                    Text(
-                                        text = profile.userFullName
-                                    )
+                                    Column(
+                                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
+                                        horizontalAlignment = Alignment.Start,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Text(
+                                            text = profile.userName
+                                        )
+                                        Text(
+                                            text = profile.userFullName
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                item {
-                    Text(
-                        text = "Reports",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.hozPadding()
-                    )
-                }
-
-                if (task.reports.isEmpty()) {
                     item {
-                        EmptyBox(
-                            stringRes = R.string.msg_no_assignees,
-                            descRes = R.string.msg_no_assignees_desc,
-                            modifier = Modifier
-                                .hozPadding()
-                                .border(
-                                    1.dp,
-                                    MaterialTheme.colorScheme.outline,
-                                    MaterialTheme.shapes.small
-                                ),
-                            actions = persistentListOf(
-                                EmptyBoxAction(
-                                    stringRes = R.string.label_add_assignee,
-                                    icon = R.drawable.ic_edit,
-                                    onClick = {
-
-                                    }
-                                )
-                            )
-                        )
-                    }
-                } else {
-                    items(
-                        items = task.reports,
-                        key = { it.id }
-                    ) { report ->
-                        ReportCardItem(
-                            report = report,
-                            onClick = {
-                                val intent = Intent(Intent.ACTION_VIEW)
-                                intent.setDataAndType(report.reportUrl.toUri(), "application/pdf")
-                                intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-                                context.startActivity(intent)
-                            },
+                        Text(
+                            text = "Reports",
+                            style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier.hozPadding()
                         )
+                    }
+
+                    if (task.reports.isEmpty()) {
+                        item {
+                            EmptyBox(
+                                stringRes = R.string.msg_no_assignees,
+                                descRes = R.string.msg_no_assignees_desc,
+                                modifier = Modifier
+                                    .hozPadding()
+                                    .border(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.outline,
+                                        MaterialTheme.shapes.small
+                                    ),
+                                actions = persistentListOf(
+                                    EmptyBoxAction(
+                                        stringRes = R.string.label_add_assignee,
+                                        icon = R.drawable.ic_edit,
+                                        onClick = {
+
+                                        }
+                                    )
+                                )
+                            )
+                        }
+                    } else {
+                        items(
+                            items = task.reports,
+                            key = { it.id }
+                        ) { report ->
+                            ReportCardItem(
+                                report = report,
+                                onClick = {
+                                    val intent = Intent(Intent.ACTION_VIEW)
+                                    intent.setDataAndType(
+                                        report.reportUrl.toUri(),
+                                        "application/pdf"
+                                    )
+                                    intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+                                    context.startActivity(intent)
+                                },
+                                modifier = Modifier.hozPadding()
+                            )
+                        }
                     }
                 }
             }

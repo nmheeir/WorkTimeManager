@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +32,12 @@ fun <E> ChipsRow(
 
         chips.forEach { (value, label) ->
             FilterChip(
+                leadingIcon = {
+                    Text(
+                        text = "abc",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                },
                 label = { Text(label) },
                 selected = currentValue == value,
                 colors = FilterChipDefaults.filterChipColors(containerColor = containerColor),

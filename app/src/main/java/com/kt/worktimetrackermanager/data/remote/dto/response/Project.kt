@@ -12,6 +12,6 @@ data class Project(
     val name: String,
     val startDate: LocalDateTime,
     val status: ProjectStatus,
-    val tasks: List<Task>,
     val updatedAt: LocalDateTime,
+    val statistics: TaskStatistics,
 )

@@ -1,6 +1,7 @@
 package com.kt.worktimetrackermanager.presentation.viewmodels
 
 import android.content.Context
+import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -18,7 +19,9 @@ import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -32,34 +35,25 @@ class ProjectDetailViewModel @Inject constructor(
 
     private val projectId = savedStateHandle.get<Int>("id")
     private val token = context.dataStore[TokenKey]!!
-    private var pageNumber = 1
-    private var pageSize = 10
 
-    private val pagingState = MutableStateFlow(
-        ProjectStatus.entries.associateWith { PagingState() }
-    )
-
-    val project = MutableStateFlow<Project?>(null)
     val isLoading = MutableStateFlow(false)
-    val filter = MutableStateFlow<ProjectStatus?>(null)
-    val allTasks = MutableStateFlow<List<Task>>(emptyList())
-    val taskStateMap = mutableStateMapOf<ProjectStatus, List<Task>>()
+    val isRefreshing = MutableStateFlow(false)
+    val project = MutableStateFlow<Project?>(null)
+    val filter = MutableStateFlow<ProjectFilter>(ProjectFilter.All)
+
+    val taskStateMap = mutableStateMapOf<ProjectFilter, List<Task>>()
+    val loadMoreStateMap = mutableStateMapOf<ProjectFilter, Boolean>()
+    val pagingState = mutableStateMapOf<ProjectFilter, PagingState>().apply {
+        ProjectFilter.entries.forEach { put(it, PagingState()) }
+    }
 
     init {
-        Timber.d(projectId.toString())
         fetchProjectDetail()
-//        fetchTasksFromProject()
 
         viewModelScope.launch {
             filter.collect {
-                if (it == null) {
-                    if (allTasks.value.isEmpty()) {
-                        fetchTasksFromProject()
-                    }
-                } else {
-                    if (taskStateMap[filter.value] == null) {
-                        fetchTasksFromProject()
-                    }
+                if (taskStateMap[it] == null) {
+                    fetchTasksFromProject()
                 }
             }
         }
@@ -88,17 +82,13 @@ class ProjectDetailViewModel @Inject constructor(
             projectUseCase.getTasksFromProject(
                 token = token,
                 id = projectId!!,
-                pageNumber = pageNumber,
-                pageSize = pageSize,
-                filter = filter.value
+                pageNumber = pagingState[filter.value]!!.pageNumber,
+                pageSize = pagingState[filter.value]!!.pageSize,
+                filter = filter.value.value
             )
                 .suspendOnSuccess {
-                    if (filter.value == null) {
-                        allTasks.value = this.data.data!!.distinctBy { it.id }
-                        Timber.d(this.data.data.toString())
-                    } else {
-                        taskStateMap[filter.value!!] = this.data.data!!
-                    }
+                    taskStateMap[filter.value] = this.data.data ?: emptyList()
+                    loadMoreStateMap[filter.value] = this.data.pageNumber < this.data.totalPages
                 }
                 .suspendOnFailure {
                     Timber.d("Failure: $this")
@@ -110,56 +100,47 @@ class ProjectDetailViewModel @Inject constructor(
     }
 
     fun loadMore() {
-        isLoading.value = true
+        // Sử dụng getOrPut để đảm bảo luôn có PagingState cho filter hiện tại.
+        val currentFilter = filter.value
+        val currentPaging = pagingState.getOrPut(currentFilter) { PagingState() }
+
+        // Cập nhật paging state và gán lại vào map.
+        val newPaging = currentPaging.copy(pageNumber = currentPaging.pageNumber + 1)
+        pagingState[currentFilter] = newPaging
+
         viewModelScope.launch {
-            if (filter.value == null) {
-                val newPageNumber = pageNumber + 1
-                val newPageSize = pageSize
+            projectUseCase.getTasksFromProject(
+                token = token,
+                id = projectId ?: return@launch, // Thoát nếu projectId null
+                pageNumber = newPaging.pageNumber,
+                pageSize = newPaging.pageSize,
+                filter = currentFilter.value
+            )
+                .suspendOnSuccess {
+                    val newTasks = this.data.data ?: emptyList()
+                    val currentTasks = taskStateMap[currentFilter] ?: emptyList()
+                    val updatedTasks = currentTasks.toMutableList().apply {
+                        addAll(newTasks.filter { task -> none { it.id == task.id } })
+                    }
+                    taskStateMap[currentFilter] = updatedTasks
 
-                projectUseCase.getTasksFromProject(
-                    token = token,
-                    id = projectId!!,
-                    pageNumber = newPageNumber,
-                    pageSize = newPageSize,
-                    filter = null
-                )
-                    .suspendOnSuccess {
-                        allTasks.value = this.data.data!!.distinctBy { it.id }
-                    }
-                    .suspendOnFailure {
-                        Timber.d(this.message())
-                    }
-                    .suspendOnException {
-                        Timber.d(this.throwable)
-                    }
+                    loadMoreStateMap[currentFilter] = this.data.pageNumber < this.data.totalPages
+                }
+                .suspendOnFailure {
+                    Timber.d("Load more failure: ${this.message()}")
+                }
+                .suspendOnException {
+                    Timber.d("Load more exception: ${this.throwable}")
+                }
+        }
+    }
 
-            } else {
-                val newFilterPageNumber = pagingState.value[filter.value]!!.pageNumber + 1
-                val filterPageSize = pagingState.value[filter.value]!!.pageSize
 
-                pagingState.value[filter.value]!!.copy(
-                    pageNumber = newFilterPageNumber,
-                    pageSize = filterPageSize
-                )
-
-                projectUseCase.getTasksFromProject(
-                    token = token,
-                    id = projectId!!,
-                    pageNumber = newFilterPageNumber,
-                    pageSize = filterPageSize,
-                    filter = filter.value
-                )
-                    .suspendOnSuccess {
-                        taskStateMap[filter.value!!] = this.data.data!!
-                    }
-                    .suspendOnFailure {
-                        Timber.d(this.message())
-                    }
-                    .suspendOnException {
-                        Timber.d(this.throwable)
-                    }
-            }
-
+    fun refresh() {
+        isRefreshing.value = true
+        viewModelScope.launch {
+            fetchTasksFromProject()
+            isRefreshing.value = false
         }
     }
 }
@@ -168,3 +149,12 @@ data class PagingState(
     val pageNumber: Int = 1,
     val pageSize: Int = 10,
 )
+
+enum class ProjectFilter(val value: ProjectStatus?) {
+    All(null),
+    NotStarted(ProjectStatus.NotStarted),
+    Completed(ProjectStatus.Completed),
+    InProgress(ProjectStatus.InProgress),
+    OnHold(ProjectStatus.OnHold),
+    Cancelled(ProjectStatus.Cancelled)
+}

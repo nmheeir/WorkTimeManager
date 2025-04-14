@@ -13,6 +13,7 @@ import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDateTime
@@ -23,7 +24,12 @@ class RemoteDataSource @Inject constructor() {
     fun <Api> buildApi(
         api: Class<Api>,
     ): Api {
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
         val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(logging)
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)

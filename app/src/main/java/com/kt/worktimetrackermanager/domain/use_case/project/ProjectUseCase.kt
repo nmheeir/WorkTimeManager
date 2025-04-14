@@ -14,7 +14,12 @@ data class ProjectUseCase(
 class GetProjects(
     private val iProjectRepo: IProjectRepo,
 ) {
-    suspend operator fun invoke(token: String) = iProjectRepo.getProjects(token)
+    suspend operator fun invoke(
+        token: String,
+        pageNumber: Int,
+        pageSize: Int,
+        filter: ProjectStatus? = null,
+    ) = iProjectRepo.getProjects(token, pageNumber, pageSize, filter)
 }
 
 class GetProject(

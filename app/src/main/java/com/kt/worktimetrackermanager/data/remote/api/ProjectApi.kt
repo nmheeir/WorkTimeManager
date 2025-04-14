@@ -3,6 +3,7 @@ package com.kt.worktimetrackermanager.data.remote.api
 import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.request.CreateProjectRequest
 import com.kt.worktimetrackermanager.data.remote.dto.response.DataResponse
+import com.kt.worktimetrackermanager.data.remote.dto.response.PagedDataResponse
 import com.kt.worktimetrackermanager.data.remote.dto.response.Project
 import com.kt.worktimetrackermanager.data.remote.dto.response.Task
 import com.skydoves.sandwich.ApiResponse
@@ -17,7 +18,10 @@ interface ProjectApi {
     @GET("Project/projects")
     suspend fun getProjects(
         @Header("Authorization") token: String,
-    ): ApiResponse<DataResponse<List<Project>>>
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int,
+        @Query("filter") filter: ProjectStatus?,
+    ): ApiResponse<PagedDataResponse<List<Project>>>
 
     @GET("Project/{id}")
     suspend fun getProject(
@@ -32,7 +36,7 @@ interface ProjectApi {
         @Query("pageNumber") pageNumber: Int,
         @Query("pageSize") pageSize: Int,
         @Query("filter") filter: ProjectStatus?,
-    ): ApiResponse<DataResponse<List<Task>>>
+    ): ApiResponse<PagedDataResponse<List<Task>>>
 
     @POST("Project/create")
     suspend fun createProject(

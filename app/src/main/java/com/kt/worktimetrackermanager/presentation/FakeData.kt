@@ -7,6 +7,7 @@ import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.kt.worktimetrackermanager.data.remote.dto.response.Project
 import com.kt.worktimetrackermanager.data.remote.dto.response.Report
 import com.kt.worktimetrackermanager.data.remote.dto.response.Task
+import com.kt.worktimetrackermanager.data.remote.dto.response.TaskStatistics
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.data.remote.dto.response.UserProfileDto
@@ -105,6 +106,15 @@ val fakeTasks = List(10) { index ->
     )
 }
 
+val fakeTaskStatistic = TaskStatistics(
+    totalTask = 20,
+    completedTask = 5,
+    onHoldTask = 2,
+    cancelledTask = 1,
+    inProgressTask = 3,
+    notStartedTask = 1
+)
+
 val fakeProjects = List(10) { index ->
     val startDate = LocalDateTime.now().minusDays(Random.nextLong(10, 100))
     val endDate = startDate.plusDays(Random.nextLong(30, 200))
@@ -120,6 +130,6 @@ val fakeProjects = List(10) { index ->
         endDate = endDate,
         updatedAt = updatedAt,
         status = ProjectStatus.entries.random(),
-        tasks = fakeTasks.filter { it.projectId == index + 1 }
+        statistics = fakeTaskStatistic
     )
 }

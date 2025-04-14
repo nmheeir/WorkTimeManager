@@ -41,7 +41,6 @@ class TaskDetailViewModel @Inject constructor(
     private fun fetchTaskDetail() {
         isLoading.value = true
         viewModelScope.launch {
-            delay(1000)
             taskUseCase.getTaskDetail(token, taskId)
                 .suspendOnSuccess {
                     task.value = this.data.data
