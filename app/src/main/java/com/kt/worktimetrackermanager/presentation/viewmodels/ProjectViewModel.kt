@@ -4,14 +4,12 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kt.worktimetrackermanager.core.domain.PagingState
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.get
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.kt.worktimetrackermanager.data.remote.dto.response.Project
 import com.kt.worktimetrackermanager.domain.use_case.project.ProjectUseCase
-import com.kt.worktimetrackermanager.presentation.fakeProjects
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnFailure
@@ -19,11 +17,9 @@ import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.collections.set
 
 @HiltViewModel
 class ProjectViewModel @Inject constructor(
@@ -35,7 +31,6 @@ class ProjectViewModel @Inject constructor(
 
 
     val filter = MutableStateFlow<ProjectFilter>(ProjectFilter.All)
-    val projects = MutableStateFlow<List<Project>>(emptyList())
     val projectStateMap = mutableStateMapOf<ProjectFilter, List<Project>>()
     val loadMoreStateMap = mutableStateMapOf<ProjectFilter, Boolean>()
     val pagingState = mutableStateMapOf<ProjectFilter, PagingState>().apply {
@@ -119,6 +114,7 @@ class ProjectViewModel @Inject constructor(
     fun refresh() {
         isRefreshing.value = true
         viewModelScope.launch {
+            pagingState[filter.value] = PagingState()
             getProjects()
             isRefreshing.value = false
         }

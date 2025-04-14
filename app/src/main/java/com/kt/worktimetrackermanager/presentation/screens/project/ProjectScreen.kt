@@ -2,13 +2,10 @@ package com.kt.worktimetrackermanager.presentation.screens.project
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
@@ -16,22 +13,18 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,9 +32,7 @@ import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.core.presentation.padding
-import com.kt.worktimetrackermanager.core.presentation.ui.EmptyBox
 import com.kt.worktimetrackermanager.core.presentation.ui.components.HideOnScrollComponent
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.presentation.components.chip.ChipsRow
 import com.kt.worktimetrackermanager.presentation.components.items.ProjectCardItem
 import com.kt.worktimetrackermanager.presentation.viewmodels.ProjectFilter
@@ -68,6 +59,14 @@ fun ProjectScreen(
         }
     }
 
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo.any { it.key == "load_more" } }
+            .collect { shouldLoadMore ->
+                if (!shouldLoadMore) return@collect
+                viewModel.loadMore()
+            }
+    }
+
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = {
@@ -80,6 +79,7 @@ fun ProjectScreen(
             CircularProgressIndicator(Modifier.align(Alignment.Center))
         } else {
             LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
                 state = lazyListState,
                 modifier = Modifier
@@ -154,11 +154,17 @@ fun ProjectScreen(
                         }
                     )
                 }
-                if (projectPage.isNullOrEmpty()) {
+
+                if (viewModel.loadMoreStateMap[filter] == true) {
+                    item(
+                        key = "load_more"
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                } else {
                     item {
-                        EmptyBox(
-                            stringRes = R.string.msg_no_project,
-                            descRes = R.string.msg_no_project_desc
+                        Text(
+                            text = "No result found"
                         )
                     }
                 }

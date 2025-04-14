@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kt.worktimetrackermanager.core.domain.PagingState
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.get
@@ -138,17 +139,15 @@ class ProjectDetailViewModel @Inject constructor(
 
     fun refresh() {
         isRefreshing.value = true
+        pagingState.entries.forEach {
+            it.setValue(PagingState())
+        }
         viewModelScope.launch {
             fetchTasksFromProject()
             isRefreshing.value = false
         }
     }
 }
-
-data class PagingState(
-    val pageNumber: Int = 1,
-    val pageSize: Int = 10,
-)
 
 enum class ProjectFilter(val value: ProjectStatus?) {
     All(null),
