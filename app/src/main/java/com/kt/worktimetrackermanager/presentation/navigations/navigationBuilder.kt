@@ -14,6 +14,7 @@ import com.kt.worktimetrackermanager.core.utils.JwtUtils
 import com.kt.worktimetrackermanager.presentation.components.MiddlewareRole
 import com.kt.worktimetrackermanager.presentation.screens.dashboard.CompanyDashBoardScreen
 import com.kt.worktimetrackermanager.presentation.screens.HomeScreen
+import com.kt.worktimetrackermanager.presentation.screens.NotificationScreen
 import com.kt.worktimetrackermanager.presentation.screens.ProfileScreen
 import com.kt.worktimetrackermanager.presentation.screens.auth.CreateNewPasswordScreen
 import com.kt.worktimetrackermanager.presentation.screens.auth.ForgotPasswordScreen
@@ -135,9 +136,7 @@ fun NavGraphBuilder.navigationBuilder(
     composable(
         route = "notification"
     ) {
-        Text(
-            text = "Notification"
-        )
+        NotificationScreen(navController)
     }
 
     composable(

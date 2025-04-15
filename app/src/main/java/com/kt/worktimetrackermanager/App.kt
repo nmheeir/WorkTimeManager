@@ -3,6 +3,11 @@ package com.kt.worktimetrackermanager
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import com.google.firebase.iid.FirebaseInstanceIdReceiver
+import com.google.firebase.messaging.FirebaseMessaging
+import com.kt.worktimetrackermanager.core.presentation.utils.DeviceTokenKey
+import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
+import com.kt.worktimetrackermanager.core.presentation.utils.set
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -10,8 +15,6 @@ import timber.log.Timber
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-
-
 
         if (BuildConfig.DEBUG) {
             //Must have

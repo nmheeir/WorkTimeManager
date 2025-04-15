@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kt.worktimetrackermanager.core.presentation.utils.DeviceTokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.delete
@@ -32,7 +33,7 @@ class MainViewModel @Inject constructor(
 
     val showSplash = mutableStateOf(false)
 
-    val startDestination = mutableStateOf<String?>(null)
+    val startDestination = mutableStateOf<String>("login")
 
     val user = MutableStateFlow<User?>(null)
     private val token = context.dataStore[TokenKey]
@@ -51,22 +52,22 @@ class MainViewModel @Inject constructor(
             return
         }
 
-//        userUseCase.getUserProfile(token)
-//            .suspendOnSuccess {
-//                Timber.d(this.data.data.toString())
-//                startDestination.value = "home"
-//                user.value = this.data.data!!
-//            }
-//            .suspendOnFailure {
-//                startDestination.value = "login"
-//                context.dataStore.delete(TokenKey)
-//                Timber.d(this.apiMessage)
-//            }
-//            .suspendOnException {
-//                startDestination.value = "login"
-//                context.dataStore.delete(TokenKey)
-//                Timber.d(this.apiMessage)
-//            }
+        userUseCase.getUserProfile(token)
+            .suspendOnSuccess {
+                Timber.d(this.data.data.toString())
+                startDestination.value = "home"
+                user.value = this.data.data!!
+            }
+            .suspendOnFailure {
+                startDestination.value = "login"
+                context.dataStore.delete(TokenKey)
+                Timber.d(this.apiMessage)
+            }
+            .suspendOnException {
+                startDestination.value = "login"
+                context.dataStore.delete(TokenKey)
+                Timber.d(this.apiMessage)
+            }
 
         startDestination.value = "home"
 
@@ -76,6 +77,7 @@ class MainViewModel @Inject constructor(
     fun logout() {
         viewModelScope.launch {
             context.dataStore.delete(TokenKey)
+//            context.dataStore.delete(DeviceTokenKey)
             user.value = null
         }
     }

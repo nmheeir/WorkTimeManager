@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "427093536817",
+    "project_id": "worktimetracker-d3dc2",
+    "storage_bucket": "worktimetracker-d3dc2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427093536817:android:694479f2e0fdf320aa6510",
+        "android_client_info": {
+          "package_name": "com.example.worktimetracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAv6m1Kntc5YkOcWP63LCzlK9xmbKk1Db8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427093536817:android:d968ee9c5580c5eaaa6510",
+        "android_client_info": {
+          "package_name": "com.kt.worktimetrackermanager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAv6m1Kntc5YkOcWP63LCzlK9xmbKk1Db8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

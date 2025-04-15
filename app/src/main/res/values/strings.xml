@@ -71,7 +71,7 @@
     <string name="login_welcome_jp">どういたしまして</string>
     <string name="login_remember_login">Remember login</string>
     <string name="login_forgot_pw">Forgot password?</string>
-    <string name="login_singup_instruction">You don't have an account?</string>
+    <string name="login_singup_instruction">You don\'t have an account?</string>
 
     <!--  Sign up  -->
     <string name="sign_up">Sign up</string>
