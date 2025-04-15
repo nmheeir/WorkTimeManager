@@ -98,7 +98,7 @@ fun TeamListItem(team: Team, onNavigate: () -> Unit) {
 
 @Composable
 fun TeamMemberAvatarList(team: Team) {
-    val extraUserCount = team.users!!.size - TEAM_MEMBER_AVATAR_SHOW
+    val extraUserCount = team.users?.size?.minus(TEAM_MEMBER_AVATAR_SHOW)
     Text(
         text = "Team Member",
         style = MaterialTheme.typography.bodyMedium,

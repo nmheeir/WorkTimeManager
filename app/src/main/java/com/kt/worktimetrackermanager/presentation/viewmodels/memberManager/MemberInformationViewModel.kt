@@ -1,6 +1,7 @@
 package com.kt.worktimetrackermanager.presentation.viewmodels.memberManager
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
@@ -26,6 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MemberInforViewModel @Inject constructor (
     private val userUseCase: UserUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _state = MutableStateFlow(MemberInforUiState());
 
@@ -34,16 +36,15 @@ class MemberInforViewModel @Inject constructor (
 
     val uiState = _state
         .stateIn(viewModelScope, SharingStarted.Lazily, MemberInforUiState())
-
     init {
-        getUserInfo(uiState.value.userId)
-    }
-
-    fun setUserId(id: Int) {
-        _state.update {
-            it.copy(
-                userId = id
-            )
+        val userId: Int? = savedStateHandle["userId"]
+        if (userId != null) {
+            _state.update { it.copy(userId = userId) }
+            getUserInfo(userId)
+        } else {
+            viewModelScope.launch {
+                _channel.send(MemberInforUiEvent.Failure("Invalid userId"))
+            }
         }
     }
 

@@ -17,9 +17,9 @@ sealed class Screens(
         data object Home : NavigationBarScreens(R.string.home, R.drawable.ic_home, "home")
         data object Dashboard : NavigationBarScreens(R.string.dashboard, R.drawable.ic_analytics, "dashboard")
         data object Attendant : NavigationBarScreens(R.string.attendant, R.drawable.ic_date_range, "attendant")
-        data object Group : NavigationBarScreens(R.string.group, R.drawable.ic_groups, "group")
+        data object Member : NavigationBarScreens(R.string.member, R.drawable.ic_groups, "memberManagerHome")
         companion object {
-            val MainScreens = listOf<NavigationBarScreens>(Home, Dashboard, Attendant, Group)
+            val MainScreens = listOf<NavigationBarScreens>(Home, Dashboard, Attendant, Member)
         }
     }
 
@@ -30,6 +30,7 @@ sealed class Screens(
     data object AddMember: Screens("addMember")
     data object TeamCreate: Screens("teamCreated")
     data object TeamList: Screens("teamList")
+
 
     data class UpdateMember(val userId: Int? = null) : Screens(
         route = buildString {

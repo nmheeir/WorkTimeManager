@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,6 +41,7 @@ import com.kt.worktimetrackermanager.presentation.navigations.Screens
 import com.kt.worktimetrackermanager.presentation.sampleUser
 import com.kt.worktimetrackermanager.presentation.components.dropdownMenu.DropdownMenuForEnum
 import com.kt.worktimetrackermanager.presentation.components.dropdownMenu.DropdownMenuForList
+import com.kt.worktimetrackermanager.presentation.components.scaffold.MyScaffold
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.component.MemberListItem
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.component.MyOutlineTextField
 import com.kt.worktimetrackermanager.presentation.ui.theme.WorkTimeTrackerManagerTheme
@@ -48,7 +50,6 @@ import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.Membe
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.MemberListUiState
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.MemberListViewModel
 
-
 @Composable
 fun MemberListScreen(
     viewModel: MemberListViewModel = hiltViewModel(),
@@ -56,27 +57,28 @@ fun MemberListScreen(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    ObserveAsEvents(viewModel.channel) {
-        when (it) {
-            is MemberListUiEvent.Failure -> {
-                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-            }
 
-            is MemberListUiEvent.Success -> {
+    ObserveAsEvents(viewModel.channel) { event ->
+        when (event) {
+            is MemberListUiEvent.Failure -> {
+                Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
             }
+            is MemberListUiEvent.Success -> { /* Handle success */ }
         }
     }
 
-    MemberListLayout(
-        state = uiState,
-        onNavigateTo = { screen ->
-            navController.navigate(screen.route)
-        },
-        onAction = viewModel::onAction,
-        onBack = {
-            navController.popBackStack()
-        }
-    )
+    MyScaffold(
+        onBack = { navController.popBackStack() },
+        title = stringResource(R.string.member_list),
+    ) { paddingValues ->
+        MemberListLayout(
+            state = uiState,
+            onNavigateTo = { screen -> navController.navigate(screen.route) },
+            onAction = viewModel::onAction,
+            onBack = { navController.popBackStack() },
+            paddingValues = paddingValues
+        )
+    }
 }
 
 @Composable
@@ -84,155 +86,113 @@ fun MemberListLayout(
     state: MemberListUiState,
     onAction: (MemberListUiAction) -> Unit,
     onBack: () -> Unit,
-    onNavigateTo: (Screens) -> Unit
+    onNavigateTo: (Screens) -> Unit,
+    paddingValues: PaddingValues
 ) {
-    // team initial if navigate from teamInformation
-    val teamInitial: Team? = if (state.teamOptionList.isNotEmpty() && state.teamId != null) {
-        state.teamOptionList.find { it.id == state.teamId }
-    } else {
-        null
+    Column(
+        modifier = Modifier.padding(paddingValues),
+    ) {
+        MemberListHeader(
+            state = state,
+            onAction = onAction,
+            onBack = onBack
+        )
+        MemberListContent(
+            memberList = state.memberList,
+            isLoading = state.loading,
+            onNavigateTo = onNavigateTo,
+            onAction = onAction
+        )
     }
-
-        Column {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    Icon(
-                        Icons.Default.KeyboardArrowLeft,
-                        contentDescription = "Back",
-                        tint = Color.White,
-                        modifier = Modifier
-                            .clickable { onBack() }
-                    )
-
-                    // search textfield
-                    Text(
-                        stringResource(R.string.member_list),
-                        style = MaterialTheme.typography.headlineLarge,
-                    )
-                    MyOutlineTextField(
-                        value = state.searchValue,
-                        text = stringResource(R.string.search_member),
-                        icon = Icons.Default.Search,
-                        onValueChange = {
-                            onAction(
-                                MemberListUiAction.OnFieldChange(
-                                    "searchValue",
-                                    it
-                                )
-                            )
-                        }
-                    )
-
-                    // Filter
-                    Row (
-                        modifier = Modifier.
-                            padding(vertical = 16.dp)
-                    ) {
-                        DropdownMenuForList(
-                            text = stringResource(R.string.team),
-                            onItemSelected = {
-                                onAction(
-                                    MemberListUiAction.OnFieldChange(
-                                        "teamId",
-                                        it
-                                    )
-                                )
-                            },
-                            list = state.teamOptionList,
-                            propertyName = "name",
-                            initialValue = teamInitial
-                        )
-                        DropdownMenuForEnum(
-                            modifier = Modifier.padding(horizontal = 4.dp),
-                            text = stringResource(R.string.EmpType),
-                            enumValues = EmployeeType.entries.toTypedArray(),
-                            onItemSelected = {
-                                onAction(
-                                    MemberListUiAction.OnFieldChange(
-                                        "employeeType",
-                                        it
-                                    )
-                                )
-                            },
-                            isNullable = true
-                        )
-                        DropdownMenuForEnum(
-                            text = stringResource(R.string.role),
-                            onItemSelected = {
-                                onAction(
-                                    MemberListUiAction.OnFieldChange(
-                                        "role",
-                                        it
-                                    )
-                                )
-                            },
-                            enumValues = Role.entries.toTypedArray(),
-                            isNullable = true
-                        )
-                    }
-                }
-            }
-
-            // List
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                MemberList(
-                    memberList = state.memberList,
-                    onNavigateTo = onNavigateTo,
-                    onAction = onAction,
-                    isLoading = state.loading
-                )
-
-            }
-        }
-    }
-
+}
 
 @Composable
-fun MemberList(
-    memberList: List<User>,
-    onNavigateTo: (Screens) -> Unit,
+fun MemberListHeader(
+    state: MemberListUiState,
     onAction: (MemberListUiAction) -> Unit,
-    isLoading: Boolean
+    onBack: () -> Unit
 ) {
-    fun loadMoreItems() {
-        if (isLoading) return
-        onAction(MemberListUiAction.OnScrollToBottom)
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        MyOutlineTextField(
+            value = state.searchValue,
+            text = stringResource(R.string.search_member),
+            icon = Icons.Default.Search,
+            onValueChange = {
+                onAction(MemberListUiAction.OnFieldChange("searchValue", it))
+            }
+        )
+        MemberListFilters(
+            state = state,
+            onAction = onAction
+        )
     }
+}
 
+@Composable
+fun MemberListFilters(
+    state: MemberListUiState,
+    onAction: (MemberListUiAction) -> Unit
+) {
+    val teamInitial = state.teamOptionList.find { it.id == state.teamId }
+    Row(modifier = Modifier.padding(vertical = 16.dp)) {
+        DropdownMenuForList(
+            text = stringResource(R.string.team),
+            list = state.teamOptionList,
+            propertyName = "name",
+            initialValue = teamInitial,
+            onItemSelected = {
+                onAction(MemberListUiAction.OnFieldChange("teamId", it))
+            }
+        )
+        DropdownMenuForEnum(
+            modifier = Modifier.padding(horizontal = 4.dp),
+            text = stringResource(R.string.EmpType),
+            enumValues = EmployeeType.entries.toTypedArray(),
+            isNullable = true,
+            onItemSelected = {
+                onAction(MemberListUiAction.OnFieldChange("employeeType", it))
+            }
+        )
+        DropdownMenuForEnum(
+            text = stringResource(R.string.role),
+            enumValues = Role.entries.toTypedArray(),
+            isNullable = true,
+            onItemSelected = {
+                onAction(MemberListUiAction.OnFieldChange("role", it))
+            }
+        )
+    }
+}
+
+@Composable
+fun MemberListContent(
+    memberList: List<User>,
+    isLoading: Boolean,
+    onNavigateTo: (Screens) -> Unit,
+    onAction: (MemberListUiAction) -> Unit
+) {
     val listState = rememberLazyListState()
     val isAtBottom = !listState.canScrollForward
+
     LaunchedEffect(isAtBottom) {
-        if (isAtBottom) {
-            loadMoreItems()
+        if (isAtBottom && !isLoading) {
+            onAction(MemberListUiAction.OnScrollToBottom)
         }
     }
-    // Hiển thị danh sách các item
+
     LazyColumn(
         state = listState,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
     ) {
         items(memberList) { item ->
-            MemberListItem(
-                item
-            ) {
+            MemberListItem(item) {
                 onNavigateTo(Screens.MemberInfor(item.id))
             }
         }
-
-        // Hiển thị trạng thái loading khi đang tải
-        item {
-            if (isLoading) {
-                Text(text = "Loading", modifier = Modifier.fillMaxWidth())
-            }
+        if (isLoading) {
+            item { Text(text = "Loading", modifier = Modifier.fillMaxWidth()) }
         }
     }
 }
@@ -255,6 +215,7 @@ fun MemberListLayoutPreview() {
             onAction = {},
             onNavigateTo = {},
             onBack = {},
+            paddingValues = PaddingValues(0.dp, 0.dp, 0.dp, 0.dp)
         )
     }
 }

@@ -8,6 +8,7 @@
     <string name="attendant">Attendant</string>
     <string name="profile">Profile</string>
     <string name="group">Group</string>
+    <string name="member">Member</string>
     <string name="label_default">Default</string>
     <string name="theme_monet">Dynamic</string>
 
@@ -117,4 +118,11 @@
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="update_location">Update Location</string>
+
+    <!--    Member Infor-->
+    <string name="member_infor">Member Information</string>
+
+<!--    Team ìnfor-->
+    <string name="team_infor_title">Team Information</string>
+    <string name="team_infor_err_no_manager_found">No manager founded</string>
 </resources>

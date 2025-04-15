@@ -9,6 +9,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -54,8 +55,10 @@ import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.utils.Helper
 import com.kt.worktimetrackermanager.core.presentation.utils.ObserveAsEvents
+import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
+import com.kt.worktimetrackermanager.presentation.components.scaffold.MyScaffold
 import com.kt.worktimetrackermanager.presentation.exampleUser1
 import com.kt.worktimetrackermanager.presentation.navigations.Screens
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.component.MemberListItem
@@ -68,6 +71,7 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import timber.log.Timber
 import java.io.File
 
 
@@ -87,14 +91,18 @@ fun TeamInformationScreen(
             }
         }
     }
-
+    MyScaffold(
+        onBack = { navController.popBackStack() },
+        title = stringResource(R.string.team_infor_title),
+    ) { paddingValues ->
         TeamInformationLayout(
             state = uiState,
             onNavigateTo = { screen ->
                 navController.navigate(screen.route)
             },
+            paddingValues = paddingValues
         )
-
+    }
 }
 
 
@@ -102,11 +110,13 @@ fun TeamInformationScreen(
 fun TeamInformationLayout(
     state: TeamInformationUiState,
     onNavigateTo: (Screens) -> Unit,
+    paddingValues: PaddingValues
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .padding(paddingValues)
     ) {
         //
         Header(state.team)
@@ -114,7 +124,10 @@ fun TeamInformationLayout(
             modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp, bottom = 40.dp)
         ) {
-            TeamManagerInformation(exampleUser1, onNavigateTo)
+
+            val manager = state.team.users?.firstOrNull { u -> u.role == Role.MANAGER }
+
+            TeamManagerInformation(manager, onNavigateTo)
             TeamMemberList(state.team, onNavigateTo)
 
             Text(
@@ -172,75 +185,89 @@ fun Header(team: Team) {
 
 @Composable
 fun TeamManagerInformation(
-    user: User,
+    manager: User?,
     onNavigateTo: (Screens) -> Unit
 ) {
-    val displayInfor: List<Pair<String, String>> = listOf(
-        stringResource(R.string.email) to user.email,
-        stringResource(R.string.designation) to user.designation,
-    )
 
-    Text(
-        text = stringResource(R.string.team_infor_manager_infor),
-        style = MaterialTheme.typography.titleLarge,
-        modifier = Modifier.padding(top = 20.dp, start = 8.dp),
-        color = MaterialTheme.colorScheme.primary
-    )
+    if (manager != null) {
+        val displayInfor: List<Pair<String, String>> = listOf(
+            stringResource(R.string.email) to manager.email,
+            stringResource(R.string.designation) to manager.designation,
+        )
 
-    Column (
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(vertical = 16.dp, horizontal = 12.dp)
-            .clickable { onNavigateTo(Screens.MemberInfor(user.id)) }
-    ) {
-        // Manager information
-        Row {
-            Image(
-                painter = painterResource(R.drawable.avatar),
-                contentDescription = "App Logo",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(60.dp)
-                    .border(border = BorderStroke(4.dp, color = Color.White), RoundedCornerShape(50.dp))
-                    .clip(RoundedCornerShape(50.dp))
-            )
-            Column (
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 12.dp)
-            ) {
-                Text(text = user.userFullName, style = MaterialTheme.typography.titleMedium)
-                Text(text = "@" + user.userName, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)
-            }
-        }
+        Text(
+            text = stringResource(R.string.team_infor_manager_infor),
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(top = 20.dp, start = 8.dp),
+            color = MaterialTheme.colorScheme.primary
+        )
 
-        // Content information
-        InformationLayout {
-            displayInfor.forEach { pair ->
-                InformationItem(
-                    fieldName = pair.first,
-                    value = pair.second,
-                )
-            }
-        }
-
-        // Navigate to member inforation, for manager
-        Button(
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .padding(vertical = 16.dp, horizontal = 12.dp)
+                .clickable { onNavigateTo(Screens.MemberInfor(manager.id)) }
         ) {
-            Icon(
-                imageVector = Icons.Default.Person, // Biểu tượng yêu thích
-                contentDescription = "Favorite Icon",
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(end = 8.dp)
-            )
-            Text(text = stringResource(R.string.profile))
+            // Manager information
+            Row {
+                Image(
+                    painter = painterResource(R.drawable.avatar),
+                    contentDescription = "App Logo",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(60.dp)
+                        .border(border = BorderStroke(4.dp, color = Color.White), RoundedCornerShape(50.dp))
+                        .clip(RoundedCornerShape(50.dp))
+                )
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(start = 12.dp)
+                ) {
+                    Text(text = manager.userFullName, style = MaterialTheme.typography.titleMedium)
+                    Text(text = "@" + manager.userName, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)
+                }
+            }
+
+            // Content information
+            InformationLayout {
+                displayInfor.forEach { pair ->
+                    InformationItem(
+                        fieldName = pair.first,
+                        value = pair.second,
+                    )
+                }
+            }
+
+            // Navigate to member information, for manager
+            Button(
+                onClick = {
+                    Timber.d("TeamManagerInformation: ${manager.id}")
+
+                    onNavigateTo(Screens.MemberInfor(manager.id))
+                },
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Profile Icon",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(text = stringResource(R.string.profile))
+            }
         }
+    } else {
+        Text(
+            text = stringResource(R.string.team_infor_err_no_manager_found),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }
 
@@ -354,7 +381,10 @@ fun TeamMap(
 @Composable
 fun TeamInformationLayoutScreen() {
     WorkTimeTrackerManagerTheme {
-        TeamInformationLayout(state = TeamInformationUiState(), {})
+        TeamInformationLayout(
+            state = TeamInformationUiState(), {},
+            paddingValues = TODO()
+        )
     }
 }
 

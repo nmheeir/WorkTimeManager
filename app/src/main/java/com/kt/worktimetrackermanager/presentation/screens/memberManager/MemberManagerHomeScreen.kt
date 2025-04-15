@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -56,7 +57,7 @@ import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.Membe
 @Composable
 fun MemberManagerHomeScreen(
     navController: NavHostController,
-    viewModel: MemberManagerHomeViewModel
+    viewModel: MemberManagerHomeViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current

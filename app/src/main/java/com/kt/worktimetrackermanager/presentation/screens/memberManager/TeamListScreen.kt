@@ -1,5 +1,6 @@
 package com.kt.worktimetrackermanager.presentation.screens.memberManager
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,12 +50,14 @@ import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.TeamL
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.TeamListUiEvent
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.TeamListViewModel
 import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 
 
 @Composable
 fun TeamListScreen(
     viewModel: TeamListViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -173,11 +176,13 @@ fun TeamListContent(
     LazyColumn(
         state = listState,
         modifier =
-            Modifier.fillMaxSize()
+            Modifier
+                .fillMaxSize()
                 .padding(10.dp)
     ) {
         items(teamList) { item ->
             TeamListItem(item, onNavigate = {
+                Timber.d("TeamID" + item.id.toString())
                 onNavigateTo(Screens.TeamInformation(item.id))
             })
             Spacer(modifier = Modifier.height(20.dp))

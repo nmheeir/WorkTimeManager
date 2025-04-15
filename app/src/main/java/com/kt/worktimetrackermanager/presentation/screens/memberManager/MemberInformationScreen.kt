@@ -7,13 +7,17 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
@@ -50,6 +54,7 @@ import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import com.kt.worktimetrackermanager.presentation.components.customButton.RoundedButton
 import com.kt.worktimetrackermanager.presentation.components.customButton.GlowingButton
 import com.kt.worktimetrackermanager.presentation.components.image.UserAvatar
+import com.kt.worktimetrackermanager.presentation.components.scaffold.MyScaffold
 import com.kt.worktimetrackermanager.presentation.ui.theme.WorkTimeTrackerManagerTheme
 
 
@@ -70,26 +75,35 @@ fun MemberInforScreen(
             }
         }
     }
-
-    MemberInforLayout(
-        state = uiState,
-        onNavigateTo = { screens ->
-            navController.navigate(screens.route)
-        }
-    )
+    MyScaffold(
+        onBack = { navController.popBackStack() },
+        title = stringResource(R.string.member_infor),
+    ) { paddingValues ->
+        MemberInforLayout(
+            state = uiState,
+            onNavigateTo = { screens ->
+                navController.navigate(screens.route)
+            },
+            paddingValues = paddingValues
+        )
+    }
 }
 
 @Composable
 fun MemberInforLayout (
     state: MemberInforUiState,
-    onNavigateTo: (Screens) -> Unit
+    onNavigateTo: (Screens) -> Unit,
+    paddingValues: PaddingValues = PaddingValues(0.dp)
 ) {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp)
+            .padding(paddingValues)
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState()),
     ) {
+        Spacer(modifier = Modifier.height(20.dp))
         // Header
         HeaderInfor(
             user = state.user,

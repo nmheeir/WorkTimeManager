@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
                         Screens.NavigationBarScreens.Home.route,
                         Screens.NavigationBarScreens.Dashboard.route,
                         Screens.NavigationBarScreens.Attendant.route,
-                        Screens.NavigationBarScreens.Group.route
+                        Screens.NavigationBarScreens.Member.route
                     )
 
                     val shouldShowNavigationBar = remember(backStackEntry) {

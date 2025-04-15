@@ -22,16 +22,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.utils.ObserveAsEvents
-import com.kt.worktimetrackermanager.presentation.components.topBar.CustomTopBar
+import com.kt.worktimetrackermanager.presentation.components.scaffold.CustomTopBar
 import com.kt.worktimetrackermanager.presentation.viewmodels.ForgotPasswordUiAction
 import com.kt.worktimetrackermanager.presentation.viewmodels.ForgotPasswordUiEvent
 import com.kt.worktimetrackermanager.presentation.viewmodels.ForgotPasswordUiState
 import com.kt.worktimetrackermanager.presentation.viewmodels.ForgotPasswordViewModel
-import kotlinx.coroutines.flow.Flow
 
 
 @Composable

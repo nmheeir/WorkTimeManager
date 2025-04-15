@@ -36,6 +36,10 @@ fun <T : Enum<T>> DropdownMenuForEnum(
     modifier: Modifier = Modifier,
     initialValue: T? = null,
     isNullable: Boolean = false,
+    content: @Composable (displayText: String, onClick: () -> Unit) -> Unit = { defaultDisplayText, onClick ->
+        // Default content with clickable behavior
+        DefaultDropDown(defaultDisplayText, onClick)
+    }
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember {
@@ -50,29 +54,7 @@ fun <T : Enum<T>> DropdownMenuForEnum(
         ?.replaceFirstChar { it.uppercase() } ?: text
 
     Box(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(50))
-                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(50))
-                .clickable { expanded = true }
-                .padding(horizontal = 8.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = displayText,
-                style = MaterialTheme.typography.labelSmall,
-                color = Color.Black,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Icon(
-                imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = "Dropdown Arrow"
-            )
-        }
-
+        content(displayText, {expanded = true})
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
@@ -115,7 +97,11 @@ fun <T> DropdownMenuForList(
     text: String,
     propertyName: String,
     modifier: Modifier = Modifier,
-    initialValue: T? = null
+    initialValue: T? = null,
+    content: @Composable (displayText: String, onClick: () -> Unit) -> Unit = { defaultDisplayText, onClick ->
+        // Default content with clickable behavior
+        DefaultDropDown(defaultDisplayText, onClick)
+    }
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf(initialValue) }
@@ -128,27 +114,7 @@ fun <T> DropdownMenuForList(
     } ?: text
 
     Box(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(50))
-                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(50))
-                .clickable { expanded = true }
-                .padding(horizontal = 8.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text= displayText,
-                style = MaterialTheme.typography.labelSmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Icon(
-                imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = "Dropdown Arrow"
-            )
-        }
+        content(displayText, {expanded = true})
 
         DropdownMenu(
             expanded = expanded,
@@ -181,5 +147,30 @@ fun <T> DropdownMenuForList(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun DefaultDropDown(defaultDisplayText: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(50))
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(50))
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = defaultDisplayText,
+            style = MaterialTheme.typography.labelSmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Icon(
+            imageVector = Icons.Default.ArrowDropDown,
+            contentDescription = "Dropdown Arrow"
+        )
     }
 }

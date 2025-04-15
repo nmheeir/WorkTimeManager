@@ -29,6 +29,7 @@ fun MyOutlineTextField(
     text: String?,
     icon: ImageVector,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    shape: RoundedCornerShape = RoundedCornerShape(20.dp),
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
 ) {
         OutlinedTextField(
@@ -52,7 +53,7 @@ fun MyOutlineTextField(
                     tint = MaterialTheme.colorScheme.onBackground // Màu sắc cho icon
                 )
             },
-            shape = RoundedCornerShape(40.dp),
+            shape = shape,
             singleLine = true,
             keyboardOptions = keyboardOptions,
             textStyle = TextStyle(
@@ -68,7 +69,6 @@ fun MyOutlineTextField(modifier: Modifier = Modifier ,value: String, onClick: ()
             text = text,
             modifier = modifier
                 .padding(start = 8.dp, bottom = 12.dp),
-            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground
         )
         OutlinedTextField(
@@ -79,14 +79,14 @@ fun MyOutlineTextField(modifier: Modifier = Modifier ,value: String, onClick: ()
                 .fillMaxWidth()
                 .clickable { onClick() },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.White, // Màu viền khi focus
-                unfocusedBorderColor = Color.White.copy(alpha = 0.5f), // Màu viền khi không focus
-                focusedContainerColor = Color.White.copy(alpha = 0.2f),
-                unfocusedContainerColor = Color.White.copy(alpha = 0.2f),
-                disabledContainerColor = Color.White.copy(alpha = 0.2f),
+                focusedBorderColor = MaterialTheme.colorScheme.primary, // Màu viền khi focus
+                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant, // Màu viền khi không focus
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             ),
             placeholder = {
-                Text(value, color = Color.Gray)
+                Text(value, color = MaterialTheme.colorScheme.outline)
             },
             leadingIcon = {
                 Icon(
@@ -97,9 +97,6 @@ fun MyOutlineTextField(modifier: Modifier = Modifier ,value: String, onClick: ()
             },
             shape = RoundedCornerShape(20.dp),
             singleLine = true,
-            textStyle = TextStyle(
-                color = Color.White,
-            )
         )
 
 }

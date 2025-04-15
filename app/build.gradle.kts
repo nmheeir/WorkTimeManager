@@ -147,4 +147,7 @@ dependencies {
     // Map
     implementation (libs.osmdroid.android)
 
+    //icon
+    implementation ("androidx.compose.material:material-icons-extended:1.7.8")
+
 }

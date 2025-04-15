@@ -76,7 +76,7 @@ val fakeUsers = List(10) { index ->
     )
 }
 
-val exampleUsers = List(30) {
+val exampleUsers = List(1) {
     User(
         address = "123 Main Street, Cityville",
         avatarUrl = "https://example.com/avatar.jpg",
