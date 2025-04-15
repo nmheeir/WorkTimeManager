@@ -37,8 +37,8 @@ fun MiddlewareRole(
         modifier = Modifier.fillMaxSize()
     ) {
         when (role) {
-            Role.MASTER -> masterContent()
-            Role.MANAGER -> managerContent()
+            Role.Master -> masterContent()
+            Role.Manager -> managerContent()
 
             null -> {
                 CircularProgressIndicator(

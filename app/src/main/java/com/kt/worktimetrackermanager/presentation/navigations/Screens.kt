@@ -7,8 +7,6 @@ import com.kt.worktimetrackermanager.R
 
 @Immutable
 sealed class Screens(
-    val route: String
-) {
     sealed class NavigationBarScreens(
         @StringRes val titleId: Int,
         @DrawableRes val iconId: Int,
@@ -18,10 +16,10 @@ sealed class Screens(
         data object Dashboard : NavigationBarScreens(R.string.dashboard, R.drawable.ic_analytics, "dashboard")
         data object Attendant : NavigationBarScreens(R.string.attendant, R.drawable.ic_date_range, "attendant")
         data object Member : NavigationBarScreens(R.string.member, R.drawable.ic_groups, "memberManagerHome")
+        data object Project : Screens(R.string.project, R.drawable.ic_date_range, "project")
         companion object {
-            val MainScreens = listOf<NavigationBarScreens>(Home, Dashboard, Attendant, Member)
+            val MainScreens = listOf<NavigationBarScreens>(Home, Dashboard, Attendant, Member. Project)
         }
-    }
 
     data object Profile: Screens("profile")
     data object Chat: Screens("chat")

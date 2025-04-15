@@ -29,6 +29,10 @@ import com.kt.worktimetrackermanager.presentation.screens.memberManager.MemberMa
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.TeamCreateScreen
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.TeamInformationScreen
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.TeamListScreen
+import com.kt.worktimetrackermanager.presentation.screens.project.CreateProjectScreen
+import com.kt.worktimetrackermanager.presentation.screens.project.ProjectDetailScreen
+import com.kt.worktimetrackermanager.presentation.screens.project.ProjectScreen
+import com.kt.worktimetrackermanager.presentation.screens.task.TaskDetailScreen
 import com.kt.worktimetrackermanager.presentation.viewmodels.TeamDashboardViewModel
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.MemberInforViewModel
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.TeamInformationViewModel
@@ -151,6 +155,40 @@ fun NavGraphBuilder.navigationBuilder(
         ProfileScreen(navController)
     }
 
+    composable(
+        route = "project"
+    ) {
+        ProjectScreen(navController)
+    }
+
+    composable(
+        route = "project/detail?id={id}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) {
+        ProjectDetailScreen(navController)
+    }
+
+    composable(
+        route = "project/create"
+    ) {
+        CreateProjectScreen(navController)
+    }
+
+    composable(
+        route = "task_detail/{id}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) {
+        TaskDetailScreen(navController)
+    }
+    
     composable(
         route = Screens.NavigationBarScreens.Member.route
     ) {

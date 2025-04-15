@@ -15,7 +15,7 @@ class RoleAdapter : JsonDeserializer<Role>, JsonSerializer<Role> {
         typeOfT: Type,
         context: JsonDeserializationContext,
     ): Role {
-        return Role.fromInt(json.asInt)
+        return Role.valueOf(json.asString)
     }
 
     override fun serialize(
@@ -23,6 +23,6 @@ class RoleAdapter : JsonDeserializer<Role>, JsonSerializer<Role> {
         typeOfSrc: Type,
         context: JsonSerializationContext,
     ): JsonElement {
-        return JsonPrimitive(src.ordinal)
+        return JsonPrimitive(src.name)
     }
 }
