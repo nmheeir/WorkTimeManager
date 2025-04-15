@@ -31,6 +31,9 @@ kotlinxCollectionsImmutable = "0.3.8"
 kizitonwose-calendar = "2.6.2"
 
 vico = "2.1.0"
+firebaseMessagingKtx = "24.1.1"
+osmdroidAndroid = "6.1.18"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -80,6 +83,9 @@ kizitonwose-calendar = { module = "com.kizitonwose.calendar:compose", version.re
 
 vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
+osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,4 +1,4 @@
-package com.kt.worktimetrackermanager.presentation.components.topBar
+package com.kt.worktimetrackermanager.presentation.components.scaffold
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.ExperimentalMaterial3Api

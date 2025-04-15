@@ -4,6 +4,10 @@ import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Priority
 import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.response.Company
+import com.kt.worktimetrackermanager.data.remote.dto.response.Team
+import com.kt.worktimetrackermanager.data.remote.dto.response.User
+import java.time.LocalDate
 import com.kt.worktimetrackermanager.data.remote.dto.response.Project
 import com.kt.worktimetrackermanager.data.remote.dto.response.Report
 import com.kt.worktimetrackermanager.data.remote.dto.response.Task
@@ -33,7 +37,35 @@ val fakeUser = User(
     userFullName = "Nguyễn Văn A",
     userName = "nguyenvana"
 )
-
+val sampleUser = User(
+    address = "123 Main Street, Cityville",
+    avatarUrl = "https://example.com/avatar.jpg",
+    company = null,  // Bạn có thể thay thế giá trị này bằng một đối tượng Company nếu cần
+    companyId = 1,
+    companyTeam = Team(
+        id = 1,
+        companyId = 1,
+        company = null,
+        latitude = 0.0,
+        longitude = 0.0,
+        name = "UI/UX Team",
+        users = emptyList(),
+        description = "test description",
+        createdAt = "2023-10-25T12:34:56",
+    ),  // Bạn có thể thay thế giá trị này bằng một đối tượng Team nếu cần
+    createdAt = "2023-10-25T12:34:56",
+    department = "Engineering",
+    designation = "Software Engineer",
+    email = "user@example.com",
+    employeeType = 1,  // Có thể là mã loại nhân viên
+    id = 1001,
+    phoneNumber = "+1234567890",
+    role = Role.STAFF,  // Có thể là mã vai trò (ví dụ: admin, user, v.v.)
+    teamId = 1,
+    userFullName = "John Doe",
+    userName = "johndoe",
+    dayOfBirth = LocalDate.now().toString()
+)
 val fakeUsers = List(10) { index ->
     User(
         address = "Địa chỉ số ${index + 1}, Quận ${index % 10}, TP.HCM",
@@ -56,19 +88,64 @@ val fakeUsers = List(10) { index ->
     )
 }
 
-val fakeTeams = List(10) { index ->
-    Team(
-        id = index + 1,
-        name = "Team ${index + 1}",
-        description = "Mô tả về team ${index + 1}",
-        companyId = (index % 3) + 1,
-        company = null,
-        users = fakeUsers,
-        latitude = 10.76 + (index * 0.01),
-        longitude = 106.67 + (index * 0.01),
-        createdAt = "2024-03-${(index % 28) + 1}"
+val exampleUsers = List(1) {
+    User(
+        address = "123 Main Street, Cityville",
+        avatarUrl = "https://example.com/avatar.jpg",
+        company = null,  // Có thể thay thế giá trị này bằng một đối tượng Company nếu cần
+        companyId = 1,
+        companyTeam = null,  // Có thể thay thế giá trị này bằng một đối tượng Team nếu cần
+        createdAt = "2023-10-25T12:34:56",
+        department = "Engineering",
+        designation = "Software Engineer",
+        email = "user@example.com",
+        employeeType = 1,  // Có thể là mã loại nhân viên
+        id = 1001 + it, // Tăng ID mỗi lần tạo user
+        phoneNumber = "+1234567890",
+        role = Role.STAFF,  // Có thể là mã vai trò (ví dụ: admin, user, v.v.)
+        teamId = 1,
+        userFullName = "John Doe $it", // Tạo tên người dùng theo chỉ số
+        userName = "johndoe$it", // Tạo tên người dùng theo chỉ số
+        dayOfBirth = LocalDate.now().toString()
     )
 }
+val exampleCompany = Company(
+    id = 1,
+    companyName = "test company",
+    users = emptyList(),
+    teams = emptyList()
+)
+val exampleTeam = Team(
+    id = 1,
+    name = "Development Team",
+    companyId = 1,
+    company = exampleCompany, // Gán company nếu có dữ liệu
+    users = exampleUsers, // Danh sách người dùng
+    latitude = 10.8231,
+    longitude = 106.6297,
+    createdAt = "2023-10-25T12:34:56",
+    description = "Test description"
+)
+
+val exampleUser1 = User(
+    address = "123 Main Street, Cityville",
+    avatarUrl = "https://example.com/avatar.jpg",
+    company = null,  // Bạn có thể thay thế giá trị này bằng một đối tượng Company nếu cần
+    companyId = 1,
+    companyTeam = null,  // Bạn có thể thay thế giá trị này bằng một đối tượng Team nếu cần
+    createdAt = "2023-10-25T12:34:56",
+    department = "Engineering",
+    designation = "Software Engineer",
+    email = "user@example.com",
+    employeeType = 1,  // Có thể là mã loại nhân viên
+    id = 1001,
+    phoneNumber = "+1234567890",
+    role = Role.MANAGER,  // Có thể là mã vai trò (ví dụ: admin, user, v.v.)
+    teamId = 1,
+    userFullName = "John Doe",
+    userName = "johndoe",
+    dayOfBirth = LocalDate.now().toString()
+)
 
 
 val fakeUserProfiles = List(10) {

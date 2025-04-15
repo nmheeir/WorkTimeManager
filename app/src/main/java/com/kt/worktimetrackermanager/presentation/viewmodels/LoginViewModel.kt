@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.set
+import com.kt.worktimetrackermanager.data.local.LocalUserManager
 import com.kt.worktimetrackermanager.domain.use_case.AuthUseCase
 import com.kt.worktimetrackermanager.domain.use_case.Login
 import com.skydoves.sandwich.StatusCode
@@ -30,7 +31,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val authUseCase: AuthUseCase
+    private val authUseCase: AuthUseCase,
+    private val localUserManager: LocalUserManager
 ) : ViewModel() {
 
     val uiState = MutableStateFlow(LoginUiState())
@@ -88,7 +90,7 @@ class LoginViewModel @Inject constructor(
             authUseCase.login(uiState.value.username, uiState.value.password, "test")
                 .suspendOnSuccess {
                     Timber.d("Success: ${this.data}")
-                    context.dataStore.set(TokenKey, this.data.data!!.token)
+                    localUserManager.saveAccessToken(this.data.data!!.token)
                     _channel.send(LoginUiEvent.Success)
                 }
                 .suspendOnError {
