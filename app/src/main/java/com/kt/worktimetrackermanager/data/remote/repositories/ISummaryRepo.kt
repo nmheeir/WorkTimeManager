@@ -2,6 +2,7 @@ package com.kt.worktimetrackermanager.data.remote.repositories
 
 import com.kt.worktimetrackermanager.data.remote.dto.response.AttendanceRecord
 import com.kt.worktimetrackermanager.data.remote.dto.response.DataResponse
+import com.kt.worktimetrackermanager.data.remote.dto.response.TeamShiftStats
 import com.kt.worktimetrackermanager.data.remote.dto.response.TeamStatistic
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.data.remote.dto.response.WorkHours
@@ -68,4 +69,17 @@ interface ISummaryRepo {
         userId: Int? = null,
         token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>>
+
+    suspend fun getShiftsStatByTeam(
+        token: String,
+        startDate: LocalDateTime? = null,
+        endDate: LocalDateTime? = null,
+    ): ApiResponse<DataResponse<List<TeamShiftStats>>>
+
+    suspend fun getShiftsStatByTeamId(
+        token: String,
+        teamId: Int,
+        startDate: LocalDateTime? = null,
+        endDate: LocalDateTime? = null,
+    ): ApiResponse<DataResponse<TeamShiftStats>>
 }

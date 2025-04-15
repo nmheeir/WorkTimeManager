@@ -26,6 +26,8 @@ import com.kt.worktimetrackermanager.presentation.screens.dashboard.TeamDashboar
 import com.kt.worktimetrackermanager.presentation.screens.project.CreateProjectScreen
 import com.kt.worktimetrackermanager.presentation.screens.project.ProjectDetailScreen
 import com.kt.worktimetrackermanager.presentation.screens.project.ProjectScreen
+import com.kt.worktimetrackermanager.presentation.screens.shift.CompanyShiftScreen
+import com.kt.worktimetrackermanager.presentation.screens.shift.TeamShiftScreen
 import com.kt.worktimetrackermanager.presentation.screens.task.TaskDetailScreen
 import com.kt.worktimetrackermanager.presentation.viewmodels.TeamDashboardViewModel
 import timber.log.Timber
@@ -137,6 +139,30 @@ fun NavGraphBuilder.navigationBuilder(
         route = "notification"
     ) {
         NotificationScreen(navController)
+    }
+
+    composable(
+        route = "shift"
+    ) {
+        MiddlewareRole(
+            managerContent = {
+                TeamShiftScreen(navController)
+            },
+            masterContent = {
+                CompanyShiftScreen(navController)
+            }
+        )
+    }
+
+    composable(
+        route = "shift/team/{id}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) {
+
     }
 
     composable(

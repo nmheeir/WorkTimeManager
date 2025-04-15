@@ -3,6 +3,7 @@ package com.kt.worktimetrackermanager.data.remote.repositories.impl
 import com.kt.worktimetrackermanager.data.remote.api.SummaryApi
 import com.kt.worktimetrackermanager.data.remote.dto.response.AttendanceRecord
 import com.kt.worktimetrackermanager.data.remote.dto.response.DataResponse
+import com.kt.worktimetrackermanager.data.remote.dto.response.TeamShiftStats
 import com.kt.worktimetrackermanager.data.remote.dto.response.TeamStatistic
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.data.remote.dto.response.WorkHours
@@ -87,5 +88,22 @@ class SummaryRepo(
         token: String,
     ): ApiResponse<DataResponse<List<AttendanceRecord>>> {
         return summaryApi.getEmployeeAttendanceRecordEachTime(start, end, period, userId, token)
+    }
+
+    override suspend fun getShiftsStatByTeam(
+        token: String,
+        startDate: LocalDateTime?,
+        endDate: LocalDateTime?,
+    ): ApiResponse<DataResponse<List<TeamShiftStats>>> {
+        return summaryApi.getShiftsStatByTeam(token, startDate, endDate)
+    }
+
+    override suspend fun getShiftsStatByTeamId(
+        token: String,
+        teamId: Int,
+        startDate: LocalDateTime?,
+        endDate: LocalDateTime?,
+    ): ApiResponse<DataResponse<TeamShiftStats>> {
+        return summaryApi.getShiftsStatByTeamId(token, teamId, startDate, endDate)
     }
 }

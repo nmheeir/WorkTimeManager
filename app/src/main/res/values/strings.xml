@@ -6,6 +6,7 @@
     <string name="dashboard">Dashboard</string>
     <string name="leaves">Leaves</string>
     <string name="attendant">Attendant</string>
+    <string name="shift">Shift</string>
     <string name="profile">Profile</string>
     <string name="group">Group</string>
     <string name="label_default">Default</string>
@@ -22,6 +23,10 @@
     <string name="msg_no_project_desc">It\'s looks like you don\'t have any project</string>
     <string name="msg_no_assignees">No Assignees</string>
     <string name="msg_no_assignees_desc">It looks like you don\'t have any assignees for this task</string>
+    <string name="msg_no_team">No Team Found</string>
+    <string name="msg_no_team_desc">Your company doesn\'t have any team</string>
+    <string name="msg_no_data">No data</string>
+    <string name="msg_no_data_desc">No data available</string>
 
     <!--  Error  -->
     <string name="error_user_not_found">User not found</string>
