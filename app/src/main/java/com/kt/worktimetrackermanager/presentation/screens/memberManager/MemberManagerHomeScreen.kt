@@ -147,8 +147,8 @@ fun MembersStatistic(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         SummaryCard(title = stringResource(R.string.member_manager_home_label_total_mem), count = membersStatistic.totalMember, Color(0xFF4CAF50))
-        SummaryCard(title = Role.MANAGER.toString(), count = membersStatistic.managerCount, Color(0xFFFFA000))
-        SummaryCard(title = Role.STAFF.toString(), count = membersStatistic.staffCount, Color(0xFF2196F3))
+        SummaryCard(title = Role.Manager.toString(), count = membersStatistic.managerCount, Color(0xFFFFA000))
+        SummaryCard(title = Role.Staff.toString(), count = membersStatistic.staffCount, Color(0xFF2196F3))
     }
 }
 

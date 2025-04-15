@@ -7,6 +7,7 @@ import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
 import java.lang.reflect.Type
 
 class EmployeeTypeAdapter : JsonSerializer<EmployeeType>, JsonDeserializer<EmployeeType> {
@@ -23,6 +24,15 @@ class EmployeeTypeAdapter : JsonSerializer<EmployeeType>, JsonDeserializer<Emplo
         typeOfT: Type,
         context: JsonDeserializationContext?,
     ): EmployeeType? {
-        return EmployeeType.valueOf(json.asString)
+        val value = json.asInt
+        return EmployeeType.fromInt(value)
     }
+
+//    override fun deserialize(
+//        json: JsonElement,
+//        typeOfT: Type,
+//        context: JsonDeserializationContext?,
+//    ): EmployeeType? {
+//        return EmployeeType.valueOf(json.asString)
+//    }
 }

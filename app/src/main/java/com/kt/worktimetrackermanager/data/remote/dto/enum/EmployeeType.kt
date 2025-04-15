@@ -16,3 +16,4 @@ enum class EmployeeType(val value: Int) {
                 ?.joinToString(" ") { it.lowercase().replaceFirstChar { char -> char.uppercase() } }
         }
     }
+}

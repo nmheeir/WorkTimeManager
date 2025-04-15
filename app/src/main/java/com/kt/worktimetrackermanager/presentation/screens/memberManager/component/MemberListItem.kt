@@ -120,7 +120,7 @@ fun MemberListItem(user: User, onNavigate:() -> Unit) {
                 .padding(horizontal = 12.dp, vertical = 4.dp)
         ) {
             Text(
-                text = EmployeeType.fromIntToName(user.employeeType).toString(),
+                text = EmployeeType.fromIntToName(user.employeeType.ordinal).toString(),
                 fontWeight = FontWeight(600),
                 color = MaterialTheme.colorScheme.onPrimary,
             )
@@ -190,7 +190,7 @@ fun MemberListItem2(user: User, onNavigate:() -> Unit, isClickable: Boolean = tr
                             .padding(horizontal = 2.dp, vertical = 2.dp)
                     ) {
                         Text(
-                            text = EmployeeType.fromIntToName(user.employeeType).toString(),
+                            text = EmployeeType.fromIntToName(user.employeeType.ordinal).toString(),
                             fontWeight = FontWeight(600),
                             color = MaterialTheme.colorScheme.onPrimary,
                             style = MaterialTheme.typography.labelSmall

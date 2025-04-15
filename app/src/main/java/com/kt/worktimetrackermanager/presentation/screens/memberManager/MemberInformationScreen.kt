@@ -164,7 +164,7 @@ fun HeaderInfor(
                 Row(
                     modifier = Modifier.padding(vertical = 20.dp)
                 ) {
-                    EmployeeType.fromIntToName(user.employeeType)?.let {
+                    EmployeeType.fromIntToName(user.employeeType.ordinal)?.let {
                         Text(it, color = Color.Gray)
                     }
                     user.companyTeam?.let {
@@ -220,7 +220,7 @@ fun Information(user: User) {
         stringResource(R.string.team) to (user.companyTeam?.name ?: "None"),
         stringResource(R.string.start_date) to Helper.convertToCustomDateFormat2(user.createdAt),
         stringResource(R.string.department) to user.department,
-        stringResource(R.string.EmpType) to (EmployeeType.fromIntToName(user.employeeType)?:"None"),
+        stringResource(R.string.EmpType) to (EmployeeType.fromIntToName(user.employeeType.ordinal)?:"None"),
         stringResource(R.string.role) to (Role.fromIntToName(user.role.ordinal)?:"None"),
     )
 

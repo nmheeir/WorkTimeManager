@@ -467,7 +467,7 @@ fun AddMemberPreview() {
                 employeeType = EmployeeType.FULL_TIME,
                 password = "",
                 phoneNumber = "",
-                role = Role.STAFF,
+                role = Role.Staff,
                 teamId = null,
                 userFullName = "",
                 userName = "",

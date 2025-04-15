@@ -125,7 +125,7 @@ fun TeamInformationLayout(
                 .padding(start = 10.dp, end = 10.dp, bottom = 40.dp)
         ) {
 
-            val manager = state.team.users?.firstOrNull { u -> u.role == Role.MANAGER }
+            val manager = state.team.users?.firstOrNull { u -> u.role == Role.Manager }
 
             TeamManagerInformation(manager, onNavigateTo)
             TeamMemberList(state.team, onNavigateTo)

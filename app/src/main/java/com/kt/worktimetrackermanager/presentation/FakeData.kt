@@ -12,8 +12,6 @@ import com.kt.worktimetrackermanager.data.remote.dto.response.Project
 import com.kt.worktimetrackermanager.data.remote.dto.response.Report
 import com.kt.worktimetrackermanager.data.remote.dto.response.Task
 import com.kt.worktimetrackermanager.data.remote.dto.response.TaskStatistics
-import com.kt.worktimetrackermanager.data.remote.dto.response.Team
-import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.data.remote.dto.response.UserProfileDto
 import java.time.LocalDateTime
 import kotlin.random.Random
@@ -29,7 +27,7 @@ val fakeUser = User(
     department = "Phòng Kỹ thuật",
     designation = "Kỹ sư phần mềm",
     email = "nguyenvana@example.com",
-    employeeType = EmployeeType.Pernament,
+    employeeType = EmployeeType.PERNAMENT,
     id = 1001,
     phoneNumber = "0987654321",
     role = Role.Master,
@@ -57,10 +55,10 @@ val sampleUser = User(
     department = "Engineering",
     designation = "Software Engineer",
     email = "user@example.com",
-    employeeType = 1,  // Có thể là mã loại nhân viên
+    employeeType = EmployeeType.PERNAMENT,  // Có thể là mã loại nhân viên
     id = 1001,
     phoneNumber = "+1234567890",
-    role = Role.STAFF,  // Có thể là mã vai trò (ví dụ: admin, user, v.v.)
+    role = Role.Staff,  // Có thể là mã vai trò (ví dụ: admin, user, v.v.)
     teamId = 1,
     userFullName = "John Doe",
     userName = "johndoe",
@@ -99,10 +97,10 @@ val exampleUsers = List(1) {
         department = "Engineering",
         designation = "Software Engineer",
         email = "user@example.com",
-        employeeType = 1,  // Có thể là mã loại nhân viên
+        employeeType = EmployeeType.PERNAMENT,  // Có thể là mã loại nhân viên
         id = 1001 + it, // Tăng ID mỗi lần tạo user
         phoneNumber = "+1234567890",
-        role = Role.STAFF,  // Có thể là mã vai trò (ví dụ: admin, user, v.v.)
+        role = Role.Staff,  // Có thể là mã vai trò (ví dụ: admin, user, v.v.)
         teamId = 1,
         userFullName = "John Doe $it", // Tạo tên người dùng theo chỉ số
         userName = "johndoe$it", // Tạo tên người dùng theo chỉ số
@@ -137,10 +135,10 @@ val exampleUser1 = User(
     department = "Engineering",
     designation = "Software Engineer",
     email = "user@example.com",
-    employeeType = 1,  // Có thể là mã loại nhân viên
+    employeeType = EmployeeType.FULL_TIME,  // Có thể là mã loại nhân viên
     id = 1001,
     phoneNumber = "+1234567890",
-    role = Role.MANAGER,  // Có thể là mã vai trò (ví dụ: admin, user, v.v.)
+    role = Role.Manager,  // Có thể là mã vai trò (ví dụ: admin, user, v.v.)
     teamId = 1,
     userFullName = "John Doe",
     userName = "johndoe",
