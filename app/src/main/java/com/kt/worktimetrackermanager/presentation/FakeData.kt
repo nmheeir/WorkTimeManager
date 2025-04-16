@@ -4,6 +4,7 @@ import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Priority
 import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enum.ShiftType
 import com.kt.worktimetrackermanager.data.remote.dto.response.Project
 import com.kt.worktimetrackermanager.data.remote.dto.response.Report
 import com.kt.worktimetrackermanager.data.remote.dto.response.Shift
@@ -142,6 +143,7 @@ val fakeShifts = List(10) {
         end = LocalDateTime.now().plusDays(Random.nextLong(1, 30)),
         checkIn = LocalDateTime.now().minusDays(Random.nextLong(1, 30)),
         checkOut = LocalDateTime.now().plusDays(Random.nextLong(1, 30)),
+        shiftType = ShiftType.entries.random(),
         workDuration = Random.nextFloat() * 8,
         user = fakeUser
     )

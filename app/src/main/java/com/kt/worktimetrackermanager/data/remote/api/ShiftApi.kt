@@ -5,6 +5,7 @@ import com.kt.worktimetrackermanager.data.remote.dto.response.DataResponse
 import com.kt.worktimetrackermanager.data.remote.dto.response.PagedDataResponse
 import com.kt.worktimetrackermanager.data.remote.dto.response.Shift
 import com.skydoves.sandwich.ApiResponse
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -16,7 +17,7 @@ interface ShiftApi {
     @POST("Shift/add")
     suspend fun addShift(
         @Header("Authorization") token: String,
-        shifts: List<AddShiftRequest>,
+        @Body shifts: List<AddShiftRequest>,
     ): ApiResponse<DataResponse<Unit>>
 
     @GET("Shift/team")

@@ -4,13 +4,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,6 +28,7 @@ import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.core.presentation.ui.EmptyBox
+import com.kt.worktimetrackermanager.core.presentation.ui.components.HideOnScrollComponent
 import com.kt.worktimetrackermanager.presentation.components.items.ShiftCardItem
 
 
@@ -39,32 +44,53 @@ fun TeamShiftScreen(
             TopBar()
         }
     ) { paddingValues ->
-        LazyColumn(
-            contentPadding = PaddingValues(vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
-            modifier = Modifier
-                .padding(paddingValues)
-                .hozPadding()
+        Box(
+            modifier = Modifier.padding(paddingValues)
         ) {
-            if (shifts.isEmpty()) {
-                item(
-                    key = "no_shift"
-                ) {
-                    EmptyBox(
-                        stringRes = R.string.msg_no_data,
-                        descRes = R.string.msg_no_data_desc
+            val lazyListState = rememberLazyListState()
+            LazyColumn(
+                state = lazyListState,
+                contentPadding = PaddingValues(vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
+                modifier = Modifier
+                    .hozPadding()
+            ) {
+                if (shifts.isEmpty()) {
+                    item(
+                        key = "no_shift"
+                    ) {
+                        EmptyBox(
+                            stringRes = R.string.msg_no_data,
+                            descRes = R.string.msg_no_data_desc
+                        )
+                    }
+                }
+
+                // TODO: Filter Shift
+
+                items(
+                    items = shifts,
+                    key = { it.id }
+                ) { shift ->
+                    ShiftCardItem(
+                        shift = shift
+
                     )
                 }
             }
 
-            items(
-                items = shifts,
-                key = { it.id }
-            ) { shift ->
-                ShiftCardItem(
-                    shift = shift,
-
+            HideOnScrollComponent(lazyListState = lazyListState) {
+                Button(
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        navController.navigate("shift/assign_shift")
+                    }
+                ) {
+                    Text(
+                        text = "Add Shift"
                     )
+                }
             }
         }
     }
@@ -72,10 +98,10 @@ fun TeamShiftScreen(
 
 @Composable
 private fun TopBar(modifier: Modifier = Modifier) {
-    Box(
+    Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
-            .background(Color.Red)
-    )
+    ) {
+
+    }
 }

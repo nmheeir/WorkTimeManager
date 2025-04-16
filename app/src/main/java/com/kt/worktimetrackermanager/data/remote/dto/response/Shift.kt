@@ -1,5 +1,6 @@
 package com.kt.worktimetrackermanager.data.remote.dto.response
 
+import com.kt.worktimetrackermanager.data.remote.dto.enum.ShiftType
 import java.time.LocalDateTime
 
 data class Shift(
@@ -9,5 +10,6 @@ data class Shift(
     val checkIn: LocalDateTime? = null,
     val checkOut: LocalDateTime? = null,
     val workDuration: Float,
+    val shiftType: ShiftType,
     val user: User?,
 )

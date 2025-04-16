@@ -37,6 +37,14 @@ fun LocalTime.parse(): String {
     return this.format(formatterSecond)
 }
 
+fun LocalTime.getAmPm(): String {
+    return if (this.hour >= 12) {
+        "PM"
+    } else {
+        "AM"
+    }
+}
+
 fun LocalDate.parse(): String {
     return this.format(dateFormatter)
 }

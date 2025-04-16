@@ -26,6 +26,7 @@ import com.kt.worktimetrackermanager.presentation.screens.dashboard.TeamDashboar
 import com.kt.worktimetrackermanager.presentation.screens.project.CreateProjectScreen
 import com.kt.worktimetrackermanager.presentation.screens.project.ProjectDetailScreen
 import com.kt.worktimetrackermanager.presentation.screens.project.ProjectScreen
+import com.kt.worktimetrackermanager.presentation.screens.shift.AssignShiftScreen
 import com.kt.worktimetrackermanager.presentation.screens.shift.CompanyShiftScreen
 import com.kt.worktimetrackermanager.presentation.screens.shift.TeamShiftScreen
 import com.kt.worktimetrackermanager.presentation.screens.task.TaskDetailScreen
@@ -162,7 +163,13 @@ fun NavGraphBuilder.navigationBuilder(
             }
         )
     ) {
+        TeamShiftScreen(navController)
+    }
 
+    composable(
+        route = "shift/assign_shift"
+    ) {
+        AssignShiftScreen(navController)
     }
 
     composable(

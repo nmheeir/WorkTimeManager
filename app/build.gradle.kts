@@ -131,4 +131,7 @@ dependencies {
 
     //Jwt
     implementation("io.jsonwebtoken:jjwt:0.9.1")
+
+    //Snapper
+    implementation("dev.chrisbanes.snapper:snapper:0.3.0")
 }
