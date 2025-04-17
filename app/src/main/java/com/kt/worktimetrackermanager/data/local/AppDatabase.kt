@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.kt.worktimetrackermanager.data.local.entities.NotificationEntity
+import com.kt.worktimetrackermanager.data.local.entities.ProfileEntity
 import com.kt.worktimetrackermanager.data.local.entities.UserSessionEntity
 
 class AppDatabase(
@@ -31,10 +32,10 @@ class AppDatabase(
 
 @Database(
     entities = [
-        UserSessionEntity::class, NotificationEntity::class
+        UserSessionEntity::class, NotificationEntity::class, ProfileEntity::class
     ],
     exportSchema = true,
-    version = 2
+    version = 3,
 )
 @TypeConverters(Converters::class)
 abstract class InternalDatabase : RoomDatabase() {
@@ -45,7 +46,9 @@ abstract class InternalDatabase : RoomDatabase() {
 
         fun newInstance(context: Context) =
             AppDatabase(
-                delegate = Room.databaseBuilder(context, InternalDatabase::class.java, DB_NAME)
+                delegate = Room
+                    .databaseBuilder(context, InternalDatabase::class.java, DB_NAME)
+                    .fallbackToDestructiveMigration()
                     .build()
             )
 

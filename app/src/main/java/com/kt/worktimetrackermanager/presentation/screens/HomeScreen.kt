@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.clickable
+import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.presentation.activities.LocalMainViewModel
 import com.kt.worktimetrackermanager.presentation.components.EmptyCardState
@@ -131,9 +132,11 @@ private fun HomeTopBar(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
-            modifier = modifier.clickable {
-                onNavigate(Screens.Profile)
-            }
+            modifier = modifier
+                .clickable {
+                    onNavigate(Screens.Profile)
+                }
+                .padding(MaterialTheme.padding.small)
         ) {
             CircleImage(
                 imageUrl = it.avatarUrl ?: "",

@@ -179,7 +179,7 @@ class MainActivity : ComponentActivity() {
                         ) { paddingValues ->
                             NavHost(
                                 navController = navController,
-                                startDestination = viewModel.startDestination.value,
+                                startDestination = Screens.Login.route,
                                 enterTransition = {
                                     if (initialState.destination.route in topLevelScreens
                                         && targetState.destination.route in topLevelScreens

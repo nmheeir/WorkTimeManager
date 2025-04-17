@@ -5,21 +5,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kt.worktimetrackermanager.core.presentation.utils.DeviceTokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
+import com.kt.worktimetrackermanager.core.presentation.utils.UsernameKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
+import com.kt.worktimetrackermanager.core.presentation.utils.delete
+import com.kt.worktimetrackermanager.core.presentation.utils.deletes
 import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.core.presentation.utils.set
-import com.kt.worktimetrackermanager.data.local.LocalUserManager
+import com.kt.worktimetrackermanager.data.local.AppDatabase
+import com.kt.worktimetrackermanager.data.remote.dto.response.User
+import com.kt.worktimetrackermanager.data.remote.dto.response.toProfileEntity
 import com.kt.worktimetrackermanager.domain.use_case.AuthUseCase
+import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
 import com.skydoves.sandwich.StatusCode
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.retrofit.errorBody
 import com.skydoves.sandwich.retrofit.statusCode
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
+import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -30,14 +38,19 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val database: AppDatabase,
     private val authUseCase: AuthUseCase,
-    private val localUserManager: LocalUserManager,
+    private val userUseCase: UserUseCase,
 ) : ViewModel() {
+
+    private val token = context.dataStore[TokenKey]
 
     val uiState = MutableStateFlow(LoginUiState())
 
     private val _channel = Channel<LoginUiEvent>()
     val channel = _channel.receiveAsFlow()
+
+    val isLoading = MutableStateFlow(true)
 
     fun onAction(action: LoginUiAction) {
         when (action) {
@@ -82,9 +95,11 @@ class LoginViewModel @Inject constructor(
 
     init {
         Timber.d("LoginViewModel initialized")
+        checkTokeExpire()
     }
 
     private fun login() {
+        isLoading.value = true
         viewModelScope.launch {
             val deviceToken = context.dataStore[DeviceTokenKey]
             if (deviceToken == null) {
@@ -122,10 +137,49 @@ class LoginViewModel @Inject constructor(
                     _channel.send(LoginUiEvent.Failure(this.message ?: ""))
                     Timber.d("Exception: ${this.message}")
                 }
+
+            isLoading.value = false
         }
     }
 
+    private fun checkTokeExpire() {
+        isLoading.value = true
+        viewModelScope.launch {
+            if (token.isNullOrEmpty()) {
+                Timber.d("Token is null")
+                return@launch
+            } else {
+                userUseCase.getUserProfile(token)
+                    .suspendOnSuccess {
+                        Timber.d("Success: ${this.data}")
+                        insertProfile(this.data.data!!)
+                        _channel.send(LoginUiEvent.Success)
+                    }
+                    .suspendOnFailure {
+                        clearData()
+                        Timber.d("Failure:%s", this.message())
+                        context.dataStore.delete(TokenKey)
+                        return@suspendOnFailure
+                    }
+                    .suspendOnException {
+                        Timber.d("Exception:%s", this.message())
+                        clearData()
+                        context.dataStore.delete(TokenKey)
+                        return@suspendOnException
+                    }
+            }
+            isLoading.value = false
+        }
+    }
 
+    private fun clearData() {
+        database.clearProfile()
+        context.dataStore.deletes(listOf(TokenKey, UsernameKey))
+    }
+
+    private suspend fun insertProfile(user: User) {
+        database.insert(user.toProfileEntity())
+    }
 }
 
 data class LoginUiState(

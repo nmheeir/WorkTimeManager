@@ -36,6 +36,7 @@ import com.kt.worktimetrackermanager.presentation.viewmodels.LoginUiState
 import com.kt.worktimetrackermanager.presentation.viewmodels.LoginViewModel
 import com.kt.worktimetrackermanager.core.presentation.utils.ObserveAsEvents
 import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 
 // --------------------
 // LoginScreen: Chịu trách nhiệm xử lý logic, quan sát sự kiện và định tuyến
@@ -43,10 +44,15 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+
+    LaunchedEffect(isLoading) {
+        Timber.d("LoginScreen LaunchedEffect: $isLoading")
+    }
 
     // Tách riêng phần quan sát sự kiện login
     ObserveLoginEvents(
@@ -64,11 +70,25 @@ fun LoginScreen(
     )
 
     // Giao diện chính của Login
-    LoginContent(
-        uiState = uiState,
-        onAction = viewModel::onAction,
-        onNavigateTo = { route -> navController.navigate(route) }
-    )
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        LoginContent(
+            uiState = uiState,
+            onAction = viewModel::onAction,
+            onNavigateTo = { route -> navController.navigate(route) }
+        )
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+            )
+
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
+    }
 }
 
 // --------------------
@@ -79,7 +99,7 @@ private fun ObserveLoginEvents(
     eventChannel: Flow<LoginUiEvent>, // Sử dụng kiểu chính xác của channel nếu có
     onNavigateToHome: () -> Unit,
     onError: (String) -> Unit,
-    onFailure: (String) -> Unit
+    onFailure: (String) -> Unit,
 ) {
     val userNotFoundMsg = stringResource(id = R.string.error_user_not_found)
     val wrongPasswordMsg = stringResource(id = R.string.error_wrong_password)
@@ -100,7 +120,7 @@ private fun ObserveLoginEvents(
 fun LoginContent(
     uiState: LoginUiState,
     onAction: (LoginUiAction) -> Unit,
-    onNavigateTo: (String) -> Unit
+    onNavigateTo: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -149,7 +169,7 @@ fun LoginField(
     uiState: LoginUiState,
     onEvent: (LoginUiAction) -> Unit,
     onNavigateTo: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         Column(
@@ -161,7 +181,12 @@ fun LoginField(
             Spacer(modifier = Modifier.height(16.dp))
             // Ô nhập username
             OutlinedTextField(
-                label = { Text(stringResource(R.string.label_username), color = MaterialTheme.colorScheme.primary) },
+                label = {
+                    Text(
+                        stringResource(R.string.label_username),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
                 value = uiState.username,
                 onValueChange = { onEvent(LoginUiAction.OnUsernameChange(it)) },
                 maxLines = 1,
@@ -182,7 +207,12 @@ fun LoginField(
             Spacer(modifier = Modifier.height(4.dp))
             // Ô nhập password
             OutlinedTextField(
-                label = { Text(stringResource(R.string.label_password), color = MaterialTheme.colorScheme.primary) },
+                label = {
+                    Text(
+                        stringResource(R.string.label_password),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
                 value = uiState.password,
                 onValueChange = { onEvent(LoginUiAction.OnPasswordChange(it)) },
                 maxLines = 1,
@@ -236,7 +266,7 @@ fun LoginField(
 private fun RememberAndForgotRow(
     uiState: LoginUiState,
     onEvent: (LoginUiAction) -> Unit,
-    onNavigateTo: (String) -> Unit
+    onNavigateTo: (String) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
