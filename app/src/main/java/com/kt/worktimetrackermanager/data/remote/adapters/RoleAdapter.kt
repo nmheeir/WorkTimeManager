@@ -10,14 +10,21 @@ import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
 import java.lang.reflect.Type
 
 class RoleAdapter : JsonDeserializer<Role>, JsonSerializer<Role> {
-    override fun deserialize(
-        json: JsonElement,
-        typeOfT: Type,
-        context: JsonDeserializationContext,
-    ): Role {
-        return Role.valueOf(json.asString)
-    }
-
+//    override fun deserialize(
+//        json: JsonElement,
+//        typeOfT: Type,
+//        context: JsonDeserializationContext,
+//    ): Role {
+//        return Role.valueOf(json.asString)
+//    }
+override fun deserialize(
+    json: JsonElement,
+    typeOfT: Type,
+    context: JsonDeserializationContext,
+): Role {
+    val value = json.asInt
+    return Role.fromInt(value)
+}
     override fun serialize(
         src: Role,
         typeOfSrc: Type,

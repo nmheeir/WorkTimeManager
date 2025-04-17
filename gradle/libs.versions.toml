@@ -19,7 +19,7 @@ ksp = "2.0.10-1.0.24"
 room = "2.6.1"
 timber = "5.0.1"
 
-okHttp3Logging = "4.12.0"
+okHttp3Logging = "4.9.1"
 retrofit = "2.11.0"
 
 material = "1.12.0"
@@ -31,6 +31,8 @@ kotlinxCollectionsImmutable = "0.3.8"
 kizitonwose-calendar = "2.6.2"
 
 vico = "2.1.0"
+osmdroidAndroid = "6.1.18"
+playServicesLocation = "21.3.0"
 googleGmsGoogleServices = "4.4.2"
 firebaseMessaging = "24.1.1"
 
@@ -82,6 +84,8 @@ kizitonwose-calendar = { module = "com.kizitonwose.calendar:compose", version.re
 
 vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 
 [plugins]
@@ -91,4 +95,3 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
-

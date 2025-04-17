@@ -134,4 +134,7 @@ dependencies {
 
     //Snapper
     implementation("dev.chrisbanes.snapper:snapper:0.3.0")
+
+    // Map
+    implementation (libs.osmdroid.android)
 }

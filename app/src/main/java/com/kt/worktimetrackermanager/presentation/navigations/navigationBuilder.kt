@@ -23,6 +23,13 @@ import com.kt.worktimetrackermanager.presentation.screens.auth.RegisterScreen
 import com.kt.worktimetrackermanager.presentation.screens.auth.ResetPasswordSuccessScreen
 import com.kt.worktimetrackermanager.presentation.screens.dashboard.StaffDashboardScreen
 import com.kt.worktimetrackermanager.presentation.screens.dashboard.TeamDashboardScreen
+import com.kt.worktimetrackermanager.presentation.screens.memberManager.AddMemberScreen
+import com.kt.worktimetrackermanager.presentation.screens.memberManager.MemberInforScreen
+import com.kt.worktimetrackermanager.presentation.screens.memberManager.MemberListScreen
+import com.kt.worktimetrackermanager.presentation.screens.memberManager.MemberManagerHomeScreen
+import com.kt.worktimetrackermanager.presentation.screens.memberManager.TeamCreateScreen
+import com.kt.worktimetrackermanager.presentation.screens.memberManager.TeamInformationScreen
+import com.kt.worktimetrackermanager.presentation.screens.memberManager.TeamListScreen
 import com.kt.worktimetrackermanager.presentation.screens.project.CreateProjectScreen
 import com.kt.worktimetrackermanager.presentation.screens.project.ProjectDetailScreen
 import com.kt.worktimetrackermanager.presentation.screens.project.ProjectScreen
@@ -31,6 +38,8 @@ import com.kt.worktimetrackermanager.presentation.screens.shift.CompanyShiftScre
 import com.kt.worktimetrackermanager.presentation.screens.shift.TeamShiftScreen
 import com.kt.worktimetrackermanager.presentation.screens.task.TaskDetailScreen
 import com.kt.worktimetrackermanager.presentation.viewmodels.TeamDashboardViewModel
+import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.MemberInforViewModel
+import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.TeamInformationViewModel
 import timber.log.Timber
 
 fun NavGraphBuilder.navigationBuilder(
@@ -211,4 +220,58 @@ fun NavGraphBuilder.navigationBuilder(
     ) {
         TaskDetailScreen(navController)
     }
+    
+    composable(
+        route = Screens.NavigationBarScreens.Member.route
+    ) {
+        MemberManagerHomeScreen(navController = navController)
+    }
+
+    composable(
+        route = Screens.AddMember.route,
+    ) {
+        AddMemberScreen(navController = navController)
+    }
+
+    composable (
+        route = Screens.TeamCreate.route
+    ) {
+        TeamCreateScreen(navController = navController)
+    }
+
+    composable(
+        route = Screens.MemberList().route,
+    ) {
+        MemberListScreen(navController = navController)
+    }
+
+    composable(
+        route = "memberInfor/{userId}",
+        arguments = listOf(navArgument("userId") { type = NavType.IntType })
+    ) { backStackEntry ->
+        MemberInforScreen(
+            navController = navController,
+        )
+
+    }
+
+    composable(
+        route = Screens.TeamList.route
+    ) {
+        TeamListScreen(
+            navController = navController
+        )
+    }
+
+    composable(
+        route = "teamInfor/{teamId}",
+        arguments = listOf(navArgument("teamId") {
+            type = NavType.IntType
+        })
+    ) { backStackEntry ->
+        TeamInformationScreen(
+            navController = navController,
+        )
+    }
+
 }

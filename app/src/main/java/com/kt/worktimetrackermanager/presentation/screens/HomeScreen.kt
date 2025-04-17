@@ -7,13 +7,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,21 +22,24 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.clickable
-import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.core.presentation.padding
-import com.kt.worktimetrackermanager.core.presentation.utils.Gap
 import com.kt.worktimetrackermanager.presentation.activities.LocalMainViewModel
 import com.kt.worktimetrackermanager.presentation.components.EmptyCardState
-import com.kt.worktimetrackermanager.presentation.components.image.CircleImage
+import com.kt.worktimetrackermanager.presentation.components.image.CoilImage
+import com.kt.worktimetrackermanager.presentation.navigations.Screens
+import com.kt.worktimetrackermanager.presentation.ui.theme.WorkTimeTrackerManagerTheme
 import com.kt.worktimetrackermanager.presentation.viewmodels.HomeViewModel
 
 @Composable
@@ -44,16 +47,29 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
+//    Timber.d(mainViewModel.startDestination.value)
+    HomeLayout(
+        onNavigate = {
+            screens -> navController.navigate(screens.route)
+        }
+    )
+}
+@Composable
+fun HomeLayout(
+    onNavigate : (Screens) -> Unit
+) {
     Scaffold(
         topBar = {
-            HomeTopBar(navController = navController)
+            HomeTopBar(
+                modifier = Modifier,
+                onNavigate = onNavigate
+            )
         },
         modifier = Modifier
             .background(MaterialTheme.colorScheme.onSurface)
             .fillMaxSize()
     ) { paddingValues ->
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxWidth()
@@ -106,55 +122,80 @@ fun HomeScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeTopBar(
-    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    onNavigate: (Screens) -> Unit,
 ) {
     val mainViewModel = LocalMainViewModel.current
     val user by mainViewModel.user.collectAsStateWithLifecycle()
-
-    user.takeIf { it != null }?.let { user ->
+    Text(
+        text = "Profile",
+        modifier = Modifier
+            .clickable {
+                onNavigate(Screens.Profile)
+            }
+    )
+    user?.let {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
-            modifier = Modifier
-                .fillMaxWidth()
-                .hozPadding()
-                .clickable {
-                    navController.navigate("profile")
-                }
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small)
         ) {
-            CircleImage(
-                imageUrl = user.avatarUrl ?: "",
-                size = 48.dp
+            CoilImage(
+                imageUrl = it.avatarUrl!!,
+                contentDescription = null,
+                modifier = modifier
+                    .clip(CircleShape)
+                    .size(54.dp)
             )
             Column(
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
-                horizontalAlignment = Alignment.Start,
                 modifier = Modifier
                     .weight(1f)
             ) {
                 Text(
-                    text = user.userName,
-                    style = MaterialTheme.typography.bodyLarge
+                    text = it.userName,
                 )
                 Text(
-                    text = user.department,
-                    style = MaterialTheme.typography.bodyMedium
+                    text = it.department
                 )
             }
-            IconButton(
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ),
-                onClick = {
-                    navController.navigate("notification")
-                }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small)
             ) {
-                Icon(painterResource(R.drawable.ic_notifications), null)
+                IconButton(
+                    onClick = {
+                        onNavigate(Screens.Chat)
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_chat),
+                        contentDescription = null
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        onNavigate(Screens.Notification)
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_notifications),
+                        contentDescription = null
+                    )
+                }
             }
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun HomeLayoutPreview() {
+    WorkTimeTrackerManagerTheme {
+        HomeLayout (
+            onNavigate = {}
+        )
+    }
+}
+

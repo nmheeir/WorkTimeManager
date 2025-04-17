@@ -52,7 +52,7 @@ fun LoginScreen(
     ObserveLoginEvents(
         eventChannel = viewModel.channel,
         onNavigateToHome = {
-            navController.navigate(Screens.Home.route) {
+            navController.navigate(Screens.NavigationBarScreens.Home.route) {
                 popUpTo("login") { inclusive = true }
                 launchSingleTop = true
             }
