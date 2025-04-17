@@ -45,6 +45,8 @@ class PushNotificationService : FirebaseMessagingService() {
         CoroutineScope(Dispatchers.IO).launch {
             val username = applicationContext.dataStore[UsernameKey]
 
+            Timber.d("Received notification: $title, $body, $type, $username")
+
             if (username != null) {
                 val notification = NotificationEntity(
                     receivedUsername = username,

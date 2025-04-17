@@ -43,6 +43,7 @@ import com.kt.worktimetrackermanager.presentation.components.dialog.AlertDialog
 import com.kt.worktimetrackermanager.presentation.components.items.NotificationCardItem
 import com.kt.worktimetrackermanager.presentation.viewmodels.NotificationUiAction
 import com.kt.worktimetrackermanager.presentation.viewmodels.NotificationViewModel
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -115,8 +116,8 @@ fun NotificationScreen(
                         Icon(painterResource(R.drawable.ic_delete), null)
                         if (showDeleteAllDialog && notifications.isNotEmpty()) {
                             AlertDialog(
-                                title = stringResource(R.string.alert_delete_all),
-                                text = stringResource(R.string.alert_delete_all_desc),
+                                title = "Delete all",
+                                text = "Are you sure you want to delete all notifications?",
                                 onDismiss = { showDeleteAllDialog = false },
                                 onConfirm = {
                                     if (!inSelectMode) {
@@ -124,7 +125,7 @@ fun NotificationScreen(
                                     } else {
                                         viewModel.onAction(
                                             NotificationUiAction.DeleteMultipleNotifications(
-                                                selection
+                                                selection.toList()
                                             )
                                         )
                                         onExitSelectionMode()
@@ -142,7 +143,7 @@ fun NotificationScreen(
                         Icon(painterResource(R.drawable.ic_check_circle), null)
                         if (showMarkAllAsReadDialog && notifications.isNotEmpty()) {
                             AlertDialog(
-                                title = stringResource(R.string.alert_mark_all_as_read),
+                                title = "Mark all as read",
                                 onDismiss = { showMarkAllAsReadDialog = false },
                                 onConfirm = {
                                     if (!inSelectMode) {
@@ -150,9 +151,10 @@ fun NotificationScreen(
                                     } else {
                                         viewModel.onAction(
                                             NotificationUiAction.MarkMultipleAsRead(
-                                                selection
+                                                selection.toList()
                                             )
                                         )
+
                                         onExitSelectionMode()
                                     }
                                     showMarkAllAsReadDialog = false

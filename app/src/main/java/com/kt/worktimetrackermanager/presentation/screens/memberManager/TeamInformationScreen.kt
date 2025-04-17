@@ -37,7 +37,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,18 +54,16 @@ import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.utils.Helper
 import com.kt.worktimetrackermanager.core.presentation.utils.ObserveAsEvents
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.presentation.components.scaffold.MyScaffold
-import com.kt.worktimetrackermanager.presentation.exampleUser1
 import com.kt.worktimetrackermanager.presentation.navigations.Screens
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.component.MemberListItem
 import com.kt.worktimetrackermanager.presentation.ui.theme.WorkTimeTrackerManagerTheme
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.TeamInformationUiEvent
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.TeamInformationUiState
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.TeamInformationViewModel
-import kotlinx.coroutines.flow.Flow
 import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView

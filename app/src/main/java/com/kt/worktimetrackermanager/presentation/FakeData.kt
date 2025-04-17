@@ -1,18 +1,20 @@
 package com.kt.worktimetrackermanager.presentation
 
-import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Priority
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enums.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Priority
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ProjectStatus
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ShiftType
 import com.kt.worktimetrackermanager.data.remote.dto.response.Company
-import com.kt.worktimetrackermanager.data.remote.dto.response.Team
-import com.kt.worktimetrackermanager.data.remote.dto.response.User
-import java.time.LocalDate
 import com.kt.worktimetrackermanager.data.remote.dto.response.Project
 import com.kt.worktimetrackermanager.data.remote.dto.response.Report
+import com.kt.worktimetrackermanager.data.remote.dto.response.Shift
 import com.kt.worktimetrackermanager.data.remote.dto.response.Task
 import com.kt.worktimetrackermanager.data.remote.dto.response.TaskStatistics
+import com.kt.worktimetrackermanager.data.remote.dto.response.Team
+import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.data.remote.dto.response.UserProfileDto
+import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.random.Random
 
@@ -27,7 +29,7 @@ val fakeUser = User(
     department = "Phòng Kỹ thuật",
     designation = "Kỹ sư phần mềm",
     email = "nguyenvana@example.com",
-    employeeType = EmployeeType.PERNAMENT,
+    employeeType = EmployeeType.entries.random(),
     id = 1001,
     phoneNumber = "0987654321",
     role = Role.Master,
@@ -55,7 +57,7 @@ val sampleUser = User(
     department = "Engineering",
     designation = "Software Engineer",
     email = "user@example.com",
-    employeeType = EmployeeType.PERNAMENT,  // Có thể là mã loại nhân viên
+    employeeType = EmployeeType.entries.random(),  // Có thể là mã loại nhân viên
     id = 1001,
     phoneNumber = "+1234567890",
     role = Role.Staff,  // Có thể là mã vai trò (ví dụ: admin, user, v.v.)
@@ -97,7 +99,7 @@ val exampleUsers = List(1) {
         department = "Engineering",
         designation = "Software Engineer",
         email = "user@example.com",
-        employeeType = EmployeeType.PERNAMENT,  // Có thể là mã loại nhân viên
+        employeeType = EmployeeType.entries.random(),  // Có thể là mã loại nhân viên
         id = 1001 + it, // Tăng ID mỗi lần tạo user
         phoneNumber = "+1234567890",
         role = Role.Staff,  // Có thể là mã vai trò (ví dụ: admin, user, v.v.)
@@ -135,7 +137,7 @@ val exampleUser1 = User(
     department = "Engineering",
     designation = "Software Engineer",
     email = "user@example.com",
-    employeeType = EmployeeType.FULL_TIME,  // Có thể là mã loại nhân viên
+    employeeType = EmployeeType.entries.random(),  // Có thể là mã loại nhân viên
     id = 1001,
     phoneNumber = "+1234567890",
     role = Role.Manager,  // Có thể là mã vai trò (ví dụ: admin, user, v.v.)
@@ -206,5 +208,19 @@ val fakeProjects = List(10) { index ->
         updatedAt = updatedAt,
         status = ProjectStatus.entries.random(),
         statistics = fakeTaskStatistic
+    )
+}
+
+
+val fakeShifts = List(10) {
+    Shift(
+        id = it,
+        start = LocalDateTime.now().minusDays(Random.nextLong(1, 30)),
+        end = LocalDateTime.now().plusDays(Random.nextLong(1, 30)),
+        checkIn = LocalDateTime.now().minusDays(Random.nextLong(1, 30)),
+        checkOut = LocalDateTime.now().plusDays(Random.nextLong(1, 30)),
+        shiftType = ShiftType.entries.random(),
+        workDuration = Random.nextFloat() * 8,
+        user = fakeUser
     )
 }

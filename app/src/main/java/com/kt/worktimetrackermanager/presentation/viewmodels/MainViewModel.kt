@@ -11,6 +11,7 @@ import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.delete
 import com.kt.worktimetrackermanager.core.presentation.utils.deletes
 import com.kt.worktimetrackermanager.core.presentation.utils.get
+import com.kt.worktimetrackermanager.core.presentation.utils.set
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
 import com.skydoves.sandwich.retrofit.apiMessage
@@ -55,6 +56,7 @@ class MainViewModel @Inject constructor(
             .suspendOnSuccess {
                 Timber.d(this.data.data.toString())
                 startDestination.value = "home"
+                context.dataStore.set(UsernameKey, this.data.data!!.userName)
                 user.value = this.data.data!!
             }
             .suspendOnFailure {

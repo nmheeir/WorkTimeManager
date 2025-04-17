@@ -137,4 +137,18 @@ dependencies {
 
     // Map
     implementation (libs.osmdroid.android)
+    implementation(libs.play.services.location)
+
+    // lịch
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:1.3.0")
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:clock:1.3.0")
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:option:1.3.0")
+
+    //icon
+    implementation ("androidx.compose.material:material-icons-extended:1.7.8")
+
+    //Constraint layout
+    implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation(kotlin("reflect"))
 }

@@ -53,6 +53,7 @@ class MiddlewareRoleViewModel @Inject constructor(
             userUseCase.getUserProfile(token)
                 .suspendOnSuccess {
                     role.value = this.data.data!!.role
+                    Timber.d(this.data.data.toString())
                 }
                 .suspendOnFailure {
                     Timber.d("Failure: %s", this.message())

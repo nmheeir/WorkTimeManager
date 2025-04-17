@@ -97,13 +97,13 @@ fun NavGraphBuilder.navigationBuilder(
     }
 
     composable(
-        route = "home"
+        route = Screens.NavigationBarScreens.Home.route
     ) {
         HomeScreen(navController)
     }
 
     composable(
-        route = "dashboard"
+        route = Screens.NavigationBarScreens.Dashboard.route
     ) {
         MiddlewareRole(
             masterContent = {
@@ -138,7 +138,7 @@ fun NavGraphBuilder.navigationBuilder(
     }
 
     composable(
-        route = "chat"
+        route = Screens.Chat.route
     ) {
         Text(
             text = "Chat"
@@ -146,13 +146,13 @@ fun NavGraphBuilder.navigationBuilder(
     }
 
     composable(
-        route = "notification"
+        route = Screens.Notification.route
     ) {
         NotificationScreen(navController)
     }
 
     composable(
-        route = "shift"
+        route = Screens.NavigationBarScreens.Shift.route
     ) {
         MiddlewareRole(
             managerContent = {
@@ -182,13 +182,13 @@ fun NavGraphBuilder.navigationBuilder(
     }
 
     composable(
-        route = "profile"
+        route = Screens.Profile.route
     ) {
         ProfileScreen(navController)
     }
 
     composable(
-        route = "project"
+        route = Screens.NavigationBarScreens.Project.route
     ) {
         ProjectScreen(navController)
     }
@@ -220,7 +220,7 @@ fun NavGraphBuilder.navigationBuilder(
     ) {
         TaskDetailScreen(navController)
     }
-    
+
     composable(
         route = Screens.NavigationBarScreens.Member.route
     ) {
@@ -233,7 +233,7 @@ fun NavGraphBuilder.navigationBuilder(
         AddMemberScreen(navController = navController)
     }
 
-    composable (
+    composable(
         route = Screens.TeamCreate.route
     ) {
         TeamCreateScreen(navController = navController)

@@ -1,10 +1,6 @@
 package com.kt.worktimetrackermanager.presentation.screens.memberManager
 
 import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Accessibility
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.DateRange
@@ -37,14 +32,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -56,22 +47,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.utils.ObserveAsEvents
-import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enums.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
+import com.kt.worktimetrackermanager.presentation.components.calendar.MyCalendarDialog
 import com.kt.worktimetrackermanager.presentation.components.dropdownMenu.DropdownMenuForEnum
 import com.kt.worktimetrackermanager.presentation.components.dropdownMenu.DropdownMenuForList
-import com.kt.worktimetrackermanager.presentation.components.customButton.GlowingButton
-import com.kt.worktimetrackermanager.presentation.components.calendar.MyCalendarDialog
 import com.kt.worktimetrackermanager.presentation.components.scaffold.MyScaffold
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.component.MyOutlineTextField
 import com.kt.worktimetrackermanager.presentation.ui.theme.WorkTimeTrackerManagerTheme
@@ -79,7 +67,6 @@ import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.AddMe
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.AddMemberUiEvent
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.AddMemberUiState
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.AddMemberViewModel
-import com.maxkeppeker.sheets.core.models.base.IconSource
 import timber.log.Timber
 import java.time.LocalDate
 
@@ -464,7 +451,7 @@ fun AddMemberPreview() {
                 department = "",
                 designation = "",
                 email = "",
-                employeeType = EmployeeType.FULL_TIME,
+                employeeType = EmployeeType.entries.random(),
                 password = "",
                 phoneNumber = "",
                 role = Role.Staff,

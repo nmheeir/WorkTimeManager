@@ -17,10 +17,11 @@ sealed class Screens(
         data object Home : NavigationBarScreens(R.string.home, R.drawable.ic_home, "home")
         data object Dashboard : NavigationBarScreens(R.string.dashboard, R.drawable.ic_analytics, "dashboard")
         data object Attendant : NavigationBarScreens(R.string.attendant, R.drawable.ic_date_range, "attendant")
+        data object Shift : NavigationBarScreens(R.string.shift, R.drawable.ic_date_range, "shift")
         data object Member : NavigationBarScreens(R.string.member, R.drawable.ic_groups, "memberManagerHome")
         data object Project : NavigationBarScreens(R.string.project, R.drawable.ic_date_range, "project")
         companion object {
-            val MainScreens = listOf<NavigationBarScreens>(Home, Dashboard, Attendant, Member, Project)
+            val MainScreens = listOf<NavigationBarScreens>(Home, Dashboard, Shift, Member, Project)
         }
     }
 
