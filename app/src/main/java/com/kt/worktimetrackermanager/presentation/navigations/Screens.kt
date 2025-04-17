@@ -40,6 +40,7 @@ sealed class Screens(
     data object Profile : Screens("profile")
     data object Chat : Screens("chat")
     data object Notification : Screens("notification")
+    data object OfficeAssets : Screens("office_assets")
 
     data object AddMember : Screens("addMember")
     data object TeamCreate : Screens("teamCreated")

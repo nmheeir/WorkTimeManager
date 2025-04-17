@@ -173,7 +173,9 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun clearData() {
-        database.clearProfile()
+        viewModelScope.launch {
+            database.clearProfile()
+        }
         context.dataStore.deletes(listOf(TokenKey, UsernameKey))
     }
 

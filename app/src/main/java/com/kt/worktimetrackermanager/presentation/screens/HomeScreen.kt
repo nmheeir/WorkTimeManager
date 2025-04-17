@@ -1,10 +1,12 @@
 package com.kt.worktimetrackermanager.presentation.screens
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,10 +15,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +32,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.clickable
-import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.presentation.activities.LocalMainViewModel
 import com.kt.worktimetrackermanager.presentation.components.EmptyCardState
@@ -45,6 +46,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
 //    Timber.d(mainViewModel.startDestination.value)
+
+
     HomeLayout(
         onNavigate = { screens ->
             navController.navigate(screens.route)
@@ -56,66 +59,63 @@ fun HomeScreen(
 fun HomeLayout(
     onNavigate: (Screens) -> Unit,
 ) {
-    Scaffold(
-        topBar = {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        item(
+            key = "top_bar"
+        ) {
             HomeTopBar(
                 modifier = Modifier,
                 onNavigate = onNavigate
             )
-        },
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.onSurface)
-            .fillMaxSize()
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxWidth()
+        }
+        item(
+            key = "summary"
         ) {
-            item(
-                key = "summary"
+            Card(
+                shape = MaterialTheme.shapes.small,
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                Card(
-                    shape = MaterialTheme.shapes.small,
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                        Text(
-                            text = "Summary",
-                            style = MaterialTheme.typography.labelMedium,
-                        )
-                        Text(
-                            text = "Today task & activities",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                    Text(
+                        text = "Summary",
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                    Text(
+                        text = "Today task & activities",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
+        }
 
-            item(
-                key = "meeting"
-            ) {
-                EmptyCardState(
-                    message = R.string.msg_no_meeting,
-                    desc = R.string.msg_no_meeting_desc,
-                    icon = R.drawable.img_meeting
-                ) { }
-            }
+        item(
+            key = "meeting"
+        ) {
+            EmptyCardState(
+                message = R.string.msg_no_meeting,
+                desc = R.string.msg_no_meeting_desc,
+                icon = R.drawable.img_meeting
+            ) { }
+        }
 
-            item(
-                key = "task"
-            ) {
-                EmptyCardState(
-                    message = R.string.msg_no_task,
-                    desc = R.string.msg_no_task_desc,
-                    icon = R.drawable.img_task
-                ) { }
-            }
+        item(
+            key = "task"
+        ) {
+            EmptyCardState(
+                message = R.string.msg_no_task,
+                desc = R.string.msg_no_task_desc,
+                icon = R.drawable.img_task
+            ) { }
         }
     }
 }
@@ -182,6 +182,10 @@ private fun HomeTopBar(
         }
     }
 }
+
+
+val LocalNavAnimatedVisibilityScope =
+    compositionLocalOf<AnimatedVisibilityScope> { error("No LocalNavAnimatedVisibilityScope Scope found") }
 
 @Preview(showBackground = true)
 @Composable
