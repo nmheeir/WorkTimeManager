@@ -47,7 +47,7 @@ import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.ext.format3
 import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.core.presentation.padding
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ShiftType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ShiftType
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.presentation.components.chip.ChipsRow
 import com.kt.worktimetrackermanager.presentation.components.dialog.CalendarTimerDialog

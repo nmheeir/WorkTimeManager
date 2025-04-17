@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kt.worktimetrackermanager.core.presentation.utils.DeviceTokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
+import com.kt.worktimetrackermanager.core.presentation.utils.UsernameKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.core.presentation.utils.set
@@ -104,6 +105,7 @@ class LoginViewModel @Inject constructor(
                 .suspendOnSuccess {
                     Timber.d("Success: ${this.data}")
                     context.dataStore.set(TokenKey, this.data.data!!.token)
+                    context.dataStore.set(UsernameKey, uiState.value.username)
                     _channel.send(LoginUiEvent.Success)
                 }
                 .suspendOnError {

@@ -6,7 +6,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.EmployeeType
 import java.lang.reflect.Type
 
 class EmployeeTypeAdapter : JsonSerializer<EmployeeType>, JsonDeserializer<EmployeeType> {

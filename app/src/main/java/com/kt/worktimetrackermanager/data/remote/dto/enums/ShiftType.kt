@@ -1,4 +1,4 @@
-package com.kt.worktimetrackermanager.data.remote.dto.enum
+package com.kt.worktimetrackermanager.data.remote.dto.enums
 
 enum class ShiftType {
     Normal,

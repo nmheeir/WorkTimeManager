@@ -35,9 +35,7 @@ import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.core.presentation.padding
-import com.kt.worktimetrackermanager.core.presentation.ui.EmptyBox
 import com.kt.worktimetrackermanager.core.presentation.utils.Gap
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
 import com.kt.worktimetrackermanager.presentation.components.chip.ChipsRow
 import com.kt.worktimetrackermanager.presentation.components.items.TaskCardItem
 import com.kt.worktimetrackermanager.presentation.viewmodels.ProjectDetailViewModel

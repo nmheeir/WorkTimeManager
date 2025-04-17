@@ -1,6 +1,6 @@
 package com.kt.worktimetrackermanager.data.remote.dto.request
 
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ShiftType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ShiftType
 import java.time.LocalDateTime
 
 data class AddShiftRequest(

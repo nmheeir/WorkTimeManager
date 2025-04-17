@@ -1,6 +1,5 @@
 package com.kt.worktimetrackermanager.presentation.components.chart
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,14 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
-import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.ext.parse
-import com.kt.worktimetrackermanager.core.ext.parseDate
 import com.kt.worktimetrackermanager.core.presentation.padding
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Period
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Period
 import com.kt.worktimetrackermanager.data.remote.dto.response.AttendanceRecord
 import com.kt.worktimetrackermanager.presentation.components.rememberMarker
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost

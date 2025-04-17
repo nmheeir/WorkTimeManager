@@ -6,20 +6,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kt.worktimetrackermanager.core.presentation.utils.DeviceTokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
+import com.kt.worktimetrackermanager.core.presentation.utils.UsernameKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.delete
+import com.kt.worktimetrackermanager.core.presentation.utils.deletes
 import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
-import com.skydoves.sandwich.message
-import com.skydoves.sandwich.onSuccess
 import com.skydoves.sandwich.retrofit.apiMessage
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -76,8 +75,7 @@ class MainViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            context.dataStore.delete(TokenKey)
-//            context.dataStore.delete(DeviceTokenKey)
+            context.dataStore.deletes(listOf(TokenKey, UsernameKey, DeviceTokenKey))
             user.value = null
         }
     }

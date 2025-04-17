@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.get
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ShiftType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ShiftType
 import com.kt.worktimetrackermanager.data.remote.dto.request.AddShiftRequest
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.domain.use_case.shift.ShiftUseCase

@@ -1,6 +1,6 @@
 package com.kt.worktimetrackermanager.data.remote.api
 
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.request.CreateProjectRequest
 import com.kt.worktimetrackermanager.data.remote.dto.response.DataResponse
 import com.kt.worktimetrackermanager.data.remote.dto.response.PagedDataResponse

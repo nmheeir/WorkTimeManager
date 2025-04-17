@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.kt.worktimetrackermanager.core.presentation.padding
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.presentation.components.image.CoilImage
 

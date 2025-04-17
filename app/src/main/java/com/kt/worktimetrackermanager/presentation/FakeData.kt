@@ -1,10 +1,10 @@
 package com.kt.worktimetrackermanager.presentation
 
-import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Priority
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ShiftType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Priority
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ProjectStatus
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ShiftType
 import com.kt.worktimetrackermanager.data.remote.dto.response.Project
 import com.kt.worktimetrackermanager.data.remote.dto.response.Report
 import com.kt.worktimetrackermanager.data.remote.dto.response.Shift

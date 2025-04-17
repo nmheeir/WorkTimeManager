@@ -46,6 +46,16 @@ fun <T> DataStore<Preferences>.delete(key: Preferences.Key<T>) {
     }
 }
 
+fun DataStore<Preferences>.deletes(keys: List<Preferences.Key<*>>) {
+    runBlocking(Dispatchers.IO) {
+        edit { preferences ->
+            keys.forEach { key ->
+                preferences.remove(key)
+            }
+        }
+    }
+}
+
 @Composable
 fun <T> rememberPreference(
     key: Preferences.Key<T>,

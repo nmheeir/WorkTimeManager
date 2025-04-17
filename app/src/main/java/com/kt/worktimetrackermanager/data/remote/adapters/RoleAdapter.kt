@@ -6,7 +6,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
 import java.lang.reflect.Type
 
 class RoleAdapter : JsonDeserializer<Role>, JsonSerializer<Role> {

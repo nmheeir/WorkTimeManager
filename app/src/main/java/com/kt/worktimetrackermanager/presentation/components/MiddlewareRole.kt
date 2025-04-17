@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
 import com.kt.worktimetrackermanager.presentation.viewmodels.MiddlewareRoleViewModel
 import timber.log.Timber
 

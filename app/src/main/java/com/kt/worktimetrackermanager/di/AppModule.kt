@@ -1,5 +1,8 @@
 package com.kt.worktimetrackermanager.di
 
+import android.content.Context
+import com.kt.worktimetrackermanager.data.local.AppDatabase
+import com.kt.worktimetrackermanager.data.local.InternalDatabase
 import com.kt.worktimetrackermanager.data.remote.RemoteDataSource
 import com.kt.worktimetrackermanager.data.remote.api.AuthApi
 import com.kt.worktimetrackermanager.data.remote.api.ProjectApi
@@ -25,12 +28,19 @@ import com.kt.worktimetrackermanager.data.remote.repositories.impl.UserRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        return InternalDatabase.newInstance(context)
+    }
 
     @Provides
     @Singleton

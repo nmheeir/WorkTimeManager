@@ -6,7 +6,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ShiftType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ShiftType
 import java.lang.reflect.Type
 
 class ShiftTypeAdapter : JsonSerializer<ShiftType>, JsonDeserializer<ShiftType> {

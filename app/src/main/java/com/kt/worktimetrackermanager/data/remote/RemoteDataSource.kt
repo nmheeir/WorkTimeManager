@@ -8,11 +8,11 @@ import com.kt.worktimetrackermanager.data.remote.adapters.PriorityAdapter
 import com.kt.worktimetrackermanager.data.remote.adapters.ProjectStatusAdapter
 import com.kt.worktimetrackermanager.data.remote.adapters.RoleAdapter
 import com.kt.worktimetrackermanager.data.remote.adapters.ShiftTypeAdapter
-import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Priority
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ShiftType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Priority
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ProjectStatus
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ShiftType
 import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

@@ -5,11 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.kt.worktimetrackermanager.data.Converters
+import com.kt.worktimetrackermanager.data.local.entities.NotificationEntity
 import com.kt.worktimetrackermanager.data.local.entities.UserSessionEntity
 
 class AppDatabase(
-    private val delegate: InternalDatabase
+    private val delegate: InternalDatabase,
 ) : DatabaseDao by delegate.dao {
 
     fun query(block: AppDatabase.() -> Unit) = with(delegate) {
@@ -31,12 +31,12 @@ class AppDatabase(
 
 @Database(
     entities = [
-        UserSessionEntity::class
+        UserSessionEntity::class, NotificationEntity::class
     ],
     exportSchema = true,
-    version = 1
+    version = 2
 )
-//@TypeConverters(Converters::class)
+@TypeConverters(Converters::class)
 abstract class InternalDatabase : RoomDatabase() {
     abstract val dao: DatabaseDao
 
