@@ -11,7 +11,7 @@ interface ITeamRepo {
         token: String,
         pageNumber: Int,
         pageSize: Int,
-        searchValue: String?
+        searchValue: String? = null
     ): ApiResponse<PagedDataResponse<List<Team>>>
 
     suspend fun getCompanyTeamById(

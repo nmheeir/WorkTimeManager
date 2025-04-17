@@ -12,8 +12,12 @@
     <string name="label_default">Default</string>
     <string name="theme_monet">Dynamic</string>
     <string name="project">Project</string>
+    <string name="notification">Notification</string>
+    <string name="shift">Shift</string>
 
     <!--    Message-->
+    <string name="msg_no_data">No data</string>
+    <string name="msg_no_data_desc">No data description</string>
     <string name="msg_no_meeting">No Meeting Available</string>
     <string name="msg_no_task">No Task Available</string>
     <string name="msg_no_leave">No Leave Assigned</string>
@@ -23,6 +27,8 @@
     <string name="msg_no_project_desc">It\'s looks like you don\'t have any project</string>
     <string name="msg_no_assignees">No Assignees</string>
     <string name="msg_no_assignees_desc">It looks like you don\'t have any assignees for this task</string>
+    <string name="msg_no_team">No team</string>
+    <string name="msg_no_team_desc">No team description</string>
 
     <!--  Error  -->
     <string name="error_user_not_found">User not found</string>
@@ -45,6 +51,8 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="loading">Loading</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
 
     <!--    Filter-->
     <string name="filter_all">All</string>
@@ -136,7 +144,13 @@
     <!--    Member Infor-->
     <string name="member_infor">Member Information</string>
 
-<!--    Team ìnfor-->
+    <!--    Team ìnfor-->
     <string name="team_infor_title">Team Information</string>
     <string name="team_infor_err_no_manager_found">No manager founded</string>
+
+    <!--    Plurals-->
+    <plurals name="n_selected">
+        <item quantity="other">%d selected</item>
+    </plurals>
+
 </resources>

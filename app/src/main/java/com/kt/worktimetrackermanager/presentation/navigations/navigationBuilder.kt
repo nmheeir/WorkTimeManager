@@ -14,6 +14,7 @@ import com.kt.worktimetrackermanager.core.utils.JwtUtils
 import com.kt.worktimetrackermanager.presentation.components.MiddlewareRole
 import com.kt.worktimetrackermanager.presentation.screens.dashboard.CompanyDashBoardScreen
 import com.kt.worktimetrackermanager.presentation.screens.HomeScreen
+import com.kt.worktimetrackermanager.presentation.screens.NotificationScreen
 import com.kt.worktimetrackermanager.presentation.screens.ProfileScreen
 import com.kt.worktimetrackermanager.presentation.screens.auth.CreateNewPasswordScreen
 import com.kt.worktimetrackermanager.presentation.screens.auth.ForgotPasswordScreen
@@ -32,6 +33,9 @@ import com.kt.worktimetrackermanager.presentation.screens.memberManager.TeamList
 import com.kt.worktimetrackermanager.presentation.screens.project.CreateProjectScreen
 import com.kt.worktimetrackermanager.presentation.screens.project.ProjectDetailScreen
 import com.kt.worktimetrackermanager.presentation.screens.project.ProjectScreen
+import com.kt.worktimetrackermanager.presentation.screens.shift.AssignShiftScreen
+import com.kt.worktimetrackermanager.presentation.screens.shift.CompanyShiftScreen
+import com.kt.worktimetrackermanager.presentation.screens.shift.TeamShiftScreen
 import com.kt.worktimetrackermanager.presentation.screens.task.TaskDetailScreen
 import com.kt.worktimetrackermanager.presentation.viewmodels.TeamDashboardViewModel
 import com.kt.worktimetrackermanager.presentation.viewmodels.memberManager.MemberInforViewModel
@@ -93,13 +97,13 @@ fun NavGraphBuilder.navigationBuilder(
     }
 
     composable(
-        route = "home"
+        route = Screens.NavigationBarScreens.Home.route
     ) {
         HomeScreen(navController)
     }
 
     composable(
-        route = "dashboard"
+        route = Screens.NavigationBarScreens.Dashboard.route
     ) {
         MiddlewareRole(
             masterContent = {
@@ -134,7 +138,7 @@ fun NavGraphBuilder.navigationBuilder(
     }
 
     composable(
-        route = "chat"
+        route = Screens.Chat.route
     ) {
         Text(
             text = "Chat"
@@ -142,21 +146,49 @@ fun NavGraphBuilder.navigationBuilder(
     }
 
     composable(
-        route = "notification"
+        route = Screens.Notification.route
     ) {
-        Text(
-            text = "Notification"
+        NotificationScreen(navController)
+    }
+
+    composable(
+        route = Screens.NavigationBarScreens.Shift.route
+    ) {
+        MiddlewareRole(
+            managerContent = {
+                TeamShiftScreen(navController)
+            },
+            masterContent = {
+                CompanyShiftScreen(navController)
+            }
         )
     }
 
     composable(
-        route = "profile"
+        route = "shift/team/{id}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) {
+        TeamShiftScreen(navController)
+    }
+
+    composable(
+        route = "shift/assign_shift"
+    ) {
+        AssignShiftScreen(navController)
+    }
+
+    composable(
+        route = Screens.Profile.route
     ) {
         ProfileScreen(navController)
     }
 
     composable(
-        route = "project"
+        route = Screens.NavigationBarScreens.Project.route
     ) {
         ProjectScreen(navController)
     }
@@ -188,7 +220,7 @@ fun NavGraphBuilder.navigationBuilder(
     ) {
         TaskDetailScreen(navController)
     }
-    
+
     composable(
         route = Screens.NavigationBarScreens.Member.route
     ) {
@@ -201,7 +233,7 @@ fun NavGraphBuilder.navigationBuilder(
         AddMemberScreen(navController = navController)
     }
 
-    composable (
+    composable(
         route = Screens.TeamCreate.route
     ) {
         TeamCreateScreen(navController = navController)

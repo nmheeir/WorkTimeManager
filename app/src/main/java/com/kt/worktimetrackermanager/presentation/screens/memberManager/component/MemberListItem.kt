@@ -32,7 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.utils.Helper
-import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.EmployeeType
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.presentation.components.customButton.RoundedButton
 import com.kt.worktimetrackermanager.presentation.sampleUser

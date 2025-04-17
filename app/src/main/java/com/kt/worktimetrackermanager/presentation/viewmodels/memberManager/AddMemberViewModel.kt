@@ -7,8 +7,9 @@ import com.kt.worktimetrackermanager.core.ext.isValidEmail
 import com.kt.worktimetrackermanager.core.ext.isValidPassword
 import com.kt.worktimetrackermanager.core.presentation.utils.Helper
 import com.kt.worktimetrackermanager.data.local.LocalUserManager
-import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enums.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
+
 import com.kt.worktimetrackermanager.data.remote.dto.request.AddUserRequest
 import com.kt.worktimetrackermanager.data.remote.dto.request.UpdateUserRequest
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
@@ -339,7 +340,7 @@ data class AddMemberUiState(
     var department: String = "",
     var designation: String = "",
     var email: String = "",
-    var employeeType: EmployeeType = EmployeeType.FULL_TIME,
+    var employeeType: EmployeeType = EmployeeType.entries.random(),
     var password: String = "",
     var phoneNumber: String = "",
     var role: Role = Role.Staff,

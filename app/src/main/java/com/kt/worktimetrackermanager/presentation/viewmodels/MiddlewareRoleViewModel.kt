@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.get
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
 import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.suspendOnException
@@ -53,6 +53,7 @@ class MiddlewareRoleViewModel @Inject constructor(
             userUseCase.getUserProfile(token)
                 .suspendOnSuccess {
                     role.value = this.data.data!!.role
+                    Timber.d(this.data.data.toString())
                 }
                 .suspendOnFailure {
                     Timber.d("Failure: %s", this.message())

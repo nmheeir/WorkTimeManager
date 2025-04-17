@@ -5,6 +5,7 @@ plugins {
 
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -62,7 +63,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.play.services.location)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -131,8 +132,12 @@ dependencies {
     //Jwt
     implementation("io.jsonwebtoken:jjwt:0.9.1")
 
-    //    Firebase message, lấy device token, có thể sẽ đổi qua supabase
-    implementation(libs.firebase.messaging.ktx)
+    //Snapper
+    implementation("dev.chrisbanes.snapper:snapper:0.3.0")
+
+    // Map
+    implementation (libs.osmdroid.android)
+    implementation(libs.play.services.location)
 
     // lịch
     implementation ("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
@@ -140,14 +145,10 @@ dependencies {
     implementation ("com.maxkeppeler.sheets-compose-dialogs:clock:1.3.0")
     implementation ("com.maxkeppeler.sheets-compose-dialogs:option:1.3.0")
 
-    //Constraint layout
-    implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation(kotlin("reflect"))
-
-    // Map
-    implementation (libs.osmdroid.android)
-
     //icon
     implementation ("androidx.compose.material:material-icons-extended:1.7.8")
 
+    //Constraint layout
+    implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation(kotlin("reflect"))
 }

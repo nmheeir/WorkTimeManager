@@ -14,9 +14,19 @@ private val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
 private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 private val formatterMinute = DateTimeFormatter.ofPattern("HH:mm")
 private val formatterSecond = DateTimeFormatter.ofPattern("HH:mm:ss")
+private val formatter2 = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH)
+private val formatter3 = DateTimeFormatter.ofPattern("MMM dd, yyyy h:mm a", Locale.ENGLISH)
 
 fun LocalDateTime.parseMinute(): String {
     return this.format(formatterMinute)
+}
+
+fun LocalDateTime.format2(): String {
+    return this.format(formatter2)
+}
+
+fun LocalDateTime.format3(): String {
+    return this.format(formatter3)
 }
 
 fun LocalDateTime.parseDate(): String {
@@ -25,6 +35,14 @@ fun LocalDateTime.parseDate(): String {
 
 fun LocalTime.parse(): String {
     return this.format(formatterSecond)
+}
+
+fun LocalTime.getAmPm(): String {
+    return if (this.hour >= 12) {
+        "PM"
+    } else {
+        "AM"
+    }
 }
 
 fun LocalDate.parse(): String {
@@ -45,4 +63,13 @@ fun YearMonth.displayText(short: Boolean = false): String {
 fun Month.displayText(short: Boolean = true): String {
     val style = if (short) TextStyle.SHORT else TextStyle.FULL
     return getDisplayName(style, Locale.ENGLISH)
+}
+
+fun LocalDateTime.getStartOfMonth(): LocalDateTime {
+    return this.withDayOfMonth(1).with(LocalTime.MIN)
+}
+
+fun LocalDateTime.getEndOfMonth(): LocalDateTime {
+    val lastDay = this.toLocalDate().lengthOfMonth()
+    return this.withDayOfMonth(lastDay).with(LocalTime.MAX)
 }

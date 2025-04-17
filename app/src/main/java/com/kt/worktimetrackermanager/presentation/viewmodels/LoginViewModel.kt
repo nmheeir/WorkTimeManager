@@ -1,22 +1,21 @@
 package com.kt.worktimetrackermanager.presentation.viewmodels
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kt.worktimetrackermanager.core.presentation.utils.DeviceTokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
+import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.core.presentation.utils.set
 import com.kt.worktimetrackermanager.data.local.LocalUserManager
 import com.kt.worktimetrackermanager.domain.use_case.AuthUseCase
-import com.kt.worktimetrackermanager.domain.use_case.Login
 import com.skydoves.sandwich.StatusCode
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.retrofit.errorBody
 import com.skydoves.sandwich.retrofit.statusCode
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
-import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -32,7 +31,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val authUseCase: AuthUseCase,
-    private val localUserManager: LocalUserManager
+    private val localUserManager: LocalUserManager,
 ) : ViewModel() {
 
     val uiState = MutableStateFlow(LoginUiState())
@@ -87,10 +86,16 @@ class LoginViewModel @Inject constructor(
 
     private fun login() {
         viewModelScope.launch {
-            authUseCase.login(uiState.value.username, uiState.value.password, "test")
+            val deviceToken = context.dataStore[DeviceTokenKey]
+            if (deviceToken == null) {
+                _channel.send(LoginUiEvent.Failure("Device token is null"))
+                return@launch
+            }
+
+            authUseCase.login(uiState.value.username, uiState.value.password, deviceToken)
                 .suspendOnSuccess {
                     Timber.d("Success: ${this.data}")
-                    localUserManager.saveAccessToken(this.data.data!!.token)
+                    context.dataStore.set(TokenKey, this.data.data!!.token)
                     _channel.send(LoginUiEvent.Success)
                 }
                 .suspendOnError {
@@ -135,7 +140,7 @@ data class LoginUiState(
     val error: String = "",
     val isError: Boolean = false,
 
-    val rememberLogin: Boolean = false
+    val rememberLogin: Boolean = false,
 )
 
 

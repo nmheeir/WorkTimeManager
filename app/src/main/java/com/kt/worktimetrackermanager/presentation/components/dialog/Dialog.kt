@@ -15,13 +15,17 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.kt.worktimetrackermanager.R
 
 @Composable
 fun DefaultDialog(
@@ -119,4 +123,41 @@ fun ListDialog(
             }
         }
     }
+}
+
+@Composable
+fun AlertDialog(
+    modifier: Modifier = Modifier,
+    title: String,
+    text: String? = null,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+) {
+
+    DefaultDialog(
+        onDismiss = onDismiss,
+        buttons = {
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text(text = stringResource(R.string.cancel))
+            }
+            TextButton(onClick = onConfirm) {
+                Text(text = stringResource(R.string.ok))
+            }
+        },
+        title = {
+            Text(
+                text = title
+            )
+        },
+        modifier = modifier
+    ) {
+        if (text != null) {
+            Text(
+                text = text
+            )
+        }
+    }
+
 }

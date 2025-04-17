@@ -1,6 +1,6 @@
 package com.kt.worktimetrackermanager.data.remote.dto.response
 
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ProjectStatus
 import java.time.LocalDateTime
 
 data class Project(

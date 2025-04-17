@@ -2,12 +2,14 @@ package com.kt.worktimetrackermanager.data.remote.api
 
 import com.kt.worktimetrackermanager.data.remote.dto.response.AttendanceRecord
 import com.kt.worktimetrackermanager.data.remote.dto.response.DataResponse
+import com.kt.worktimetrackermanager.data.remote.dto.response.TeamShiftStats
 import com.kt.worktimetrackermanager.data.remote.dto.response.TeamStatistic
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.data.remote.dto.response.WorkHours
 import com.skydoves.sandwich.ApiResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 import java.time.LocalDateTime
 
@@ -88,4 +90,22 @@ interface SummaryApi {
     //End Get Attendance Each Time
     //======================
 
+
+    //================================
+    // Shift
+    @GET("Summary/shifts")
+    suspend fun getShiftsStatByTeam(
+        @Header("Authorization") token: String,
+        startDate: LocalDateTime? = null,
+        endDate: LocalDateTime? = null,
+    ): ApiResponse<DataResponse<List<TeamShiftStats>>>
+
+    @GET("Summary/shifts/{teamId}")
+    suspend fun getShiftsStatByTeamId(
+        @Header("Authorization") token: String,
+        @Path("teamId") teamId: Int,
+        startDate: LocalDateTime? = null,
+        endDate: LocalDateTime? = null,
+    ): ApiResponse<DataResponse<TeamShiftStats>>
+    //================================
 }

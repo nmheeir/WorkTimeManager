@@ -1,6 +1,6 @@
 package com.kt.worktimetrackermanager.domain.use_case.project
 
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.request.CreateProjectRequest
 import com.kt.worktimetrackermanager.data.remote.repositories.IProjectRepo
 

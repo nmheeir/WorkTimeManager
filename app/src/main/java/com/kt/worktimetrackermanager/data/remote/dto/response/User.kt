@@ -1,7 +1,7 @@
 package com.kt.worktimetrackermanager.data.remote.dto.response
 
-import com.kt.worktimetrackermanager.data.remote.dto.enum.EmployeeType
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Role
+import com.kt.worktimetrackermanager.data.remote.dto.enums.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
 
 data class User(
     val address: String,

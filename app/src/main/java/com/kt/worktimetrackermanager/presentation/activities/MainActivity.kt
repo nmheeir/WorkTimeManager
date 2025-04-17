@@ -45,15 +45,20 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.messaging.FirebaseMessaging
 import com.kt.worktimetrackermanager.core.presentation.NavigationBarHeight
 import com.kt.worktimetrackermanager.core.presentation.ui.AppTheme
 import com.kt.worktimetrackermanager.core.presentation.utils.AppThemeKey
+import com.kt.worktimetrackermanager.core.presentation.utils.DeviceTokenKey
+import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.rememberEnumPreference
+import com.kt.worktimetrackermanager.core.presentation.utils.set
 import com.kt.worktimetrackermanager.presentation.navigations.Screens
 import com.kt.worktimetrackermanager.presentation.navigations.navigationBuilder
 import com.kt.worktimetrackermanager.presentation.ui.theme.WorkTimeTrackerManagerTheme
 import com.kt.worktimetrackermanager.presentation.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -68,8 +73,15 @@ class MainActivity : ComponentActivity() {
 
         installSplashScreen().apply {
             setKeepOnScreenCondition {
-                viewModel.startDestination.value == null
+//                viewModel.startDestination.value
+                false
             }
+        }
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            val context = this.applicationContext
+            context.dataStore.set(DeviceTokenKey, it.result)
+            Timber.d("FirebaseMessaging Token: ${it.result}")
         }
 
         setContent {
@@ -167,7 +179,7 @@ class MainActivity : ComponentActivity() {
                         ) { paddingValues ->
                             NavHost(
                                 navController = navController,
-                                startDestination = viewModel.startDestination.value!!,
+                                startDestination = viewModel.startDestination.value,
                                 enterTransition = {
                                     if (initialState.destination.route in topLevelScreens
                                         && targetState.destination.route in topLevelScreens

@@ -27,7 +27,7 @@ class ProjectViewModel @Inject constructor(
     private val projectUseCase: ProjectUseCase,
 ) : ViewModel() {
 
-    private val token = context.dataStore[TokenKey]!!
+    private val token = context.dataStore[TokenKey] ?: ""
 
 
     val filter = MutableStateFlow<ProjectFilter>(ProjectFilter.All)

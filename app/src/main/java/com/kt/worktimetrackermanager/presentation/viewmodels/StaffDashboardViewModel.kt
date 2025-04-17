@@ -7,10 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.get
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Period
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Period
 import com.kt.worktimetrackermanager.data.remote.dto.response.AttendanceRecord
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
-import com.kt.worktimetrackermanager.domain.use_case.summary.GetTeamAttendanceRecordEachTime
 import com.kt.worktimetrackermanager.domain.use_case.summary.SummaryUseCase
 import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
 import com.skydoves.sandwich.message
@@ -22,7 +21,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.internal.userAgent
 import timber.log.Timber
 import java.time.LocalDate
 import java.time.YearMonth

@@ -2,12 +2,12 @@ package com.kt.worktimetrackermanager.domain.use_case.summary
 
 import com.kt.worktimetrackermanager.data.remote.dto.response.AttendanceRecord
 import com.kt.worktimetrackermanager.data.remote.dto.response.DataResponse
+import com.kt.worktimetrackermanager.data.remote.dto.response.TeamShiftStats
 import com.kt.worktimetrackermanager.data.remote.dto.response.TeamStatistic
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.data.remote.dto.response.WorkHours
 import com.kt.worktimetrackermanager.data.remote.repositories.ISummaryRepo
 import com.skydoves.sandwich.ApiResponse
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class SummaryUseCase(
@@ -20,6 +20,8 @@ data class SummaryUseCase(
     val getCompanyAttendanceRecordEachTime: GetCompanyAttendanceRecordEachTime,
     val getTeamAttendanceRecordEachTime: GetTeamAttendanceRecordEachTime,
     val getEmployeeAttendanceRecordEachTime: GetEmployeeAttendanceRecordEachTime,
+    val getTeamShiftsStat: GetTeamShiftsStat,
+    val getTeamShiftsStatById: GetTeamShiftsStatById,
 )
 
 class GetEmployeeAttendanceRecord(
@@ -140,4 +142,25 @@ class GetEmployeeAttendanceRecordEachTime(
             start, end, period, userId, "Bearer $token"
         )
     }
+}
+
+class GetTeamShiftsStat(
+    private val summaryRepository: ISummaryRepo,
+) {
+    suspend operator fun invoke(
+        token: String,
+        startDate: LocalDateTime? = null,
+        endDate: LocalDateTime? = null,
+    ) = summaryRepository.getShiftsStatByTeam(token, startDate, endDate)
+}
+
+class GetTeamShiftsStatById(
+    private val summaryRepository: ISummaryRepo,
+) {
+    suspend operator fun invoke(
+        token: String,
+        start: LocalDateTime? = null,
+        endDate: LocalDateTime? = null,
+        teamId: Int,
+    ) = summaryRepository.getShiftsStatByTeamId(token, teamId, start, endDate)
 }

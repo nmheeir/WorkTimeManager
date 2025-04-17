@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
 import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
 import com.kt.worktimetrackermanager.core.presentation.utils.get
-import com.kt.worktimetrackermanager.data.remote.dto.enum.Period
+import com.kt.worktimetrackermanager.data.remote.dto.enums.Period
 import com.kt.worktimetrackermanager.data.remote.dto.response.AttendanceRecord
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
 import com.kt.worktimetrackermanager.data.remote.dto.response.TeamStatistic

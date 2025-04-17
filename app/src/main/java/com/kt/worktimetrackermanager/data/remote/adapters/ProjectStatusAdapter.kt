@@ -6,7 +6,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import com.kt.worktimetrackermanager.data.remote.dto.enum.ProjectStatus
+import com.kt.worktimetrackermanager.data.remote.dto.enums.ProjectStatus
 import java.lang.reflect.Type
 
 class ProjectStatusAdapter : JsonDeserializer<ProjectStatus>, JsonSerializer<ProjectStatus> {

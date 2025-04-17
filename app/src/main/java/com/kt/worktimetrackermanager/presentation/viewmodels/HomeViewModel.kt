@@ -2,6 +2,7 @@ package com.kt.worktimetrackermanager.presentation.viewmodels
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -14,9 +15,6 @@ class HomeViewModel @Inject constructor(
     private val userUseCase: UserUseCase,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
-
-
-    val user = MutableStateFlow("")
 
     fun onAction(action: HomeUiAction) {
         when (action) {
