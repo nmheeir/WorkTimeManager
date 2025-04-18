@@ -60,6 +60,7 @@ import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.animation.ProfileSharedElementKey
 import com.kt.worktimetrackermanager.core.presentation.animation.ProfileSharedElementType
 import com.kt.worktimetrackermanager.core.presentation.hozPadding
+import com.kt.worktimetrackermanager.core.presentation.utils.ObserveAsEvents
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.presentation.activities.LocalSharedTransitionScope
 import com.kt.worktimetrackermanager.presentation.components.dialog.AlertDialog
@@ -67,6 +68,7 @@ import com.kt.worktimetrackermanager.presentation.components.image.CoilImage
 import com.kt.worktimetrackermanager.presentation.components.preference.PreferenceEntry
 import com.kt.worktimetrackermanager.presentation.components.preference.PreferenceGroupTitle
 import com.kt.worktimetrackermanager.presentation.navigations.Screens
+import com.kt.worktimetrackermanager.presentation.viewmodels.ProfileUiEvent
 import com.kt.worktimetrackermanager.presentation.viewmodels.ProfileViewModel
 import kotlin.math.max
 import kotlin.math.min
@@ -78,6 +80,7 @@ fun ProfileScreen(
 ) {
     val user by viewModel.user.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val isLogout by viewModel.isLogout.collectAsStateWithLifecycle()
 
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
@@ -91,6 +94,18 @@ fun ProfileScreen(
             }
         }
 
+
+    ObserveAsEvents(viewModel.channel) {
+        when (it) {
+            ProfileUiEvent.LogoutSuccess -> {
+                navController.navigate(Screens.Login.route) {
+                    popUpTo("profile") { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+        }
+    }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
@@ -102,34 +117,51 @@ fun ProfileScreen(
         user.takeIf { it != null }?.let { user ->
             with(sharedTransitionScope) {
                 Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(roundedCornerAnim))
-                        .sharedBounds(
-                            sharedContentState = rememberSharedContentState(
-                                key = ProfileSharedElementKey(
-                                    id = user.id,
-                                    type = ProfileSharedElementType.Bounds
-                                )
-                            ),
-                            animatedVisibilityScope = animatedVisibilityScope
-                        )
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopCenter
                 ) {
-                    val scrollState = rememberScrollState(0)
-                    Header(user.id)
-                    Avatar(
-                        userId = user.id,
-                        avatarUrl = user.avatarUrl ?: "",
-                        scrollProvider = { scrollState.value }
-                    )
-                    Body(
-                        user = user,
-                        onNavigate = {
-                            navController.navigate(it.route)
-                        },
-                        scroll = scrollState
-                    )
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(roundedCornerAnim))
+                            .sharedBounds(
+                                sharedContentState = rememberSharedContentState(
+                                    key = ProfileSharedElementKey(
+                                        id = user.id,
+                                        type = ProfileSharedElementType.Bounds
+                                    )
+                                ),
+                                animatedVisibilityScope = animatedVisibilityScope
+                            )
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background)
+                    ) {
+                        val scrollState = rememberScrollState(0)
+                        Header(user.id)
+                        Avatar(
+                            userId = user.id,
+                            avatarUrl = user.avatarUrl ?: "",
+                            scrollProvider = { scrollState.value }
+                        )
+                        Body(
+                            user = user,
+                            onNavigate = {
+                                navController.navigate(it.route)
+                            },
+                            onLogout = {
+                                viewModel.logout()
+                            },
+                            scroll = scrollState
+                        )
+                    }
+                    if (isLogout) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.3f))
+                        )
+
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
                 }
             }
         }
@@ -200,6 +232,7 @@ private fun Header(
 private fun Body(
     user: User,
     onNavigate: (Screens) -> Unit,
+    onLogout: () -> Unit,
     scroll: ScrollState,
 ) {
     val sharedTransitionScope = LocalSharedTransitionScope.current
@@ -289,11 +322,12 @@ private fun Body(
                     AlertDialog(
                         title = "Log out ?",
                         text = "Do you want to log out ?",
-                        onDismiss = { showLogoutDialog = false }
-                    ) {
-                        // TODO: Handle function logout
-                        showLogoutDialog = false
-                    }
+                        onDismiss = { showLogoutDialog = false },
+                        onConfirm = {
+                            onLogout()
+                            showLogoutDialog = false
+                        }
+                    )
                 }
             }
         }
