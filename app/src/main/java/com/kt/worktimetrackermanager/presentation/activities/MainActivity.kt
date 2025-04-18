@@ -1,3 +1,7 @@
+@file:OptIn(
+    ExperimentalSharedTransitionApi::class
+)
+
 package com.kt.worktimetrackermanager.presentation.activities
 
 import android.os.Bundle
@@ -5,6 +9,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -116,113 +123,116 @@ class MainActivity : ComponentActivity() {
                         animationSpec = spring(stiffness = Spring.StiffnessMedium)
                     )
 
-                    CompositionLocalProvider(
-                        LocalMainViewModel provides viewModel
-                    ) {
-                        Scaffold(
-                            bottomBar = {
-                                NavigationBar(
-                                    modifier = Modifier
-                                        .align(Alignment.BottomCenter)
-                                        .offset {
-                                            if (navigationBarHeight == 0.dp) {
-                                                IntOffset(
-                                                    x = 0,
-                                                    y = (bottomInset + NavigationBarHeight).roundToPx()
-                                                )
-                                            } else {
-                                                val hideOffset =
-                                                    (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
-                                                IntOffset(x = 0, y = hideOffset.roundToPx())
+                    SharedTransitionLayout {
+                        CompositionLocalProvider(
+                            LocalMainViewModel provides viewModel,
+                            LocalSharedTransitionScope provides this
+                        ) {
+                            Scaffold(
+                                bottomBar = {
+                                    NavigationBar(
+                                        modifier = Modifier
+                                            .align(Alignment.BottomCenter)
+                                            .offset {
+                                                if (navigationBarHeight == 0.dp) {
+                                                    IntOffset(
+                                                        x = 0,
+                                                        y = (bottomInset + NavigationBarHeight).roundToPx()
+                                                    )
+                                                } else {
+                                                    val hideOffset =
+                                                        (bottomInset + NavigationBarHeight) * (1 - navigationBarHeight / NavigationBarHeight)
+                                                    IntOffset(x = 0, y = hideOffset.roundToPx())
+                                                }
                                             }
-                                        }
-                                ) {
-                                    navigationItems.fastForEach { screens ->
-                                        key(screens.route) {
-                                            NavigationBarItem(
-                                                selected = backStackEntry?.destination?.hierarchy?.any { it.route == screens.route } == true,
-                                                icon = {
-                                                    Icon(
-                                                        painter = painterResource(screens.iconId),
-                                                        contentDescription = null
-                                                    )
-                                                },
-                                                label = {
-                                                    Text(
-                                                        text = stringResource(screens.titleId),
-                                                        style = MaterialTheme.typography.bodyMedium,
-                                                        maxLines = 1,
-                                                        overflow = TextOverflow.Ellipsis
-                                                    )
-                                                },
-                                                onClick = {
-                                                    if (backStackEntry?.destination?.hierarchy?.any { it.route == screens.route } == true) {
-                                                        backStackEntry?.savedStateHandle?.set(
-                                                            "scrollToTop",
-                                                            true
+                                    ) {
+                                        navigationItems.fastForEach { screens ->
+                                            key(screens.route) {
+                                                NavigationBarItem(
+                                                    selected = backStackEntry?.destination?.hierarchy?.any { it.route == screens.route } == true,
+                                                    icon = {
+                                                        Icon(
+                                                            painter = painterResource(screens.iconId),
+                                                            contentDescription = null
                                                         )
-                                                    } else {
-                                                        navController.navigate(screens.route) {
-                                                            popUpTo(navController.graph.startDestinationId) {
-                                                                saveState = true
+                                                    },
+                                                    label = {
+                                                        Text(
+                                                            text = stringResource(screens.titleId),
+                                                            style = MaterialTheme.typography.bodyMedium,
+                                                            maxLines = 1,
+                                                            overflow = TextOverflow.Ellipsis
+                                                        )
+                                                    },
+                                                    onClick = {
+                                                        if (backStackEntry?.destination?.hierarchy?.any { it.route == screens.route } == true) {
+                                                            backStackEntry?.savedStateHandle?.set(
+                                                                "scrollToTop",
+                                                                true
+                                                            )
+                                                        } else {
+                                                            navController.navigate(screens.route) {
+                                                                popUpTo(navController.graph.startDestinationId) {
+                                                                    saveState = true
+                                                                }
+                                                                launchSingleTop = true
+                                                                restoreState = true
                                                             }
-                                                            launchSingleTop = true
-                                                            restoreState = true
                                                         }
                                                     }
-                                                }
-                                            )
+                                                )
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        ) { paddingValues ->
-                            NavHost(
-                                navController = navController,
-                                startDestination = viewModel.startDestination.value,
-                                enterTransition = {
-                                    if (initialState.destination.route in topLevelScreens
-                                        && targetState.destination.route in topLevelScreens
-                                    ) {
-                                        fadeIn(tween(250))
-                                    } else {
-                                        fadeIn(tween(250)) + slideInHorizontally { it / 2 }
-                                    }
-                                },
-                                exitTransition = {
-                                    if (initialState.destination.route in topLevelScreens
-                                        && targetState.destination.route in topLevelScreens
-                                    ) {
-                                        fadeOut(tween(200))
-                                    } else {
-                                        fadeOut(tween(200)) + slideOutHorizontally { -it / 2 }
-                                    }
-                                },
-                                popEnterTransition = {
-                                    if (initialState.destination.route in topLevelScreens
-                                        && targetState.destination.route in topLevelScreens
-                                    ) {
-                                        fadeIn(tween(250))
-                                    } else {
-                                        fadeIn(tween(250)) + slideInHorizontally { -it / 2 }
-                                    }
-                                },
-                                popExitTransition = {
-                                    if (initialState.destination.route in topLevelScreens
-                                        && targetState.destination.route in topLevelScreens
-                                    ) {
-                                        fadeOut(tween(200))
-                                    } else {
-                                        fadeOut(tween(200)) + slideOutHorizontally { it / 2 }
-                                    }
-                                },
-                                modifier = Modifier
-                                    .padding(
-                                        if (shouldShowNavigationBar) paddingValues
-                                        else PaddingValues(0.dp)
-                                    )
-                            ) {
-                                navigationBuilder(navController)
+                            ) { paddingValues ->
+                                NavHost(
+                                    navController = navController,
+                                    startDestination = Screens.Login.route,
+                                    enterTransition = {
+                                        if (initialState.destination.route in topLevelScreens
+                                            && targetState.destination.route in topLevelScreens
+                                        ) {
+                                            fadeIn(tween(250))
+                                        } else {
+                                            fadeIn(tween(250)) + slideInHorizontally { it / 2 }
+                                        }
+                                    },
+                                    exitTransition = {
+                                        if (initialState.destination.route in topLevelScreens
+                                            && targetState.destination.route in topLevelScreens
+                                        ) {
+                                            fadeOut(tween(200))
+                                        } else {
+                                            fadeOut(tween(200)) + slideOutHorizontally { -it / 2 }
+                                        }
+                                    },
+                                    popEnterTransition = {
+                                        if (initialState.destination.route in topLevelScreens
+                                            && targetState.destination.route in topLevelScreens
+                                        ) {
+                                            fadeIn(tween(250))
+                                        } else {
+                                            fadeIn(tween(250)) + slideInHorizontally { -it / 2 }
+                                        }
+                                    },
+                                    popExitTransition = {
+                                        if (initialState.destination.route in topLevelScreens
+                                            && targetState.destination.route in topLevelScreens
+                                        ) {
+                                            fadeOut(tween(200))
+                                        } else {
+                                            fadeOut(tween(200)) + slideOutHorizontally { it / 2 }
+                                        }
+                                    },
+                                    modifier = Modifier
+                                        .padding(
+                                            if (shouldShowNavigationBar) paddingValues
+                                            else PaddingValues(0.dp)
+                                        )
+                                ) {
+                                    navigationBuilder(navController)
+                                }
                             }
                         }
                     }
@@ -233,3 +243,5 @@ class MainActivity : ComponentActivity() {
 }
 
 val LocalMainViewModel = compositionLocalOf<MainViewModel> { error("No MainViewModel provided") }
+val LocalSharedTransitionScope =
+    compositionLocalOf<SharedTransitionScope> { error("No LocalSharedTransitionProvider found") }

@@ -2,6 +2,7 @@ package com.kt.worktimetrackermanager.presentation.navigations
 
 import android.util.Log
 import androidx.compose.material3.Text
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavArgument
 import androidx.navigation.NavGraphBuilder
@@ -14,6 +15,7 @@ import com.kt.worktimetrackermanager.core.utils.JwtUtils
 import com.kt.worktimetrackermanager.presentation.components.MiddlewareRole
 import com.kt.worktimetrackermanager.presentation.screens.dashboard.CompanyDashBoardScreen
 import com.kt.worktimetrackermanager.presentation.screens.HomeScreen
+import com.kt.worktimetrackermanager.presentation.screens.LocalNavAnimatedVisibilityScope
 import com.kt.worktimetrackermanager.presentation.screens.NotificationScreen
 import com.kt.worktimetrackermanager.presentation.screens.ProfileScreen
 import com.kt.worktimetrackermanager.presentation.screens.auth.CreateNewPasswordScreen
@@ -184,7 +186,11 @@ fun NavGraphBuilder.navigationBuilder(
     composable(
         route = Screens.Profile.route
     ) {
-        ProfileScreen(navController)
+        CompositionLocalProvider(
+            LocalNavAnimatedVisibilityScope provides this
+        ) {
+            ProfileScreen(navController)
+        }
     }
 
     composable(
@@ -271,6 +277,14 @@ fun NavGraphBuilder.navigationBuilder(
     ) { backStackEntry ->
         TeamInformationScreen(
             navController = navController,
+        )
+    }
+
+    composable(
+        route = Screens.OfficeAssets.route
+    ) {
+        Text(
+            text = "Office asset"
         )
     }
 
