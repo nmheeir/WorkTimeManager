@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,10 +23,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -37,6 +41,7 @@ import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.core.presentation.ui.EmptyBox
+import com.kt.worktimetrackermanager.core.presentation.utils.HandleLoadMoreTrigger
 import com.kt.worktimetrackermanager.data.remote.dto.enums.CheckType
 import com.kt.worktimetrackermanager.data.remote.dto.enums.LogStatus
 import com.kt.worktimetrackermanager.presentation.components.items.LogCardItem
@@ -51,11 +56,23 @@ fun TeamLogScreen(
     navController: NavHostController,
     viewModel: TeamLogViewModel = hiltViewModel(),
 ) {
+    val lazyListState = rememberLazyListState()
+
     val logs by viewModel.logs.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val isLoadMore by viewModel.isLoadMore.collectAsStateWithLifecycle()
 
     val checkTypeFilter by viewModel.checkTypeFilter.collectAsStateWithLifecycle()
     val statusFilter by viewModel.statusFilter.collectAsStateWithLifecycle()
+
+    LaunchedEffect(lazyListState) {
+        snapshotFlow {
+            lazyListState.layoutInfo.visibleItemsInfo.any { it.key == "load_more" }
+        }.collect { shouldShowLoadMore ->
+            if (!shouldShowLoadMore) return@collect
+            viewModel.loadMore()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -95,6 +112,8 @@ fun TeamLogScreen(
         }
     ) { pv ->
         LazyColumn(
+            state = lazyListState,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.mediumSmall),
             contentPadding = pv
         ) {
@@ -129,6 +148,21 @@ fun TeamLogScreen(
                             onAction = viewModel::onAction
                         )
                     }
+                }
+            }
+
+            if (isLoadMore && logs.isNotEmpty()) {
+                item(
+                    key = "load_more"
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.padding(vertical = MaterialTheme.padding.mediumSmall))
+                }
+            } else {
+                item {
+                    Text(
+                        text = "No result found",
+                        modifier = Modifier.padding(bottom = MaterialTheme.padding.mediumSmall)
+                    )
                 }
             }
         }

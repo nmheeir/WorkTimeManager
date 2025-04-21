@@ -1,6 +1,8 @@
 package com.kt.worktimetrackermanager.presentation.viewmodels
 
 import android.content.Context
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,12 +41,12 @@ class TeamLogViewModel @Inject constructor(
 
     val isLoading = MutableStateFlow(false)
     val isUpdateLoading = MutableStateFlow(false)
+    val isLoadMore = MutableStateFlow(true)
 
     val statusFilter = MutableStateFlow<LogStatus?>(null)
     val checkTypeFilter = MutableStateFlow<CheckType?>(null)
 
     val logs = MutableStateFlow<List<LogModel>>(emptyList())
-    val teamMembers = MutableStateFlow<List<User>>(emptyList())
 
     init {
         isLoading.value = true
@@ -98,6 +100,7 @@ class TeamLogViewModel @Inject constructor(
 
     private fun getTeamLogs() {
         viewModelScope.launch {
+            pagingState.value = PagingState()
             logUseCase.getTeamLogs(
                 token = token,
                 teamId = teamId,
@@ -108,7 +111,39 @@ class TeamLogViewModel @Inject constructor(
             )
                 .suspendOnSuccess {
                     logs.value = this.data.data ?: emptyList()
-                    Timber.d(this.data.data.toString())
+                    isLoadMore.value = this.data.pageNumber <= this.data.totalPages
+                    Timber.d(this.data.toString())
+                }
+                .suspendOnFailure {
+                    Timber.d(this.toString())
+                }
+                .suspendOnException {
+                    Timber.d(this.toString())
+                }
+        }
+    }
+
+    fun loadMore() {
+        viewModelScope.launch {
+            pagingState.value = pagingState.value.copy(
+                pageNumber = pagingState.value.pageNumber + 1
+            )
+            logUseCase.getTeamLogs(
+                token = token,
+                teamId = teamId,
+                pageNumber = pagingState.value.pageNumber,
+                pageSize = pagingState.value.pageSize,
+                type = checkTypeFilter.value,
+                status = statusFilter.value,
+            )
+                .suspendOnSuccess {
+                    val newLogs = this.data.data ?: emptyList()
+                    val currentLog = logs.value
+                    logs.value = currentLog.toMutableList().apply {
+                        addAll(newLogs.filter { log -> none { it.id == log.id } })
+                    }
+                    isLoadMore.value = this.data.pageNumber <= this.data.totalPages
+                    Timber.d(this.data.toString())
                 }
                 .suspendOnFailure {
                     Timber.d(this.toString())
