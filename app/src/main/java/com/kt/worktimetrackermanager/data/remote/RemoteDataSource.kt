@@ -2,13 +2,17 @@ package com.kt.worktimetrackermanager.data.remote
 
 import com.google.gson.GsonBuilder
 import com.kt.worktimetrackermanager.BuildConfig
+import com.kt.worktimetrackermanager.data.remote.adapters.CheckTypeAdapter
 import com.kt.worktimetrackermanager.data.remote.adapters.EmployeeTypeAdapter
 import com.kt.worktimetrackermanager.data.remote.adapters.LocalDateTimeAdapter
+import com.kt.worktimetrackermanager.data.remote.adapters.LogStatusAdapter
 import com.kt.worktimetrackermanager.data.remote.adapters.PriorityAdapter
 import com.kt.worktimetrackermanager.data.remote.adapters.ProjectStatusAdapter
 import com.kt.worktimetrackermanager.data.remote.adapters.RoleAdapter
 import com.kt.worktimetrackermanager.data.remote.adapters.ShiftTypeAdapter
+import com.kt.worktimetrackermanager.data.remote.dto.enums.CheckType
 import com.kt.worktimetrackermanager.data.remote.dto.enums.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.LogStatus
 import com.kt.worktimetrackermanager.data.remote.dto.enums.Priority
 import com.kt.worktimetrackermanager.data.remote.dto.enums.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
@@ -44,6 +48,8 @@ class RemoteDataSource @Inject constructor() {
             .registerTypeAdapter(EmployeeType::class.java, EmployeeTypeAdapter())
             .registerTypeAdapter(Priority::class.java, PriorityAdapter())
             .registerTypeAdapter(ShiftType::class.java, ShiftTypeAdapter())
+            .registerTypeAdapter(CheckType::class.java, CheckTypeAdapter())
+            .registerTypeAdapter(LogStatus::class.java, LogStatusAdapter())
             .create()
 
         return Retrofit.Builder()

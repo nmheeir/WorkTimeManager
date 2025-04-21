@@ -5,6 +5,7 @@ import com.kt.worktimetrackermanager.data.local.AppDatabase
 import com.kt.worktimetrackermanager.data.local.InternalDatabase
 import com.kt.worktimetrackermanager.data.remote.RemoteDataSource
 import com.kt.worktimetrackermanager.data.remote.api.AuthApi
+import com.kt.worktimetrackermanager.data.remote.api.LogApi
 import com.kt.worktimetrackermanager.data.remote.api.ProjectApi
 import com.kt.worktimetrackermanager.data.remote.api.ShiftApi
 import com.kt.worktimetrackermanager.data.remote.api.SummaryApi
@@ -12,6 +13,7 @@ import com.kt.worktimetrackermanager.data.remote.api.TaskApi
 import com.kt.worktimetrackermanager.data.remote.api.TeamApi
 import com.kt.worktimetrackermanager.data.remote.api.UserApi
 import com.kt.worktimetrackermanager.data.remote.repositories.IAuthRepo
+import com.kt.worktimetrackermanager.data.remote.repositories.ILogRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.IProjectRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.IShiftRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.ISummaryRepo
@@ -19,6 +21,7 @@ import com.kt.worktimetrackermanager.data.remote.repositories.ITaskRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.ITeamRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.IUserRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.impl.AuthRepo
+import com.kt.worktimetrackermanager.data.remote.repositories.impl.LogRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.impl.ProjectRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.impl.ShiftRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.impl.SummaryRepo
@@ -124,5 +127,17 @@ class AppModule {
     @Singleton
     fun provideShiftRepo(shiftApi: ShiftApi): IShiftRepo {
         return ShiftRepo(shiftApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLogApi(remoteDataSource: RemoteDataSource): LogApi {
+        return remoteDataSource.buildApi(LogApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLogRepo(logApi: LogApi): ILogRepo {
+        return LogRepo(logApi)
     }
 }

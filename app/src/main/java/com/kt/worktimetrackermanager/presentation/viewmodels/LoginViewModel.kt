@@ -50,7 +50,7 @@ class LoginViewModel @Inject constructor(
     private val _channel = Channel<LoginUiEvent>()
     val channel = _channel.receiveAsFlow()
 
-    val isLoading = MutableStateFlow(true)
+    val isLoading = MutableStateFlow(false)
 
     fun onAction(action: LoginUiAction) {
         when (action) {
@@ -143,12 +143,11 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun checkTokeExpire() {
-        isLoading.value = true
-        viewModelScope.launch {
-            if (token.isNullOrEmpty()) {
-                Timber.d("Token is null")
-                return@launch
-            } else {
+        if (token.isNullOrEmpty()) {
+            return
+        } else {
+            isLoading.value = true
+            viewModelScope.launch {
                 userUseCase.getUserProfile(token)
                     .suspendOnSuccess {
                         Timber.d("Success: ${this.data}")
@@ -159,13 +158,11 @@ class LoginViewModel @Inject constructor(
                         clearData()
                         Timber.d("Failure:%s", this.message())
                         context.dataStore.delete(TokenKey)
-                        return@suspendOnFailure
                     }
                     .suspendOnException {
                         Timber.d("Exception:%s", this.message())
                         clearData()
                         context.dataStore.delete(TokenKey)
-                        return@suspendOnException
                     }
             }
             isLoading.value = false
@@ -175,8 +172,8 @@ class LoginViewModel @Inject constructor(
     private fun clearData() {
         viewModelScope.launch {
             database.clearProfile()
+            context.dataStore.deletes(listOf(TokenKey, UsernameKey))
         }
-        context.dataStore.deletes(listOf(TokenKey, UsernameKey))
     }
 
     private suspend fun insertProfile(user: User) {

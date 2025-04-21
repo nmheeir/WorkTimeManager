@@ -25,6 +25,7 @@ import com.kt.worktimetrackermanager.presentation.screens.auth.RegisterScreen
 import com.kt.worktimetrackermanager.presentation.screens.auth.ResetPasswordSuccessScreen
 import com.kt.worktimetrackermanager.presentation.screens.dashboard.StaffDashboardScreen
 import com.kt.worktimetrackermanager.presentation.screens.dashboard.TeamDashboardScreen
+import com.kt.worktimetrackermanager.presentation.screens.log.TeamLogScreen
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.AddMemberScreen
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.MemberInforScreen
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.MemberListScreen
@@ -285,6 +286,21 @@ fun NavGraphBuilder.navigationBuilder(
     ) {
         Text(
             text = "Office asset"
+        )
+    }
+
+    composable(
+        route = Screens.Logs.route
+    ) {
+        MiddlewareRole(
+            managerContent = {
+                TeamLogScreen(navController)
+            },
+            masterContent = {
+                Text(
+                    text = "Master Logs Screen"
+                )
+            }
         )
     }
 

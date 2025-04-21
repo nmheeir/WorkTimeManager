@@ -1,10 +1,9 @@
 package com.kt.worktimetrackermanager.presentation.screens
 
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +21,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,9 +33,10 @@ import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.clickable
 import com.kt.worktimetrackermanager.core.presentation.padding
-import com.kt.worktimetrackermanager.presentation.activities.LocalMainViewModel
+import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.presentation.components.EmptyCardState
 import com.kt.worktimetrackermanager.presentation.components.image.CircleImage
+import com.kt.worktimetrackermanager.presentation.components.preference.PreferenceEntry
 import com.kt.worktimetrackermanager.presentation.navigations.Screens
 import com.kt.worktimetrackermanager.presentation.ui.theme.WorkTimeTrackerManagerTheme
 import com.kt.worktimetrackermanager.presentation.viewmodels.HomeViewModel
@@ -47,8 +48,10 @@ fun HomeScreen(
 ) {
 //    Timber.d(mainViewModel.startDestination.value)
 
+    val user by viewModel.user.collectAsStateWithLifecycle()
 
     HomeLayout(
+        user = user,
         onNavigate = { screens ->
             navController.navigate(screens.route)
         }
@@ -57,6 +60,7 @@ fun HomeScreen(
 
 @Composable
 fun HomeLayout(
+    user: User?,
     onNavigate: (Screens) -> Unit,
 ) {
     LazyColumn(
@@ -70,6 +74,7 @@ fun HomeLayout(
         ) {
             HomeTopBar(
                 modifier = Modifier,
+                user = user,
                 onNavigate = onNavigate
             )
         }
@@ -111,6 +116,21 @@ fun HomeLayout(
         item(
             key = "task"
         ) {
+            PreferenceEntry(
+                title = { Text("Logs") },
+                trailingContent = {
+                    Row {
+                        Text("See more")
+                        Icon(
+                            painterResource(R.drawable.ic_keyboard_arrow_right),
+                            null
+                        )
+                    }
+                },
+                onClick = {
+                    onNavigate(Screens.Logs)
+                }
+            )
             EmptyCardState(
                 message = R.string.msg_no_task,
                 desc = R.string.msg_no_task_desc,
@@ -123,10 +143,17 @@ fun HomeLayout(
 @Composable
 private fun HomeTopBar(
     modifier: Modifier = Modifier,
+    user: User?,
     onNavigate: (Screens) -> Unit,
 ) {
-    val mainViewModel = LocalMainViewModel.current
-    val user by mainViewModel.user.collectAsStateWithLifecycle()
+
+    if (user == null) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Red)
+        )
+    }
 
     user?.let {
         Row(
@@ -186,14 +213,4 @@ private fun HomeTopBar(
 
 val LocalNavAnimatedVisibilityScope =
     compositionLocalOf<AnimatedVisibilityScope> { error("No LocalNavAnimatedVisibilityScope Scope found") }
-
-@Preview(showBackground = true)
-@Composable
-fun HomeLayoutPreview() {
-    WorkTimeTrackerManagerTheme {
-        HomeLayout(
-            onNavigate = {}
-        )
-    }
-}
 
