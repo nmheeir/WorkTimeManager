@@ -2,6 +2,7 @@ package com.kt.worktimetrackermanager.presentation.screens.log
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,10 +35,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.hozPadding
+import com.kt.worktimetrackermanager.core.presentation.padding
 import com.kt.worktimetrackermanager.core.presentation.ui.EmptyBox
 import com.kt.worktimetrackermanager.data.remote.dto.enums.CheckType
 import com.kt.worktimetrackermanager.data.remote.dto.enums.LogStatus
 import com.kt.worktimetrackermanager.presentation.components.items.LogCardItem
+import com.kt.worktimetrackermanager.presentation.components.items.LogDetailDialog
 import com.kt.worktimetrackermanager.presentation.components.preference.PreferenceGroupTitle
 import com.kt.worktimetrackermanager.presentation.viewmodels.TeamLogUiAction
 import com.kt.worktimetrackermanager.presentation.viewmodels.TeamLogViewModel
@@ -92,6 +95,7 @@ fun TeamLogScreen(
         }
     ) { pv ->
         LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.mediumSmall),
             contentPadding = pv
         ) {
             if (logs.isEmpty()) {
@@ -109,16 +113,25 @@ fun TeamLogScreen(
             items(
                 items = logs
             ) { log ->
-                LogCardItem(
-                    log = log,
-                    onClick = {
-
-                    },
-                    modifier = Modifier.hozPadding()
-                )
+                Box {
+                    var showDetailDialog by remember { mutableStateOf(false) }
+                    LogCardItem(
+                        log = log,
+                        onClick = {
+                            showDetailDialog = true
+                        },
+                        modifier = Modifier
+                    )
+                    if (showDetailDialog) {
+                        LogDetailDialog(
+                            log = log,
+                            onDismiss = { showDetailDialog = false },
+                            onAction = viewModel::onAction
+                        )
+                    }
+                }
             }
         }
-
     }
 }
 
@@ -193,7 +206,8 @@ private fun TabFilterSheet(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(bottom = 12.dp)
         ) {
             TextButton(

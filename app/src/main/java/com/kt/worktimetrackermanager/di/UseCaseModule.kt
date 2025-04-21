@@ -14,6 +14,7 @@ import com.kt.worktimetrackermanager.domain.use_case.RequestPasswordReset
 import com.kt.worktimetrackermanager.domain.use_case.ResetPassword
 import com.kt.worktimetrackermanager.domain.use_case.log.GetTeamLogs
 import com.kt.worktimetrackermanager.domain.use_case.log.LogUseCase
+import com.kt.worktimetrackermanager.domain.use_case.log.UpdateLogStatus
 import com.kt.worktimetrackermanager.domain.use_case.project.CreateProject
 import com.kt.worktimetrackermanager.domain.use_case.project.GetProject
 import com.kt.worktimetrackermanager.domain.use_case.project.GetProjects
@@ -142,7 +143,8 @@ class UseCaseModule {
     @Singleton
     fun provideLogUseCase(iLogRepo: ILogRepo): LogUseCase {
         return LogUseCase(
-            getTeamLogs = GetTeamLogs(iLogRepo)
+            getTeamLogs = GetTeamLogs(iLogRepo),
+            updateLogStatus = UpdateLogStatus(iLogRepo)
         )
     }
 }

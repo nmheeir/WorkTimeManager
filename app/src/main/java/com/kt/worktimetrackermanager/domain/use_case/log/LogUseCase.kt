@@ -6,6 +6,7 @@ import com.kt.worktimetrackermanager.data.remote.repositories.ILogRepo
 
 data class LogUseCase(
     val getTeamLogs: GetTeamLogs,
+    val updateLogStatus: UpdateLogStatus,
 )
 
 
@@ -28,4 +29,18 @@ class GetTeamLogs(
             type = type,
             status = status,
         )
+}
+
+class UpdateLogStatus(
+    private val iLogRepo: ILogRepo,
+) {
+    suspend operator fun invoke(
+        token: String,
+        id: Int,
+        status: LogStatus,
+    ) = iLogRepo.updateStatus(
+        token = token,
+        id = id,
+        status = status,
+    )
 }

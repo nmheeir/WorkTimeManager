@@ -38,6 +38,8 @@ class TeamLogViewModel @Inject constructor(
     private val pagingState = MutableStateFlow(PagingState())
 
     val isLoading = MutableStateFlow(false)
+    val isUpdateLoading = MutableStateFlow(false)
+
     val statusFilter = MutableStateFlow<LogStatus?>(null)
     val checkTypeFilter = MutableStateFlow<CheckType?>(null)
 
@@ -70,6 +72,27 @@ class TeamLogViewModel @Inject constructor(
             TeamLogUiAction.Search -> {
                 getTeamLogs()
             }
+
+            is TeamLogUiAction.UpdateStatus -> {
+                updateStatus(action.id, action.status)
+            }
+        }
+    }
+
+    private fun updateStatus(id: Int, status: LogStatus) {
+        isUpdateLoading.value = true
+        viewModelScope.launch {
+            logUseCase.updateLogStatus(token, id, status)
+                .suspendOnSuccess {
+                    Timber.d(this.data.data.toString())
+                }
+                .suspendOnFailure {
+                    Timber.d(this.toString())
+                }
+                .suspendOnException {
+                    Timber.d(this.toString())
+                }
+            isUpdateLoading.value = false
         }
     }
 
@@ -95,15 +118,6 @@ class TeamLogViewModel @Inject constructor(
                 }
         }
     }
-
-    private fun getUsersInTeam() {
-        viewModelScope.launch {
-            userUseCase.getUsers(
-                token = token,
-                teamId = teamId
-            )
-        }
-    }
 }
 
 sealed interface TeamLogUiAction {
@@ -111,4 +125,5 @@ sealed interface TeamLogUiAction {
     class ChangeCheckTypeFilter(val type: CheckType?) : TeamLogUiAction
     object ResetFilter : TeamLogUiAction
     object Search : TeamLogUiAction
+    class UpdateStatus(val id: Int, val status: LogStatus) : TeamLogUiAction
 }

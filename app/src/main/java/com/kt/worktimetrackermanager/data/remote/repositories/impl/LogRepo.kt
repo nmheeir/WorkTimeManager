@@ -3,6 +3,7 @@ package com.kt.worktimetrackermanager.data.remote.repositories.impl
 import com.kt.worktimetrackermanager.data.remote.api.LogApi
 import com.kt.worktimetrackermanager.data.remote.dto.enums.CheckType
 import com.kt.worktimetrackermanager.data.remote.dto.enums.LogStatus
+import com.kt.worktimetrackermanager.data.remote.dto.response.DataResponse
 import com.kt.worktimetrackermanager.data.remote.dto.response.LogModel
 import com.kt.worktimetrackermanager.data.remote.dto.response.PagedDataResponse
 import com.kt.worktimetrackermanager.data.remote.repositories.ILogRepo
@@ -24,6 +25,16 @@ class LogRepo(
         pageNumber = pageNumber,
         pageSize = pageSize,
         type = type,
+        status = status,
+    )
+
+    override suspend fun updateStatus(
+        token: String,
+        id: Int,
+        status: LogStatus,
+    ): ApiResponse<DataResponse<Unit>> = logApi.updateStatus(
+        token = "Bearer $token",
+        id = id,
         status = status,
     )
 }
