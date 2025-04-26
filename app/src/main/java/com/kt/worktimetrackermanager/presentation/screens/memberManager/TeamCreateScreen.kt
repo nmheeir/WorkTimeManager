@@ -24,8 +24,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,11 +36,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -59,6 +63,7 @@ import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.presentation.utils.ObserveAsEvents
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.presentation.components.customButton.GlowingButton
+import com.kt.worktimetrackermanager.presentation.components.dialog.DefaultDialog
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.component.MemberListItem
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.component.MemberListItem2
 import com.kt.worktimetrackermanager.presentation.screens.memberManager.component.MyOutlineTextField
@@ -77,10 +82,11 @@ import java.io.File
 @Composable
 fun TeamCreateScreen(
     viewModel: TeamCreateViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var showSuccessDialog by remember { mutableStateOf(false) }
     ObserveAsEvents(viewModel.channel) {
         when (it) {
             is TeamCreateUiEvent.Failure -> {
@@ -88,20 +94,48 @@ fun TeamCreateScreen(
             }
 
             is TeamCreateUiEvent.Success -> {
+                showSuccessDialog = true
             }
         }
     }
 
-    TeamCreateLayout(
-        state = uiState,
-        onAction = viewModel::onAction
-    )
+    if (showSuccessDialog) {
+        DefaultDialog(
+            onDismiss = { showSuccessDialog = false },
+            icon = { Icon(painterResource(R.drawable.ic_check), null) }
+        ) {
+            Text(text = "Create team successfully")
+        }
+    }
+
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        TeamCreateLayout(
+            state = uiState,
+            onAction = viewModel::onAction
+        )
+        if (isLoading) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+    }
+
 }
 
 @Composable
 fun TeamCreateLayout(
     state: TeamCreateUiState,
-    onAction: (TeamCreateUiAction) -> Unit
+    onAction: (TeamCreateUiAction) -> Unit,
 ) {
 
     Box(
@@ -163,8 +197,14 @@ fun TeamCreateLayout(
     }
 
 }
+
 @Composable
-fun TeamCreateMemberPicker(memberList: List<User>, searchValue: String, chosenMember: User?, onAction: (TeamCreateUiAction) -> Unit) {
+fun TeamCreateMemberPicker(
+    memberList: List<User>,
+    searchValue: String,
+    chosenMember: User?,
+    onAction: (TeamCreateUiAction) -> Unit,
+) {
     var expanded by remember { mutableStateOf(true) }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -182,7 +222,9 @@ fun TeamCreateMemberPicker(memberList: List<User>, searchValue: String, chosenMe
         DropdownMenu(
             expanded = expanded && searchValue.isNotEmpty(),
             onDismissRequest = { expanded = false },
-            modifier = Modifier.background(MaterialTheme.colorScheme.primary).fillMaxWidth(fraction = 0.9f),
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.primary)
+                .fillMaxWidth(fraction = 0.9f),
             properties = PopupProperties(focusable = false)
         ) {
             memberList.forEach { suggestion ->
@@ -200,7 +242,11 @@ fun TeamCreateMemberPicker(memberList: List<User>, searchValue: String, chosenMe
         }
     }
     Spacer(modifier = Modifier.height(20.dp))
-    Text(text = stringResource(R.string.team_manager), color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleMedium)
+    Text(
+        text = stringResource(R.string.team_manager),
+        color = MaterialTheme.colorScheme.primary,
+        style = MaterialTheme.typography.titleMedium
+    )
     if (chosenMember != null) {
         MemberListItem(
             chosenMember,
@@ -214,13 +260,12 @@ fun TeamCreateMemberPicker(memberList: List<User>, searchValue: String, chosenMe
 fun TeamCreateLocationField(
     stateLongitude: Double?,
     stateLatitude: Double?,
-    onAction: (TeamCreateUiAction) -> Unit
-)
-{
+    onAction: (TeamCreateUiAction) -> Unit,
+) {
     var displayLatitude by remember { mutableStateOf<Double?>(null) }
     var displayLongitude by remember { mutableStateOf<Double?>(null) }
 
-    Row  {
+    Row {
         Spacer(modifier = Modifier.height(10.dp))
         MyOutlineTextField(
             modifier = Modifier
@@ -238,7 +283,7 @@ fun TeamCreateLocationField(
         )
         MyOutlineTextField(
             modifier = Modifier.weight(1f),
-            value = stateLongitude?.toString() ?:"",
+            value = stateLongitude?.toString() ?: "",
             onValueChange = {
                 onAction(TeamCreateUiAction.OnFieldChange("longitude", it.toDouble()))
             },
@@ -250,12 +295,14 @@ fun TeamCreateLocationField(
         )
     }
 
-    GlowingButton (
+    GlowingButton(
         onClick = {
             displayLatitude = stateLatitude
             displayLongitude = stateLongitude
         },
-        modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth()
+        modifier = Modifier
+            .padding(vertical = 10.dp)
+            .fillMaxWidth()
     ) {
         Text(
             text = stringResource(R.string.update_location),
@@ -277,14 +324,12 @@ fun TeamCreateLocationField(
 }
 
 
-
-
 @SuppressLint("SuspiciousIndentation", "ClickableViewAccessibility")
 @Composable
 fun SelectableMap(
     onLocationSelected: (latitude: Double, longitude: Double) -> Unit,
     setLongitude: Double? = null,
-    setLatitude: Double? = null
+    setLatitude: Double? = null,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -373,7 +418,8 @@ fun SelectableMap(
                         this.setMultiTouchControls(true)
 
                         // Set vị trí trung tâm ban đầu
-                        val startPoint = currentLocation?.let { GeoPoint(it.latitude, it.longitude) }
+                        val startPoint =
+                            currentLocation?.let { GeoPoint(it.latitude, it.longitude) }
                         mapController.setCenter(startPoint)
 
                         mapInitialized = true

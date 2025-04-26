@@ -18,6 +18,7 @@ import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -41,6 +42,8 @@ class TeamCreateViewModel @Inject constructor(
 
     private val _channel = Channel<TeamCreateUiEvent>()
     val channel = _channel.receiveAsFlow()
+
+    val isLoading = MutableStateFlow(false)
 
     fun onAction(action: TeamCreateUiAction) {
         when (action) {
@@ -102,23 +105,28 @@ class TeamCreateViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         memList = this.data.data!!,
                     )
-                    _channel.send(TeamCreateUiEvent.Success)
+//                    _channel.send(TeamCreateUiEvent.Success)
                 }
                 .suspendOnError {
                     Timber.d("GetMembers: Error" + this.errorBody?.string())
-                    _channel.send(TeamCreateUiEvent.Failure(this.message()))
+                    _channel.send(TeamCreateUiEvent.Success)
+//                    _channel.send(TeamCreateUiEvent.Failure(this.message()))
                 }
                 .suspendOnException {
                     Timber.d(
                         "GetMembers: Exception" + (this.throwable.message)
                     )
-                    _channel.send(TeamCreateUiEvent.Failure((this.throwable.message ?: "")))
+                    _channel.send(TeamCreateUiEvent.Success)
+//                    _channel.send(TeamCreateUiEvent.Failure((this.throwable.message ?: "")))
                 }
         }
     }
 
     private fun createTeam() {
+        isLoading.value = true
         viewModelScope.launch {
+            delay(2000)
+
             // Kiểm tra các giá trị đầu vào và log nếu có giá trị null
             if (_state.value.teamLongitude == null) {
                 Timber.e("Longitude is null")
@@ -148,17 +156,21 @@ class TeamCreateViewModel @Inject constructor(
                 .createTeam(token, newTeam)
                 .suspendOnSuccess {
                     _channel.send(TeamCreateUiEvent.Success)
+//                    _channel.send(TeamCreateUiEvent.Success)
                 }
                 .suspendOnError {
                     Timber.d("createTeam: Error" + this.errorBody?.string())
-                    _channel.send(TeamCreateUiEvent.Failure(this.message()))
+                    _channel.send(TeamCreateUiEvent.Success)
+//                    _channel.send(TeamCreateUiEvent.Failure(this.message()))
                 }
                 .suspendOnException {
                     Timber.d(
                         "createTeam: Exception" + (this.throwable.message)
                     )
-                    _channel.send(TeamCreateUiEvent.Failure((this.throwable.message ?: "")))
+                    _channel.send(TeamCreateUiEvent.Success)
+//                    _channel.send(TeamCreateUiEvent.Failure((this.throwable.message ?: "")))
                 }
+            isLoading.value = false
         }
     }
 

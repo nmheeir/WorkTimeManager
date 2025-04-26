@@ -100,7 +100,10 @@ fun CreateTaskScreen(
 
     if (showSuccessDialog) {
         DefaultDialog(
-            onDismiss = { showSuccessDialog = false }
+            onDismiss = { showSuccessDialog = false },
+            icon = {
+                Icon(painterResource(R.drawable.ic_check), null)
+            }
         ) {
             Text(text = "Success")
         }

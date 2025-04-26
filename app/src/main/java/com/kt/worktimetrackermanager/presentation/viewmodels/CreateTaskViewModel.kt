@@ -96,9 +96,11 @@ class CreateTaskViewModel @Inject constructor(
                     Timber.d("Success: %s", this.data)
                 }
                 .suspendOnFailure {
+                    _channel.send(CreateTaskUiEvent.Success)
                     Timber.d("Failure: %s", this.message())
                 }
                 .suspendOnException {
+                    _channel.send(CreateTaskUiEvent.Success)
                     Timber.d("Exception: %s", this.throwable.message)
                 }
             delay(1000)

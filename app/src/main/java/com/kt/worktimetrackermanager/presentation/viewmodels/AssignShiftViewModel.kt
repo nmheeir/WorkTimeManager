@@ -17,7 +17,9 @@ import com.skydoves.sandwich.suspendOnFailure
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDateTime
@@ -46,6 +48,9 @@ class AssignShiftViewModel @Inject constructor(
     val shiftType = MutableStateFlow<ShiftType>(ShiftType.Normal)
 
     val error = MutableStateFlow<AssignShiftError>(AssignShiftError())
+
+    private val _channel = Channel<AssignShiftUiEvent>()
+    val channel = _channel.receiveAsFlow()
 
     init {
         isLoadingUsers.value = true
@@ -122,6 +127,7 @@ class AssignShiftViewModel @Inject constructor(
                     Timber.d(this.toString())
                 }
 
+            _channel.send(AssignShiftUiEvent.Success)
             isLoadingAssignShift.value = false
         }
     }
