@@ -104,7 +104,6 @@ fun ProjectDetailScreen(
                             title = {
                                 Text(text = pDetail.name)
                             },
-
                             navigationIcon = {
                                 IconButton(
                                     onClick = navController::navigateUp
@@ -113,6 +112,13 @@ fun ProjectDetailScreen(
                                         painter = painterResource(R.drawable.ic_keyboard_arrow_left),
                                         contentDescription = null
                                     )
+                                }
+                            },
+                            actions = {
+                                IconButton(
+                                    onClick = { navController.navigate("project/${pDetail.id}/task/create") }
+                                ) {
+                                    Icon(painterResource(R.drawable.ic_note_add), null)
                                 }
                             }
                         )

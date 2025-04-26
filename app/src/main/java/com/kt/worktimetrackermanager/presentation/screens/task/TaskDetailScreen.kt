@@ -53,6 +53,7 @@ import com.kt.worktimetrackermanager.presentation.components.EmptyCardState
 import com.kt.worktimetrackermanager.presentation.components.chip.PriorityChip
 import com.kt.worktimetrackermanager.presentation.components.chip.StatusChip
 import com.kt.worktimetrackermanager.presentation.components.dialog.DefaultDialog
+import com.kt.worktimetrackermanager.presentation.components.dialog.TextFieldDialog
 import com.kt.worktimetrackermanager.presentation.components.image.CoilImage
 import com.kt.worktimetrackermanager.presentation.components.items.ReportCardItem
 import kotlinx.collections.immutable.persistentListOf
@@ -112,11 +113,10 @@ fun TaskDetailScreen(
                                 }
                             },
                             actions = {
+                                var showEditDialog by remember { mutableStateOf(false) }
                                 IconButton(
                                     enabled = task.reports.isEmpty(),
-                                    onClick = {
-
-                                    }
+                                    onClick = { showEditDialog = true }
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.ic_edit),
@@ -285,24 +285,15 @@ fun TaskDetailScreen(
                     if (task.reports.isEmpty()) {
                         item {
                             EmptyBox(
-                                stringRes = R.string.msg_no_assignees,
-                                descRes = R.string.msg_no_assignees_desc,
+                                stringRes = R.string.msg_no_reports,
+                                descRes = R.string.msg_no_reports_desc,
                                 modifier = Modifier
                                     .hozPadding()
                                     .border(
                                         1.dp,
                                         MaterialTheme.colorScheme.outline,
                                         MaterialTheme.shapes.small
-                                    ),
-                                actions = persistentListOf(
-                                    EmptyBoxAction(
-                                        stringRes = R.string.label_add_assignee,
-                                        icon = R.drawable.ic_edit,
-                                        onClick = {
-
-                                        }
                                     )
-                                )
                             )
                         }
                     } else {

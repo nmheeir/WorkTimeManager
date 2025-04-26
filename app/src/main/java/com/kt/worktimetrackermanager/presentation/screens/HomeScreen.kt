@@ -78,7 +78,7 @@ fun HomeLayout(
                 onNavigate = onNavigate
             )
         }
-        item(
+        /*item(
             key = "summary"
         ) {
             Card(
@@ -101,7 +101,7 @@ fun HomeLayout(
                     )
                 }
             }
-        }
+        }*/
 
         item(
             key = "meeting"

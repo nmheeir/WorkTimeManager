@@ -110,6 +110,7 @@ class LoginViewModel @Inject constructor(
             authUseCase.login(uiState.value.username, uiState.value.password, deviceToken)
                 .suspendOnSuccess {
                     Timber.d("Success: ${this.data}")
+                    Timber.d("Token: ${this.data.data!!.token}")
                     context.dataStore.set(TokenKey, this.data.data!!.token)
                     _channel.send(LoginUiEvent.Success)
                 }

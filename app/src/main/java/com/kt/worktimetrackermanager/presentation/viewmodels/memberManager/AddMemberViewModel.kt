@@ -1,15 +1,17 @@
 package com.kt.worktimetrackermanager.presentation.viewmodels.memberManager
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kt.worktimetrackermanager.core.ext.isValidEmail
 import com.kt.worktimetrackermanager.core.ext.isValidPassword
 import com.kt.worktimetrackermanager.core.presentation.utils.Helper
-import com.kt.worktimetrackermanager.data.local.LocalUserManager
+import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
+import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
+import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.data.remote.dto.enums.EmployeeType
 import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
-
 import com.kt.worktimetrackermanager.data.remote.dto.request.AddUserRequest
 import com.kt.worktimetrackermanager.data.remote.dto.request.UpdateUserRequest
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
@@ -22,6 +24,7 @@ import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -37,10 +40,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddMemberViewModel @Inject constructor(
-    private val localUserManager: LocalUserManager,
-    private val userUseCase : UserUseCase,
-    private val teamUseCase: TeamUseCase
+    @ApplicationContext private val context: Context,
+    private val userUseCase: UserUseCase,
+    private val teamUseCase: TeamUseCase,
 ) : ViewModel() {
+    private val token = context.dataStore.get(TokenKey, "")
+
     private val _channel = Channel<AddMemberUiEvent>()
     val channel = _channel.receiveAsFlow()
 
@@ -65,7 +70,7 @@ class AddMemberViewModel @Inject constructor(
     }
 
     fun onAction(action: AddMemberUiAction) {
-        when(action) {
+        when (action) {
             AddMemberUiAction.AddMember -> {
                 var isVaid = true;
                 if (_state.value.email.isEmpty() || _state.value.emailError != null) {
@@ -89,11 +94,10 @@ class AddMemberViewModel @Inject constructor(
                     )
                 }
 
-                if(isVaid) {
-                    if(_state.value.userId == null) {
+                if (isVaid) {
+                    if (_state.value.userId == null) {
                         addUser()
-                    }
-                    else{
+                    } else {
                         updateUser()
                     }
                 }
@@ -124,6 +128,7 @@ class AddMemberViewModel @Inject constructor(
                     else null
                 _state.value.copy(email = value, emailError = emailError)
             }
+
             "employeeType" -> _state.value.copy(employeeType = value as EmployeeType)
             "password" -> {
                 val isPasswordEmpty = (value as String).isEmpty()
@@ -133,6 +138,7 @@ class AddMemberViewModel @Inject constructor(
                     else null
                 _state.value.copy(password = value, passwordError = passwordError)
             }
+
             "phoneNumber" -> _state.value.copy(phoneNumber = value as String)
             "role" -> _state.value.copy(role = value as Role)
             "teamId" -> _state.value.copy(teamId = (value as Team?)?.id)
@@ -146,21 +152,20 @@ class AddMemberViewModel @Inject constructor(
                     else null
                 _state.value.copy(userName = value, usernameError = usernameError)
             }
+
             else -> _state.value
         }
     }
 
     private fun getCompanyTeams() {
         viewModelScope.launch {
-            val token = localUserManager.readAccessToken()
-
             teamUseCase
                 .getCompanyTeams(token, pageNumber = 1, pageSize = Int.MAX_VALUE, searchValue = "")
                 .suspendOnSuccess {
                     _state.value = _state.value.copy(
                         companyTeams = this.data.data!!
                     )
-                    _channel.send(AddMemberUiEvent.Success)
+//                    _channel.send(AddMemberUiEvent.Success)
                 }
                 .suspendOnError {
                     _channel.send(
@@ -168,7 +173,7 @@ class AddMemberViewModel @Inject constructor(
                             this.errorBody.toString()
                         )
                     )
-                    Timber.d( "getCompanyTeams: " + this.message() + this.statusCode.toString())
+                    Timber.d("getCompanyTeams: " + this.message() + this.statusCode.toString())
                 }
                 .suspendOnException {
                     _channel.send(AddMemberUiEvent.Failure(this.message ?: ""))
@@ -181,7 +186,6 @@ class AddMemberViewModel @Inject constructor(
 
     private fun addUser() {
         viewModelScope.launch {
-            val token = localUserManager.readAccessToken()
 
             _state.value = _state.value.copy(
                 isLoading = true
@@ -230,7 +234,6 @@ class AddMemberViewModel @Inject constructor(
 
     private fun updateUser() {
         viewModelScope.launch {
-            val token = localUserManager.readAccessToken()
 
             _state.value = _state.value.copy(
                 isLoading = true
@@ -293,7 +296,8 @@ class AddMemberViewModel @Inject constructor(
                             address = this.data.data!!.address,
                             avatarURL = this.data.data!!.avatarUrl ?: "",
                             createdAt = this.data.data!!.createdAt,
-                            dayOfBirth = LocalDateTime.parse(this.data.data!!.dayOfBirth).toLocalDate(),
+                            dayOfBirth = LocalDateTime.parse(this.data.data!!.dayOfBirth)
+                                .toLocalDate(),
                             department = this.data.data!!.department,
                             designation = this.data.data!!.designation,
                             email = this.data.data!!.email,
@@ -347,7 +351,7 @@ data class AddMemberUiState(
     var teamId: Int? = null,
     var userFullName: String = "",
     var userName: String = "",
-    var companyTeams : List<Team> = emptyList(),
+    var companyTeams: List<Team> = emptyList(),
 
     // loi
     val usernameError: String? = null,
@@ -355,7 +359,7 @@ data class AddMemberUiState(
     val passwordError: String? = null,
 
     // id user for update
-    val userId: Int? = null
+    val userId: Int? = null,
 )
 
 sealed interface AddMemberUiAction {

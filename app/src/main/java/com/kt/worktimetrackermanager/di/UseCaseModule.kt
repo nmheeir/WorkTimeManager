@@ -35,6 +35,7 @@ import com.kt.worktimetrackermanager.domain.use_case.summary.GetTeamShiftsStat
 import com.kt.worktimetrackermanager.domain.use_case.summary.GetTeamShiftsStatById
 import com.kt.worktimetrackermanager.domain.use_case.summary.GetTeamStatistic
 import com.kt.worktimetrackermanager.domain.use_case.summary.SummaryUseCase
+import com.kt.worktimetrackermanager.domain.use_case.task.CreateTask
 import com.kt.worktimetrackermanager.domain.use_case.task.GetTaskDetail
 import com.kt.worktimetrackermanager.domain.use_case.task.TaskUseCase
 import com.kt.worktimetrackermanager.domain.use_case.team.CreateTeam
@@ -126,7 +127,8 @@ class UseCaseModule {
     @Singleton
     fun provideTaskUseCase(iTaskRepo: ITaskRepo): TaskUseCase {
         return TaskUseCase(
-            getTaskDetail = GetTaskDetail(iTaskRepo)
+            getTaskDetail = GetTaskDetail(iTaskRepo),
+            createTask = CreateTask(iTaskRepo)
         )
     }
 

@@ -1,28 +1,27 @@
 package com.kt.worktimetrackermanager.presentation.viewmodels.memberManager
 
-import android.util.Log
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kt.worktimetrackermanager.data.local.LocalUserManager
+import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
+import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
+import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
 import com.kt.worktimetrackermanager.domain.use_case.team.TeamUseCase
 import com.kt.worktimetrackermanager.domain.use_case.user.UserUseCase
 import com.kt.worktimetrackermanager.presentation.exampleTeam
-import com.skydoves.sandwich.message
 import com.skydoves.sandwich.retrofit.errorBody
-import com.skydoves.sandwich.retrofit.statusCode
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -30,8 +29,10 @@ import javax.inject.Inject
 class TeamInformationViewModel @Inject constructor(
     private val teamUseCase: TeamUseCase,
     private val userUseCase: UserUseCase,
-    private val localUserManager: LocalUserManager,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
+    private val token = context.dataStore.get(TokenKey, "")
+
     private val _state = MutableStateFlow(TeamInformationUiState())
     val uiState = _state
         .stateIn(viewModelScope, SharingStarted.Lazily, TeamInformationUiState())
@@ -53,7 +54,6 @@ class TeamInformationViewModel @Inject constructor(
 
     private fun fetchTeamData() {
         viewModelScope.launch {
-            val token = localUserManager.readAccessToken()
             launch { getTeamInformation(token) }
             launch { getUsersInTeam(token) }
         }
@@ -90,7 +90,7 @@ class TeamInformationViewModel @Inject constructor(
 data class TeamInformationUiState(
     var team: Team = exampleTeam,
     var teamId: Int = 0,
-    var loading: Boolean = true
+    var loading: Boolean = true,
 )
 
 sealed interface TeamInformationUiEvent {

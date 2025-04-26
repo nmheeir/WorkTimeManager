@@ -29,6 +29,8 @@
     <string name="msg_no_assignees_desc">It looks like you don\'t have any assignees for this task</string>
     <string name="msg_no_team">No team</string>
     <string name="msg_no_team_desc">No team description</string>
+    <string name="msg_no_reports">No reports</string>
+    <string name="msg_no_reports_desc">It looks like you don\'t have any reports for this task</string>
 
     <!--  Error  -->
     <string name="error_user_not_found">User not found</string>

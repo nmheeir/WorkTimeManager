@@ -109,54 +109,69 @@ fun AssignShiftScreen(
         },
         modifier = Modifier.fillMaxSize()
     ) { contentPadding ->
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = contentPadding,
-            modifier = Modifier
-                .fillMaxSize()
+        Box(
+            contentAlignment = Alignment.Center
         ) {
-            item(
-                key = "employee_section"
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = contentPadding,
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
-                if (isLoadingUsers) {
-                    CircularProgressIndicator()
-                } else {
-                    EmployeeSection(
-                        error = error,
-                        users = users,
-                        action = viewModel::onAction
+                item(
+                    key = "employee_section"
+                ) {
+                    if (isLoadingUsers) {
+                        CircularProgressIndicator()
+                    } else {
+                        EmployeeSection(
+                            error = error,
+                            users = users,
+                            action = viewModel::onAction
+                        )
+                    }
+                }
+
+                item(
+                    key = "shift_section"
+                ) {
+                    ChipsRow(
+                        chips = listOf(
+                            ShiftType.Normal to "Normal",
+                            ShiftType.Overtime to "Overtime",
+                            ShiftType.NightShift to "NightShift",
+                        ),
+                        currentValue = selectedShiftType,
+                        onValueUpdate = {
+                            viewModel.onAction(AssignShiftUiAction.OnShiftTypeChange(it))
+                        },
+                        modifier = Modifier.hozPadding()
                     )
                 }
+
+                item(
+                    key = "work_time_selection"
+                ) {
+                    WorkTimeSelection(
+                        startDate = startDate,
+                        endDate = endDate,
+                        onAction = viewModel::onAction
+                    )
+                }
+
             }
 
-            item(
-                key = "shift_section"
-            ) {
-                ChipsRow(
-                    chips = listOf(
-                        ShiftType.Normal to "Normal",
-                        ShiftType.Overtime to "Overtime",
-                        ShiftType.NightShift to "NightShift",
-                    ),
-                    currentValue = selectedShiftType,
-                    onValueUpdate = {
-                        viewModel.onAction(AssignShiftUiAction.OnShiftTypeChange(it))
-                    },
-                    modifier = Modifier.hozPadding()
-                )
+            if (isLoadingAssignShift) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f))
+                ) {
+                    CircularProgressIndicator()
+                }
             }
-
-            item(
-                key = "work_time_selection"
-            ) {
-                WorkTimeSelection(
-                    startDate = startDate,
-                    endDate = endDate,
-                    onAction = viewModel::onAction
-                )
-            }
-
         }
     }
 }
