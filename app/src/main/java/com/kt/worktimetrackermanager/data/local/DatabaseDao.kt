@@ -57,5 +57,5 @@ interface DatabaseDao {
     fun profile(): Flow<ProfileEntity>
 
     @Query("DELETE FROM profile")
-    fun clearProfile()
+    suspend fun clearProfile()
 }

@@ -26,7 +26,7 @@ class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
-    private val token = context.dataStore[TokenKey]!!
+    private val token = context.dataStore.get(TokenKey, "")
 
     val user = MutableStateFlow<User?>(null)
 

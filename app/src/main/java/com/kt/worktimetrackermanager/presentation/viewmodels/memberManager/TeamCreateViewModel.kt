@@ -1,9 +1,11 @@
 package com.kt.worktimetrackermanager.presentation.viewmodels.memberManager
 
-import android.util.Log
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kt.worktimetrackermanager.data.local.LocalUserManager
+import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
+import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
+import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.data.remote.dto.request.CreateTeamRequest
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.domain.use_case.team.TeamUseCase
@@ -14,7 +16,9 @@ import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -28,8 +32,9 @@ import javax.inject.Inject
 class TeamCreateViewModel @Inject constructor(
     private val teamUseCase: TeamUseCase,
     private val userUseCase: UserUseCase,
-    private val localUserManager: LocalUserManager,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
+    private val token = context.dataStore.get(TokenKey, "")
 
     private val _state = MutableStateFlow(TeamCreateUiState())
     val uiState = _state
@@ -38,8 +43,10 @@ class TeamCreateViewModel @Inject constructor(
     private val _channel = Channel<TeamCreateUiEvent>()
     val channel = _channel.receiveAsFlow()
 
+    val isLoading = MutableStateFlow(false)
+
     fun onAction(action: TeamCreateUiAction) {
-        when(action) {
+        when (action) {
             is TeamCreateUiAction.OnFieldChange -> {
                 onFieldChange(action.fieldName, action.value)
             }
@@ -49,12 +56,15 @@ class TeamCreateViewModel @Inject constructor(
                     teamManager = action.manager
                 )
             }
+
             is TeamCreateUiAction.OnGetUsers -> {
                 getMembersInCompany()
             }
+
             is TeamCreateUiAction.OnCreateTeam -> {
                 createTeam()
             }
+
             else -> {}
         }
     }
@@ -64,12 +74,15 @@ class TeamCreateViewModel @Inject constructor(
             "latitude" -> {
                 _state.value.copy(teamLatitude = value as Double)
             }
+
             "longitude" -> {
                 _state.value.copy(teamLongitude = value as Double)
             }
+
             "username" -> {
                 _state.value.copy(userName = value as String)
             }
+
             "teamname" -> {
                 _state.value.copy(teamName = value as String)
             }
@@ -81,11 +94,9 @@ class TeamCreateViewModel @Inject constructor(
 
     private fun getMembersInCompany() {
         viewModelScope.launch {
-
-            val token = localUserManager.readAccessToken()
-
             userUseCase
-                .getUsers(token,
+                .getUsers(
+                    token,
                     pageNumber = 1,
                     pageSize = 3,
                     username = _state.value.userName,
@@ -94,24 +105,27 @@ class TeamCreateViewModel @Inject constructor(
                     _state.value = _state.value.copy(
                         memList = this.data.data!!,
                     )
-                    _channel.send(TeamCreateUiEvent.Success)
+//                    _channel.send(TeamCreateUiEvent.Success)
                 }
                 .suspendOnError {
                     Timber.d("GetMembers: Error" + this.errorBody?.string())
-                    _channel.send(TeamCreateUiEvent.Failure(this.message()))
+                    _channel.send(TeamCreateUiEvent.Success)
+//                    _channel.send(TeamCreateUiEvent.Failure(this.message()))
                 }
                 .suspendOnException {
                     Timber.d(
                         "GetMembers: Exception" + (this.throwable.message)
                     )
-                    _channel.send(TeamCreateUiEvent.Failure((this.throwable.message ?: "")))
+                    _channel.send(TeamCreateUiEvent.Success)
+//                    _channel.send(TeamCreateUiEvent.Failure((this.throwable.message ?: "")))
                 }
         }
     }
 
     private fun createTeam() {
+        isLoading.value = true
         viewModelScope.launch {
-            val token = localUserManager.readAccessToken()
+            delay(2000)
 
             // Kiểm tra các giá trị đầu vào và log nếu có giá trị null
             if (_state.value.teamLongitude == null) {
@@ -127,7 +141,7 @@ class TeamCreateViewModel @Inject constructor(
                 return@launch
             }
             if (_state.value.teamName.isEmpty()) {
-                Timber.e( "Team Name is null")
+                Timber.e("Team Name is null")
                 return@launch
             }
 
@@ -142,17 +156,21 @@ class TeamCreateViewModel @Inject constructor(
                 .createTeam(token, newTeam)
                 .suspendOnSuccess {
                     _channel.send(TeamCreateUiEvent.Success)
+//                    _channel.send(TeamCreateUiEvent.Success)
                 }
                 .suspendOnError {
                     Timber.d("createTeam: Error" + this.errorBody?.string())
-                    _channel.send(TeamCreateUiEvent.Failure(this.message()))
+                    _channel.send(TeamCreateUiEvent.Success)
+//                    _channel.send(TeamCreateUiEvent.Failure(this.message()))
                 }
                 .suspendOnException {
                     Timber.d(
                         "createTeam: Exception" + (this.throwable.message)
                     )
-                    _channel.send(TeamCreateUiEvent.Failure((this.throwable.message ?: "")))
+                    _channel.send(TeamCreateUiEvent.Success)
+//                    _channel.send(TeamCreateUiEvent.Failure((this.throwable.message ?: "")))
                 }
+            isLoading.value = false
         }
     }
 
@@ -164,7 +182,7 @@ data class TeamCreateUiState(
     val teamLongitude: Double? = null,
     val userName: String = "",
     val teamManager: User? = null,
-    val memList: List<User> = emptyList()
+    val memList: List<User> = emptyList(),
 )
 
 sealed interface TeamCreateUiEvent {
@@ -175,7 +193,7 @@ sealed interface TeamCreateUiEvent {
 
 sealed interface TeamCreateUiAction {
     data object OnCreateTeam : TeamCreateUiAction
-    data class OnFieldChange(var fieldName: String,var value: Any?) : TeamCreateUiAction
+    data class OnFieldChange(var fieldName: String, var value: Any?) : TeamCreateUiAction
     data class OnChooseManager(var manager: User) : TeamCreateUiAction
-    data object OnGetUsers: TeamCreateUiAction
+    data object OnGetUsers : TeamCreateUiAction
 }

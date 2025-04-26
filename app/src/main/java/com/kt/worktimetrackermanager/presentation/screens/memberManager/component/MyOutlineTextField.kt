@@ -56,9 +56,6 @@ fun MyOutlineTextField(
             shape = shape,
             singleLine = true,
             keyboardOptions = keyboardOptions,
-            textStyle = TextStyle(
-                color = Color.White,
-            )
         )
 
 }

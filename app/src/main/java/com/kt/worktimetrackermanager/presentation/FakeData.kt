@@ -1,11 +1,14 @@
 package com.kt.worktimetrackermanager.presentation
 
+import com.kt.worktimetrackermanager.data.remote.dto.enums.CheckType
 import com.kt.worktimetrackermanager.data.remote.dto.enums.EmployeeType
+import com.kt.worktimetrackermanager.data.remote.dto.enums.LogStatus
 import com.kt.worktimetrackermanager.data.remote.dto.enums.Priority
 import com.kt.worktimetrackermanager.data.remote.dto.enums.ProjectStatus
 import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
 import com.kt.worktimetrackermanager.data.remote.dto.enums.ShiftType
 import com.kt.worktimetrackermanager.data.remote.dto.response.Company
+import com.kt.worktimetrackermanager.data.remote.dto.response.LogModel
 import com.kt.worktimetrackermanager.data.remote.dto.response.Project
 import com.kt.worktimetrackermanager.data.remote.dto.response.Report
 import com.kt.worktimetrackermanager.data.remote.dto.response.Shift
@@ -222,5 +225,19 @@ val fakeShifts = List(10) {
         shiftType = ShiftType.entries.random(),
         workDuration = Random.nextFloat() * 8,
         user = fakeUser
+    )
+}
+
+val fakeLogs = List(10) {
+    LogModel(
+        id = it,
+        user = fakeUser,
+        type = CheckType.entries.random(),
+        status = LogStatus.entries.random(),
+        createAt = LocalDateTime.now().minusDays(Random.nextLong(1, 30)),
+        checkTime = LocalDateTime.now().minusDays(Random.nextLong(1, 30)),
+        reason = "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+        userId = it,
+        approvalTime = null,
     )
 }

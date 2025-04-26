@@ -1,6 +1,7 @@
 package com.kt.worktimetrackermanager.di
 
 import com.kt.worktimetrackermanager.data.remote.repositories.IAuthRepo
+import com.kt.worktimetrackermanager.data.remote.repositories.ILogRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.IProjectRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.IShiftRepo
 import com.kt.worktimetrackermanager.data.remote.repositories.ISummaryRepo
@@ -11,6 +12,9 @@ import com.kt.worktimetrackermanager.domain.use_case.AuthUseCase
 import com.kt.worktimetrackermanager.domain.use_case.Login
 import com.kt.worktimetrackermanager.domain.use_case.RequestPasswordReset
 import com.kt.worktimetrackermanager.domain.use_case.ResetPassword
+import com.kt.worktimetrackermanager.domain.use_case.log.GetTeamLogs
+import com.kt.worktimetrackermanager.domain.use_case.log.LogUseCase
+import com.kt.worktimetrackermanager.domain.use_case.log.UpdateLogStatus
 import com.kt.worktimetrackermanager.domain.use_case.project.CreateProject
 import com.kt.worktimetrackermanager.domain.use_case.project.GetProject
 import com.kt.worktimetrackermanager.domain.use_case.project.GetProjects
@@ -31,6 +35,7 @@ import com.kt.worktimetrackermanager.domain.use_case.summary.GetTeamShiftsStat
 import com.kt.worktimetrackermanager.domain.use_case.summary.GetTeamShiftsStatById
 import com.kt.worktimetrackermanager.domain.use_case.summary.GetTeamStatistic
 import com.kt.worktimetrackermanager.domain.use_case.summary.SummaryUseCase
+import com.kt.worktimetrackermanager.domain.use_case.task.CreateTask
 import com.kt.worktimetrackermanager.domain.use_case.task.GetTaskDetail
 import com.kt.worktimetrackermanager.domain.use_case.task.TaskUseCase
 import com.kt.worktimetrackermanager.domain.use_case.team.CreateTeam
@@ -122,7 +127,8 @@ class UseCaseModule {
     @Singleton
     fun provideTaskUseCase(iTaskRepo: ITaskRepo): TaskUseCase {
         return TaskUseCase(
-            getTaskDetail = GetTaskDetail(iTaskRepo)
+            getTaskDetail = GetTaskDetail(iTaskRepo),
+            createTask = CreateTask(iTaskRepo)
         )
     }
 
@@ -132,6 +138,15 @@ class UseCaseModule {
         return ShiftUseCase(
             addShift = AddShift(iShiftRepo),
             getShiftsInTeam = GetShiftsInTeam(iShiftRepo)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideLogUseCase(iLogRepo: ILogRepo): LogUseCase {
+        return LogUseCase(
+            getTeamLogs = GetTeamLogs(iLogRepo),
+            updateLogStatus = UpdateLogStatus(iLogRepo)
         )
     }
 }

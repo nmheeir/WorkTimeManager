@@ -16,7 +16,7 @@ import retrofit2.http.Query
 
 interface UserApi {
 
-    @POST("Users/profile")
+    @GET("Users/profile")
     suspend fun profile(
         @Header("Authorization") token: String,
     ): ApiResponse<DataResponse<User>>

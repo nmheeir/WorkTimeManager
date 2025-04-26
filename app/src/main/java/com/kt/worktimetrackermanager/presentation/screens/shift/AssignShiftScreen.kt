@@ -47,13 +47,16 @@ import com.kt.worktimetrackermanager.R
 import com.kt.worktimetrackermanager.core.ext.format3
 import com.kt.worktimetrackermanager.core.presentation.hozPadding
 import com.kt.worktimetrackermanager.core.presentation.padding
+import com.kt.worktimetrackermanager.core.presentation.utils.ObserveAsEvents
 import com.kt.worktimetrackermanager.data.remote.dto.enums.ShiftType
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.presentation.components.chip.ChipsRow
 import com.kt.worktimetrackermanager.presentation.components.dialog.CalendarTimerDialog
+import com.kt.worktimetrackermanager.presentation.components.dialog.DefaultDialog
 import com.kt.worktimetrackermanager.presentation.components.image.CircleImage
 import com.kt.worktimetrackermanager.presentation.viewmodels.AssignShiftError
 import com.kt.worktimetrackermanager.presentation.viewmodels.AssignShiftUiAction
+import com.kt.worktimetrackermanager.presentation.viewmodels.AssignShiftUiEvent
 import com.kt.worktimetrackermanager.presentation.viewmodels.AssignShiftViewModel
 import java.time.LocalDateTime
 
@@ -71,6 +74,34 @@ fun AssignShiftScreen(
 
     val isLoadingUsers by viewModel.isLoadingUsers.collectAsStateWithLifecycle()
     val isLoadingAssignShift by viewModel.isLoadingAssignShift.collectAsStateWithLifecycle()
+
+    var showSuccessDialog by remember { mutableStateOf(false) }
+
+    ObserveAsEvents(viewModel.channel) {
+        when (it) {
+            is AssignShiftUiEvent.Failure -> {
+
+            }
+
+            AssignShiftUiEvent.FetchUserInTeamSuccess -> {
+
+            }
+
+            AssignShiftUiEvent.Success -> {
+                showSuccessDialog = true
+            }
+        }
+    }
+    if (showSuccessDialog) {
+        DefaultDialog(
+            onDismiss = { showSuccessDialog = false },
+            icon = {
+                Icon(painterResource(R.drawable.ic_check), null)
+            }
+        ) {
+            Text(text = "Assign shift successfully")
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -109,54 +140,69 @@ fun AssignShiftScreen(
         },
         modifier = Modifier.fillMaxSize()
     ) { contentPadding ->
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = contentPadding,
-            modifier = Modifier
-                .fillMaxSize()
+        Box(
+            contentAlignment = Alignment.Center
         ) {
-            item(
-                key = "employee_section"
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = contentPadding,
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
-                if (isLoadingUsers) {
-                    CircularProgressIndicator()
-                } else {
-                    EmployeeSection(
-                        error = error,
-                        users = users,
-                        action = viewModel::onAction
+                item(
+                    key = "employee_section"
+                ) {
+                    if (isLoadingUsers) {
+                        CircularProgressIndicator()
+                    } else {
+                        EmployeeSection(
+                            error = error,
+                            users = users,
+                            action = viewModel::onAction
+                        )
+                    }
+                }
+
+                item(
+                    key = "shift_section"
+                ) {
+                    ChipsRow(
+                        chips = listOf(
+                            ShiftType.Normal to "Normal",
+                            ShiftType.Overtime to "Overtime",
+                            ShiftType.NightShift to "NightShift",
+                        ),
+                        currentValue = selectedShiftType,
+                        onValueUpdate = {
+                            viewModel.onAction(AssignShiftUiAction.OnShiftTypeChange(it))
+                        },
+                        modifier = Modifier.hozPadding()
                     )
                 }
+
+                item(
+                    key = "work_time_selection"
+                ) {
+                    WorkTimeSelection(
+                        startDate = startDate,
+                        endDate = endDate,
+                        onAction = viewModel::onAction
+                    )
+                }
+
             }
 
-            item(
-                key = "shift_section"
-            ) {
-                ChipsRow(
-                    chips = listOf(
-                        ShiftType.Normal to "Normal",
-                        ShiftType.Overtime to "Overtime",
-                        ShiftType.NightShift to "NightShift",
-                    ),
-                    currentValue = selectedShiftType,
-                    onValueUpdate = {
-                        viewModel.onAction(AssignShiftUiAction.OnShiftTypeChange(it))
-                    },
-                    modifier = Modifier.hozPadding()
-                )
+            if (isLoadingAssignShift) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f))
+                ) {
+                    CircularProgressIndicator()
+                }
             }
-
-            item(
-                key = "work_time_selection"
-            ) {
-                WorkTimeSelection(
-                    startDate = startDate,
-                    endDate = endDate,
-                    onAction = viewModel::onAction
-                )
-            }
-
         }
     }
 }

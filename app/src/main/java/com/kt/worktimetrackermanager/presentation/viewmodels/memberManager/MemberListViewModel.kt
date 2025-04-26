@@ -1,12 +1,13 @@
 package com.kt.worktimetrackermanager.presentation.viewmodels.memberManager
 
-import android.util.Log
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kt.worktimetrackermanager.data.local.LocalUserManager
+import com.kt.worktimetrackermanager.core.presentation.utils.TokenKey
+import com.kt.worktimetrackermanager.core.presentation.utils.dataStore
+import com.kt.worktimetrackermanager.core.presentation.utils.get
 import com.kt.worktimetrackermanager.data.remote.dto.enums.EmployeeType
 import com.kt.worktimetrackermanager.data.remote.dto.enums.Role
-
 import com.kt.worktimetrackermanager.data.remote.dto.response.Team
 import com.kt.worktimetrackermanager.data.remote.dto.response.User
 import com.kt.worktimetrackermanager.domain.use_case.team.TeamUseCase
@@ -17,6 +18,7 @@ import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,10 +31,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MemberListViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val userUseCase: UserUseCase,
     private val teamUseCase: TeamUseCase,
-    private val localUserManager: LocalUserManager,
-): ViewModel() {
+) : ViewModel() {
+    private val token = context.dataStore.get(TokenKey, "")
 
     private val _channel = Channel<MemberListUiEvent>()
     val channel = _channel.receiveAsFlow()
@@ -48,12 +51,13 @@ class MemberListViewModel @Inject constructor(
     }
 
     fun onAction(event: MemberListUiAction) {
-        when(event) {
+        when (event) {
             is MemberListUiAction.OnFieldChange -> {
                 onFieldChange(event.fieldName, event.value)
             }
+
             is MemberListUiAction.OnScrollToBottom -> {
-                if(_state.value.pageNumber < _state.value.totalPage) {
+                if (_state.value.pageNumber < _state.value.totalPage) {
                     _state.value = _state.value.copy(
                         pageNumber = _state.value.pageNumber + 1
                     )
@@ -82,14 +86,14 @@ class MemberListViewModel @Inject constructor(
         }
         getMembersInCompany()
     }
+
     private fun getMembersInCompany() {
         viewModelScope.launch {
             _state.value = _state.value.copy(loading = true, pageNumber = 1) // Đúng cách
 
-            val token = localUserManager.readAccessToken()
-
             userUseCase
-                .getUsers(token,
+                .getUsers(
+                    token,
                     pageNumber = _state.value.pageNumber,
                     pageSize = 10,
                     role = _state.value.role?.ordinal,
@@ -118,14 +122,14 @@ class MemberListViewModel @Inject constructor(
                 }
         }
     }
+
     private fun loadMoreMember() {
         viewModelScope.launch {
             _state.value = _state.value.copy(loading = true) // Đúng cách
 
-            val token = localUserManager.readAccessToken()
-
             userUseCase
-                .getUsers(token,
+                .getUsers(
+                    token,
                     pageNumber = _state.value.pageNumber,
                     pageSize = 10,
                     role = _state.value.role?.ordinal,
@@ -154,10 +158,9 @@ class MemberListViewModel @Inject constructor(
                 }
         }
     }
+
     private fun getCompanyTeams() {
         viewModelScope.launch {
-            val token = localUserManager.readAccessToken()
-
             teamUseCase
                 .getCompanyTeams(token, pageSize = Int.MAX_VALUE)
                 .suspendOnSuccess {
@@ -180,7 +183,7 @@ class MemberListViewModel @Inject constructor(
     }
 }
 
-data class MemberListUiState (
+data class MemberListUiState(
     var memberList: List<User> = emptyList(),
     var role: Role? = null,
     var teamId: Int? = null,
