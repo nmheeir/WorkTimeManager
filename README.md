@@ -2,8 +2,6 @@
 
 <div align="center">
   
-  ![Work Management](https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop)
-  
   **A comprehensive enterprise-grade employee management system built with modern Android technologies**
   
   [![Android](https://img.shields.io/badge/Platform-Android-green.svg)](https://android.com)
@@ -20,14 +18,7 @@
 
 <div align="center">
   
-  **🎬 Watch WorkTimeTrackerManager in Action**
-  
-  > *Click the image below to watch our comprehensive demo video*
-  
-  [![WorkTime Demo](https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=800&h=450&fit=crop)](https://your-demo-video-link.com)
-  
-  *Experience seamless employee management, real-time attendance tracking, and intelligent scheduling automation*
-  
+
 </div>
 
 ---
@@ -91,7 +82,6 @@ graph TB
     
     I[Firebase FCM] --> A
     J[Background Services] --> B
-    K[WorkManager] --> L[Scheduled Tasks]
     
     M[Hilt DI Container] --> B
     M --> C
@@ -109,8 +99,6 @@ graph TB
 
 ### **⚡ Performance Optimizations**
 - **Lazy Loading**: Efficient data loading with pagination
-- **Caching Strategy**: Multi-layer caching (Memory + Disk + Network)
-- **Background Processing**: WorkManager for scheduled tasks
 - **State Management**: Compose state hoisting and remember patterns
 - **Memory Management**: Lifecycle-aware components and proper disposal
 
@@ -141,23 +129,6 @@ graph TB
 
 ---
 
-## 🔐 **Security & Compliance Implementation**
-
-### **🛡️ Security Features**
-- **Multi-Factor Authentication**: Biometric and SMS verification
-- **End-to-End Encryption**: AES-256 data encryption
-- **Secure Token Management**: JWT with refresh token rotation
-- **API Rate Limiting**: DDoS protection and abuse prevention
-- **Data Privacy**: GDPR compliance and data anonymization
-
-### **📱 Mobile Security**
-- **Certificate Pinning**: SSL/TLS security enhancement
-- **Root Detection**: Security checks for compromised devices
-- **App Integrity**: Anti-tampering and reverse engineering protection
-- **Secure Storage**: Android Keystore integration
-- **Network Security**: HTTPS enforcement and secure communication
-
----
 
 ## 📱 **Modern Android Development Practices**
 
@@ -174,30 +145,6 @@ graph TB
 - **Flow**: Reactive streams for data handling
 - **Navigation Component**: Type-safe navigation with deep linking
 - **Testing**: Unit, Integration, and UI tests with 85%+ coverage
-
----
-
-## 📊 **Technical Specifications & Metrics**
-
-<div align="center">
-
-| **Performance Indicator** | **Achievement** | **Industry Standard** |
-|---------------------------|-----------------|----------------------|
-| **App Launch Time** | < 0.8 seconds | < 1.5 seconds |
-| **API Response Time** | < 200ms average | < 500ms |
-| **Memory Usage** | 35MB average | < 50MB |
-| **Battery Efficiency** | 2% per hour | < 4% per hour |
-| **Crash Rate** | < 0.1% | < 1% |
-| **User Retention** | 94% (30-day) | > 80% |
-
-</div>
-
-### **🔍 Code Quality Metrics**
-- **Cyclomatic Complexity**: Average 2.8 (Excellent)
-- **Test Coverage**: 87% (Unit + Integration + UI)
-- **Technical Debt Ratio**: < 3% (Very Low)
-- **Code Duplication**: < 2% (Minimal)
-- **Maintainability Index**: 92/100 (Excellent)
 
 ---
 
@@ -249,140 +196,12 @@ app/
 ├── src/test/               # Unit tests
 └── src/androidTest/        # Integration and UI tests
 ```
-
----
-
-## 🎯 **Key Features & Technical Implementations**
-
-### **👥 Employee & Team Management**
-```kotlin
-// Advanced team hierarchy with role-based permissions
-@Entity(tableName = "employees")
-data class Employee(
-    @PrimaryKey val id: String,
-    val name: String,
-    val role: UserRole,
-    val teamId: String,
-    val permissions: List<Permission>
-)
-
-// Repository pattern with caching
-class EmployeeRepository @Inject constructor(
-    private val localDataSource: EmployeeDao,
-    private val remoteDataSource: EmployeeApiService
-) {
-    suspend fun getEmployees(): Flow<List<Employee>> = 
-        localDataSource.getAllEmployees()
-            .onStart { refreshFromNetwork() }
-}
-```
-
-### **📅 Intelligent Scheduling**
-```kotlin
-// WorkManager integration for background scheduling
-@HiltWorker
-class ScheduleSyncWorker @AssistedInject constructor(
-    @Assisted context: Context,
-    @Assisted params: WorkerParameters,
-    private val repository: ScheduleRepository
-) : CoroutineWorker(context, params) {
-    
-    override suspend fun doWork(): Result {
-        return try {
-            repository.syncSchedules()
-            Result.success()
-        } catch (e: Exception) {
-            Result.retry()
-        }
-    }
-}
-```
-
-### **📊 Real-Time Analytics**
-```kotlin
-// Compose UI with real-time data updates
-@Composable
-fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    
-    LazyColumn {
-        item {
-            AttendanceChart(
-                data = uiState.attendanceData,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-        items(uiState.metrics) { metric ->
-            MetricCard(metric = metric)
-        }
-    }
-}
-```
-
 ---
 
 ## 📱 **Screenshots & UI Showcase**
 
-<div align="center">
-  <img src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=200&h=400&fit=crop" width="200" />
-  <img src="https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=200&h=400&fit=crop" width="200" />
-  <img src="https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=200&h=400&fit=crop" width="200" />
-  
-  *Dashboard • Employee Management • Analytics*
-</div>
 
 ---
-
-## 🧪 **Testing & Quality Assurance**
-
-### **Testing Strategy**
-```kotlin
-// Unit Testing with MockK
-@Test
-fun `when login is successful, should emit success state`() = runTest {
-    // Given
-    val credentials = LoginCredentials("user@test.com", "password")
-    coEvery { authRepository.login(credentials) } returns Result.success(mockUser)
-    
-    // When
-    viewModel.login(credentials)
-    
-    // Then
-    assertEquals(LoginState.Success(mockUser), viewModel.uiState.value)
-}
-
-// UI Testing with Compose Test
-@Test
-fun loginScreen_displaysCorrectly() {
-    composeTestRule.setContent {
-        LoginScreen(onLoginClick = {})
-    }
-    
-    composeTestRule
-        .onNodeWithText("Email")
-        .assertIsDisplayed()
-}
-```
-
-### **Continuous Integration**
-```yaml
-# GitHub Actions workflow
-name: Android CI
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-      - name: Run tests
-        run: ./gradlew test
-      - name: Generate coverage report
-        run: ./gradlew jacocoTestReport
-```
 
 ---
 
@@ -434,12 +253,9 @@ git checkout -b feature/employee-management
 
 **🚀 Developed by [Your Name] - Senior Android Developer**
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/yourprofile)
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/nmheeir)
-[![Portfolio](https://img.shields.io/badge/Portfolio-FF5722?style=for-the-badge&logo=todoist&logoColor=white)](https://yourportfolio.com)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/giakhuu)
 
-**📧 Email**: your.email@domain.com  
-**🌐 Portfolio**: [yourportfolio.com](https://yourportfolio.com)
 
 </div>
 
