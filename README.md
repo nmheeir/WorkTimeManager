@@ -17,7 +17,7 @@
 ## 🎥 **Application Showcase**
 
 <div align="center">
-[![Demo video](assets/thumbnail.png)](https://drive.google.com/file/d/…/view)
+[![Demo video](thumbnail.png)](https://drive.google.com/file/d/…/view)
 </div>
 
 ---
