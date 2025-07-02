@@ -16,7 +16,31 @@
 
 ## 🎥 **Application Showcase**
 
-
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://drive.google.com/file/d/10H4QSsb5boqkwUV-gxVNuf0_-9qywAy1/view?usp=drive_link">
+        <img src="./thumbnail.png" alt="Demo Video 1" width="300"/>
+      </a>
+      <br/>
+      <em>Fig.1: Demo video</em>
+    </td>
+    <td align="center">
+      <a href="https://drive.google.com/file/d/1ZjqmlPorcSlQTE2zzXUn6kDr0IzC6be2/view?usp=drive_link">
+        <img src="./thumbnail2.png" alt="Demo Video 2" width="300"/>
+      </a>
+      <br/>
+      <em>Fig.2: Chatbox</em>
+    </td>
+    <td align="center">
+      <a href="https://drive.google.com/file/d/1gZRPsZB6R0DgyxpsevHpsv9Lem3j6Xvu/view?usp=drive_link">
+        <img src="./thumbnail3.png" alt="Demo Video 2" width="300"/>
+      </a>
+      <br/>
+      <em>Fig.2: Chatbox</em>
+    </td>
+  </tr>
+</table>
 ---
 
 ## 🚀 **Core Technologies & Architecture**
