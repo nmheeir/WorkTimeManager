@@ -17,8 +17,7 @@
 ## 🎥 **Application Showcase**
 
 <div align="center">
-  
-
+[▶️ Xem video demo trên Google Drive](https://drive.google.com/drive/folders/15MWC7Z6wUNRhAgS9Iw7MARjgBsYvXpcE)
 </div>
 
 ---
