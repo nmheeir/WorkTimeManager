@@ -16,8 +16,24 @@
 
 ## 🎥 **Application Showcase**
 
-[![Demo video](./thumbnail.png)](https://drive.google.com/file/d/…/view)
-
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://drive.google.com/file/d/DRIVE_FILE_ID1/view">
+        <img src="./thumbnail.png" alt="Demo Video 1" width="300"/>
+      </a>
+      <br/>
+      <em>Fig.1: Demo video</em>
+    </td>
+    <td align="center">
+      <a href="https://drive.google.com/file/d/DRIVE_FILE_ID2/view">
+        <img src="./thumbnail2.png" alt="Demo Video 2" width="300"/>
+      </a>
+      <br/>
+      <em>Fig.2: Chatbox</em>
+    </td>
+  </tr>
+</table>
 ---
 
 ## 🚀 **Core Technologies & Architecture**
